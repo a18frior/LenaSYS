@@ -44,11 +44,16 @@ function pdoConnect()
 {
 	global $pdo;
 	try {
+		/*
 		$pdo = new PDO(
 			'mysql:host=' . DB_HOST . ';dbname=' . DB_NAME . ';charset=utf8',
 			DB_USER,
 			DB_PASSWORD
 		);
+		*/
+		$pdo = new PDO('pgsql:host=localhost;port=5432;dbname='.DB_NAME.';user='.DB_USER.';password='.DB_PASSWORD.'');
+		//pg_connect("host=localhost dbname=dbname user=username password=password")
+
 	} catch (PDOException $e) {
 		echo "Failed to get DB handle: " . $e->getMessage() . "</br>";
 		exit;

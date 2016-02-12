@@ -62,7 +62,7 @@ if($ha){
 		
 		if(!$query->execute()) {
 			$error=$query->errorInfo();
-			$debug="Error updating entries".$error[2];
+			$debug="Error creating new course: ".$error[2];
 		}
 	}else if(strcmp($opt,"NEWVRS")===0){
 		$query = $pdo->prepare("INSERT INTO vers(cid,coursecode,vers,versname,coursename,coursenamealt) values(:cid,:coursecode,:vers,:versname,:coursename,:coursenamealt);");

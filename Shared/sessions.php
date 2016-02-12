@@ -83,7 +83,8 @@ function login($username, $password, $savelogin)
 
 //echo "SELECT uid,username,password,superuser FROM user WHERE username=:username and password=password(':pwd') LIMIT 1";
 
-	$query = $pdo->prepare("SELECT uid,username,password,superuser FROM user WHERE username=:username and password=password(:pwd) LIMIT 1");
+//	$query = $pdo->prepare("SELECT uid,username,password,superuser FROM user WHERE username=:username and password=password(:pwd) LIMIT 1");
+	$query = $pdo->prepare('SELECT uid,username,superuser,userpassword as password, (userpassword = crypt(:pwd, userpassword)) AS pswmatch FROM "user" WHERE username like :username LIMIT 1;');
 
 	$query->bindParam(':username', $username);
 	$query->bindParam(':pwd', $password);
@@ -93,17 +94,22 @@ function login($username, $password, $savelogin)
 	if($query->rowCount() > 0) {
 		// Fetch the result
 		$row = $query->fetch(PDO::FETCH_ASSOC);
-		$_SESSION['uid'] = $row['uid'];
-		$_SESSION["loginname"]=$row['username'];
-		$_SESSION["passwd"]=$row['password'];
-		$_SESSION["superuser"]=$row['superuser'];
+		$debug = $row['pswmatch'];
+		if($row['pswmatch'] == 't'){
+			$_SESSION['uid'] = $row['uid'];
+			$_SESSION["loginname"]=$row['username'];
+			$_SESSION["passwd"]=$row['password'];
+			$_SESSION["superuser"]=$row['superuser'];
 
-		// Save some login details in cookies.
-		if($savelogin) {
-			setcookie('username', $row['username'], time()+60*60*24*30, '/');
-			setcookie('password', $password, time()+60*60*24*30, '/');
+			// Save some login details in cookies.
+			if($savelogin) {
+				setcookie('username', $row['username'], time()+60*60*24*30, '/');
+				setcookie('password', $password, time()+60*60*24*30, '/');
+			}
+			return true;			
+		} else {
+			return false;
 		}
-		return true;
 
 	} else {
 		return false;
@@ -145,7 +151,7 @@ function isSuperUser($userId)
 		pdoConnect();
 	}
 
-	$query = $pdo->prepare('SELECT count(uid) AS count FROM user WHERE uid=:1 AND superuser=1');
+	$query = $pdo->prepare('SELECT count(uid) AS count FROM "user" WHERE uid=:1 AND superuser=1');
 	$query->bindParam(':1', $userId);
 	$query->execute();
 	$result = $query->fetch();
