@@ -384,3 +384,4 @@ CREATE INDEX ON "wordlist" ("uid");
 SELECT setval('quiz_id_seq', max(id)) FROM quiz;*/
 /*ALTER TABLE "quiz" ALTER COLUMN "id" SET DEFAULT nextval('quiz_id_seq');*/
 
+UPDATE "user" SET userpassword = crypt('kong', gen_salt('md5')) where uid=2;
