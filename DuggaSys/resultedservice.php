@@ -39,7 +39,7 @@ $duggastats="";
 if(checklogin() && (hasAccess($_SESSION['uid'], $cid, 'w') || isSuperUser($_SESSION['uid']))) {
 	if(strcmp($opt,"CHGR")==0){
 		if($ukind=="U"){
-			$query = $pdo->prepare("UPDATE userAnswer SET grade=:mark,creator=:cuser,marked=NOW() WHERE cid=:cid AND moment=:moment AND vers=:vers AND uid=:uid");
+			$query = $pdo->prepare("UPDATE useranswer SET grade=:mark,creator=:cuser,marked=now() WHERE cid=:cid AND moment=:moment AND vers=:vers AND uid=:uid");
 			$query->bindParam(':mark', $mark);
 			$query->bindParam(':cuser', $userid);
 
@@ -50,10 +50,10 @@ if(checklogin() && (hasAccess($_SESSION['uid'], $cid, 'w') || isSuperUser($_SESS
 
 			if(!$query->execute()) {
 				$error=$query->errorInfo();
-				$debug="Error updating entries".$error[2];
+				$debug="resultedservice.php: Error updating entries".$error[2];
 			}				
 		}else if($ukind=="I"){						
-			$query = $pdo->prepare("INSERT INTO userAnswer(grade,creator,cid,moment,vers,uid,marked) VALUES(:mark,:cuser,:cid,:moment,:vers,:uid,NOW());");
+			$query = $pdo->prepare("INSERT INTO useranswer(grade,creator,cid,moment,vers,uid,marked) VALUES(:mark,:cuser,:cid,:moment,:vers,:uid,NOW());");
 			$query->bindParam(':mark', $mark);
 			$query->bindParam(':cuser', $userid);
 
@@ -64,27 +64,27 @@ if(checklogin() && (hasAccess($_SESSION['uid'], $cid, 'w') || isSuperUser($_SESS
 
 			if(!$query->execute()) {
 				$error=$query->errorInfo();
-				$debug="Error updating entries\n".$error[2];
+				$debug="resultedservice.php: Error updating entries\n".$error[2];
 			}								
 		}
 	}
 
 	if(strcmp($opt,"DUGGA")==0){
-		$query = $pdo->prepare("SELECT userAnswer.useranswer as aws,entryname,quizFile,qrelease,deadline,param,variant.variantanswer as facit,timeUsed,totalTimeUsed,stepsUsed,totalStepsUsed FROM userAnswer,listentries,quiz,variant WHERE variant.vid=userAnswer.variant AND userAnswer.cid=listentries.cid AND listentries.cid=quiz.cid AND userAnswer.vers=listentries.vers AND listentries.link=quiz.id AND listentries.lid=userAnswer.moment AND uid=:luid AND userAnswer.moment=:moment AND listentries.cid=:cid AND listentries.vers=:vers;");					
+		$query = $pdo->prepare("SELECT useranswer.useranswer as aws,entryname,quizfile,qrelease,deadline,param,variant.variantanswer as facit,timeused,totaltimeused,stepsused,totalstepsused FROM useranswer,listentries,quiz,variant WHERE variant.vid=useranswer.variant AND useranswer.cid=listentries.cid AND listentries.cid=quiz.cid AND useranswer.vers=listentries.vers AND listentries.link=cast(quiz.id as varchar) AND listentries.lid=useranswer.moment AND uid=:luid AND useranswer.moment=:moment AND listentries.cid=:cid AND listentries.vers=cast(:vers as varchar);");					
 
 		$query->bindParam(':cid', $cid);
-		$query->bindParam(':vers', $vers);
+		$query->bindParam(':vers', $vers, PDO::PARAM_STR, 16);
 		$query->bindParam(':moment', $moment);
 		$query->bindParam(':luid', $luid);
 
 		if(!$query->execute()) {
 			$error=$query->errorInfo();
-			$debug="Error reading entries".$error[2];
+			$debug="resultedservice.php: Error fetching useranswer! cid=".$cid." vers=".$vers." moment=". $moment. " luid=".$luid." DBMSG:" .$error[2];
 		}
 
 		if ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 			$duggatitle=$row['entryname'];
-			$duggafile=$row['quizFile'];
+			$duggafile=$row['quizfile'];
 			$duggarel=$row['qrelease'];
 			$duggadead=$row['deadline'];
 			
@@ -103,7 +103,7 @@ if(checklogin() && (hasAccess($_SESSION['uid'], $cid, 'w') || isSuperUser($_SESS
 			$duggaanswer = str_replace("*###*", '&cap;', $duggaanswer);
 			$duggaanswer = str_replace("*####*", '&cup;', $duggaanswer);
 
-			$duggastats = array($row['timeUsed'],$row['totalTimeUsed'],$row['stepsUsed'],$row['totalStepsUsed']);
+			$duggastats = array($row['timeused'],$row['totaltimeused'],$row['stepsused'],$row['totalstepsused']);
 
 			$dugganame="templates/".$duggafile.".js";
 			
@@ -124,12 +124,12 @@ $lentries=array();
 
 if(checklogin() && (hasAccess($_SESSION['uid'], $cid, 'w') || isSuperUser($_SESSION['uid']))) {
 	// Users connected to the current course (irrespective of version)
-	$query = $pdo->prepare("select user_course.cid as cid,user.uid as uid,username,firstname,lastname,ssn from user,user_course where user.uid=user_course.uid and user_course.cid=:cid;");
+	$query = $pdo->prepare('select user_course.cid as cid,"user".uid as uid,username,firstname,lastname,ssn from "user",user_course where "user".uid=user_course.uid and user_course.cid=:cid;');
 	$query->bindParam(':cid', $cid);
 	
 	if(!$query->execute()) {
 		$error=$query->errorInfo();
-		$debug="Error updating entries".$error[2];
+		$debug="resultedservice.php: Error updating entries".$error[2];
 	}
 	
 	foreach($query->fetchAll(PDO::FETCH_ASSOC) as $row){
@@ -147,12 +147,12 @@ if(checklogin() && (hasAccess($_SESSION['uid'], $cid, 'w') || isSuperUser($_SESS
 	}
 
 	// All results from current course and vers?
-	$query = $pdo->prepare("select aid,quiz,variant,moment,grade,uid,useranswer,submitted,vers,marked,timeUsed,totalTimeUsed,stepsUsed,totalStepsUsed from userAnswer where cid=:cid;");
+	$query = $pdo->prepare("select aid,quiz,variant,moment,grade,uid,useranswer,submitted,vers,marked,timeused,totaltimeused,stepsused,totalstepsused from useranswer where cid=:cid;");
 	$query->bindParam(':cid', $cid);
 	
 	if(!$query->execute()) {
 		$error=$query->errorInfo();
-		$debug="Error updating entries".$error[2];
+		$debug="resultedservice.php: Error updating entries".$error[2];
 	}
 	
 	foreach($query->fetchAll(PDO::FETCH_ASSOC) as $row){
@@ -172,10 +172,10 @@ if(checklogin() && (hasAccess($_SESSION['uid'], $cid, 'w') || isSuperUser($_SESS
 				'submitted'=> $row['submitted'],
 				'vers'=> $row['vers'],
 				'marked' => $row['marked'],
-				'timeUsed' => $row['timeUsed'],
-				'totalTimeUsed' => $row['totalTimeUsed'],
-				'stepsUsed' => $row['stepsUsed'],
-				'totalStepsUsed' => $row['totalStepsUsed']
+				'timeUsed' => $row['timeused'],
+				'totalTimeUsed' => $row['totaltimeused'],
+				'stepsUsed' => $row['stepsused'],
+				'totalStepsUsed' => $row['totalstepsused']
 			)
 		);
 	}
@@ -187,7 +187,7 @@ if(checklogin() && (hasAccess($_SESSION['uid'], $cid, 'w') || isSuperUser($_SESS
 	
 	if(!$query->execute()) {
 		$error=$query->errorInfo();
-		$debug="Error updating entries".$error[2];
+		$debug="resultedservice.php: Error updating entries".$error[2];
 	}
 	
 	$currentMoment=null;
@@ -215,7 +215,7 @@ if(checklogin() && (hasAccess($_SESSION['uid'], $cid, 'w') || isSuperUser($_SESS
 	
 	if(!$query->execute()) {
 		$error=$query->errorInfo();
-		$debug="Error updating entries".$error[2];
+		$debug="resultedservice.php: Error updating entries".$error[2];
 	}
 	
 	foreach($query->fetchAll(PDO::FETCH_ASSOC) as $row){

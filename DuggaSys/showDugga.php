@@ -63,9 +63,9 @@
 	//If we have permission, and if file exists, include javascript file.			
 	if($hr){
 		if(isSuperUser($userid)){
-			$query = $pdo->prepare("SELECT quiz.id as id,entryname,quizFile,qrelease,deadline FROM listentries,quiz WHERE listentries.cid=:cid AND kind=3 AND listentries.vers=:vers AND quiz.cid=listentries.cid AND quiz.id=:quizid AND listentries.link=quiz.id;");
+			$query = $pdo->prepare("SELECT quiz.id as id,entryname,quizfile,qrelease,deadline FROM listentries,quiz WHERE listentries.cid=:cid AND kind=3 AND listentries.vers=cast(:vers as varchar) AND quiz.cid=listentries.cid AND quiz.id=:quizid AND listentries.link=cast(quiz.id as varchar);");
 		}else{
-			$query = $pdo->prepare("SELECT quiz.id as id,entryname,quizFile,qrelease,deadline FROM listentries,quiz WHERE listentries.cid=:cid AND kind=3 AND listentries.vers=:vers AND visible=1 AND quiz.cid=listentries.cid AND quiz.id=:quizid AND listentries.link=quiz.id;");					
+			$query = $pdo->prepare("SELECT quiz.id as id,entryname,quizfile,qrelease,deadline FROM listentries,quiz WHERE listentries.cid=:cid AND kind=3 AND listentries.vers=cast(:vers as varchar) AND visible=1 AND quiz.cid=listentries.cid AND quiz.id=:quizid AND listentries.link=cast(quiz.id as varchar);");					
 		}
 		$query->bindParam(':cid', $cid);
 		$query->bindParam(':vers', $vers);
@@ -74,7 +74,7 @@
 
 		if($row = $query->fetch(PDO::FETCH_ASSOC)){
 			$duggatitle=$row['entryname'];
-			$duggafile=$row['quizFile'];
+			$duggafile=$row['quizfile'];
 			$duggarel=$row['qrelease'];
 			$duggadead=$row['deadline'];
 

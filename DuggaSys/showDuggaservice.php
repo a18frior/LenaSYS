@@ -49,7 +49,7 @@ $stepsUsed;
 
 if($userid!="UNK"){
 		// See if we already have a result i.e. a chosen variant.
-	$query = $pdo->prepare("SELECT score,aid,cid,quiz,useranswer,variant,moment,vers,uid,marked FROM userAnswer WHERE uid=:uid AND cid=:cid AND moment=:moment AND vers=:coursevers;");
+	$query = $pdo->prepare("SELECT score,aid,cid,quiz,useranswer,variant,moment,vers,uid,marked FROM useranswer WHERE uid=:uid AND cid=:cid AND moment=:moment AND vers=:coursevers;");
 	$query->bindParam(':cid', $courseid);
 	$query->bindParam(':coursevers', $coursevers);
 	$query->bindParam(':uid', $userid);
@@ -69,16 +69,16 @@ if($userid!="UNK"){
 	}
 	
 	// Get type of dugga
-	$query = $pdo->prepare("SELECT quizFile FROM quiz WHERE id=:duggaid;");
+	$query = $pdo->prepare("SELECT quizfile FROM quiz WHERE id=:duggaid;");
 	$query->bindParam(':duggaid', $duggaid);
 	$result=$query->execute();
 	if (!$result) err("SQL Query Error: ".$pdo->errorInfo(),"quizfile Querying Error!");
 	foreach($query->fetchAll() as $row) {
-		$quizfile = $row['quizFile'];
+		$quizfile = $row['quizfile'];
 	}
 	
 	// Retrieve variant list
-	$query = $pdo->prepare("SELECT vid,param FROM variant WHERE quizID=:duggaid;");
+	$query = $pdo->prepare("SELECT vid,param FROM variant WHERE quizid=:duggaid;");
 	$query->bindParam(':duggaid', $duggaid);
 	$result=$query->execute();
 	if (!$result) err("SQL Query Error: ".$pdo->errorInfo(),"variant Querying Error!");
@@ -93,7 +93,7 @@ if($userid!="UNK"){
 	}
 
 	// Retrieve variant list
-	$query = $pdo->prepare("SELECT vid,param FROM variant WHERE quizID=:duggaid and disabled=0;");
+	$query = $pdo->prepare("SELECT vid,param FROM variant WHERE quizid=:duggaid and disabled=0;");
 	$query->bindParam(':duggaid', $duggaid);
 	$result=$query->execute();
 	if (!$result) err("SQL Query Error: ".$pdo->errorInfo(),"Field Querying Error!");
@@ -117,7 +117,7 @@ if($userid!="UNK"){
 
 	// Savedvariant now contains variant (from previous visit) "" (null) or UNK (no variant inserted)
 	if(($savedvariant=="")&&($newvariant!="")){
-		$query = $pdo->prepare("UPDATE userAnswer SET variant=:variant WHERE uid=:uid AND cid=:cid AND moment=:moment AND vers=:coursevers;");
+		$query = $pdo->prepare("UPDATE useranswer SET variant=:variant WHERE uid=:uid AND cid=:cid AND moment=:moment AND vers=:coursevers;");
 		$query->bindParam(':cid', $courseid);
 		$query->bindParam(':coursevers', $coursevers);
 		$query->bindParam(':uid', $userid);
@@ -125,12 +125,12 @@ if($userid!="UNK"){
 		$query->bindParam(':variant', $newvariant);
 		if(!$query->execute()) {
 			$error=$query->errorInfo();
-			$debug="Error updating entries".$error[2];
+			$debug="showDuggaservice.php (128): Error updating entries. ".$error[2];
 		}
 		$savedvariant=$newvariant;
 
 	}else if(($savedvariant=="UNK")&&($newvariant!="")){
-		$query = $pdo->prepare("INSERT INTO userAnswer(uid,cid,quiz,moment,vers,variant) VALUES(:uid,:cid,:did,:moment,:coursevers,:variant);");
+		$query = $pdo->prepare("INSERT INTO useranswer(uid,cid,quiz,moment,vers,variant) VALUES(:uid,:cid,:did,:moment,:coursevers,:variant);");
 		$query->bindParam(':cid', $courseid);
 		$query->bindParam(':coursevers', $coursevers);
 		$query->bindParam(':uid', $userid);
@@ -139,13 +139,13 @@ if($userid!="UNK"){
 		$query->bindParam(':variant', $newvariant);
 		if(!$query->execute()) {
 			$error=$query->errorInfo();
-			$debug="Error updating entries".$error[2];
+			$debug="showDuggaservice.php (142): Error updating entries. ".$error[2];
 		}
 		$savedvariant=$newvariant;
 		//------------------------------
 		//mark segment as started on
 		//------------------------------
-		$query = $pdo->prepare("INSERT INTO userAnswer(uid,cid,quiz,moment,vers,variant) VALUES(:uid,:cid,:did,:moment,:coursevers,:variant);");
+		$query = $pdo->prepare("INSERT INTO useranswer(uid,cid,quiz,moment,vers,variant) VALUES(:uid,:cid,:did,:moment,:coursevers,:variant);");
 		$query->bindParam(':cid', $courseid);
 		$query->bindParam(':coursevers', $coursevers);
 		$query->bindParam(':uid', $userid);
@@ -154,7 +154,7 @@ if($userid!="UNK"){
 		$query->bindParam(':variant', $newvariant);
 		if(!$query->execute()) {
 			$error=$query->errorInfo();
-			$debug="Error updating entries".$error[2];
+			$debug="showDuggaservice.php (157): Error updating entries. ".$error[2];
 		}
 	}
 
@@ -196,7 +196,7 @@ if(checklogin()){
 				$score = $temp[3];
 				
 				// check if the user already has a grade on the assignment
-				$query = $pdo->prepare("SELECT grade from userAnswer WHERE uid=:uid AND cid=:cid AND moment=:moment AND vers=:coursevers;");
+				$query = $pdo->prepare("SELECT grade from useranswer WHERE uid=:uid AND cid=:cid AND moment=:moment AND vers=:coursevers;");
 				$query->bindParam(':cid', $courseid);
 				$query->bindParam(':coursevers', $coursevers);
 				$query->bindParam(':uid', $userid);
@@ -213,7 +213,7 @@ if(checklogin()){
 					$debug="You have already been graded on this assignment";
 				}else{
 					// Update Dugga!
-					$query = $pdo->prepare("UPDATE userAnswer SET submitted=NOW(), useranswer=:useranswer, timeUsed=:timeUsed, totalTimeUsed=totalTimeUsed + :timeUsed, stepsUsed=:stepsUsed, totalStepsUsed=totalStepsUsed+:stepsUsed, score=:score WHERE uid=:uid AND cid=:cid AND moment=:moment AND vers=:coursevers;");
+					$query = $pdo->prepare("UPDATE useranswer SET submitted=now(), useranswer=:useranswer, timeused=:timeused, totaltimeused=totaltimeused + :timeused, stepsused=:stepsused, totalstepsused=totalstepsused+:stepsused, score=:score WHERE uid=:uid AND cid=:cid AND moment=:moment AND vers=:coursevers;");
 					$query->bindParam(':cid', $courseid);
 					$query->bindParam(':coursevers', $coursevers);
 					$query->bindParam(':uid', $userid);
@@ -225,7 +225,7 @@ if(checklogin()){
 				}
 				
 				if(!$query->execute()) {
-					$debug="Error updating answer";
+					$debug="showDuggaservice.php: Error updating answer";
 					print_r($pdo->errorInfo());
 				} else {
 					$savedanswer = $answer;
@@ -247,7 +247,7 @@ if(strcmp($opt,"GETVARIANTANSWER")==0){
 
 //	$query = $pdo->prepare("SELECT score,aid,cid,quiz,useranswer,variant,moment,vers,uid,marked FROM userAnswer WHERE uid=:uid AND cid=:cid AND moment=:moment AND vers=:coursevers;");
 			
-	$query = $pdo->prepare("SELECT variant.variantanswer,useranswer FROM variant,userAnswer WHERE userAnswer.quiz = variant.quizID and userAnswer.uid = :uid and userAnswer.cid = :cid and userAnswer.vers = :vers");
+	$query = $pdo->prepare("SELECT variant.variantanswer,useranswer FROM variant,useranswer WHERE useranswer.quiz = variant.quizid and useranswer.uid = :uid and useranswer.cid = :cid and useranswer.vers = :vers");
 	
 	$query->bindParam(':uid', $userid);
 	$query->bindParam(':cid', $first);
