@@ -767,21 +767,6 @@ header td {
 	margin:0;
 }
 
-#impwords, #impword {
-    max-width: 184px;
-    min-width: 184px;
-    margin-left: 0px;
-}
-
-#before, #after {
-    float: left;
-    width: 226px;
-}
-
-#playlink {
-    width: 216px;
-}
-
 .loginBox .inputwrapper {
     clear:both;
 	width:100%;
@@ -1611,6 +1596,7 @@ input.large-button {
     color: #fff;
     width: 100%;
 }
+
 .gradeContainer {
     display: flex;
     justify-content: space-around;
@@ -1766,4 +1752,157 @@ input.large-button {
     color:#614875 !important;
     min-height: 47px;
     line-height: 47px;
+}
+/* Dialog that tries to implement Material Design */
+.md-dialog {
+  display:none;
+  top: 185px;
+  min-width: 360px;
+  padding:4px;
+  background-color: #ffffff;  
+  border: 2px solid #999;
+  width: 350px;
+  min-height: 100px;
+  z-index: 9000;
+  position: fixed;
+  top: 40%;
+  left: 50%;
+  margin-left: -178px;
+  box-shadow: 0 2px 5px 0 rgba(0,0,0,0.5),0 2px 10px 0 rgba(0,0,0,0.1);
+}
+
+.md-dialog input[type="text"] {
+    width: auto;
+}
+
+.md-dialog legend {
+    margin-left: 5px;
+    font-weight: bold;
+    color: rgba(0, 0, 0, 0.83);
+}
+
+.md-dialogBoxheader {
+    height: 25px;
+    background-color: #614875;
+    vertical-align: bottom;
+    padding-left: 10px;
+    cursor:move;
+    display:flex;
+    justify-content: space-around;
+    margin-bottom: 12px;}
+.md-dialogBoxheader h3 {
+    font-size: 14px;
+    margin-top: 10px;
+    line-height: 0.5em;
+    color: #fff;
+    width: 100%;
+}
+.md-dialogButton {
+     font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+     background-color:#ffffff;
+     border-radius: 2px;
+     border: 0px;
+     width:110px;
+     height:30px;
+     color:#614875;
+     cursor:pointer;
+     margin-top:6px;
+     margin-bottom:2px;
+     margin-left:4px;
+     font-size:18px;
+     transition:0.2s background-color;
+     font-weight: bold;
+}
+.md-dialogButton:hover {
+    background-color: rgba(0, 0, 0, 0.2);   
+    color: rgba(0, 0, 0, 0.83);
+}
+.md-dialogButton:active {
+    background-color: rgba(0, 0, 0, 0.4);
+    color: rgba(0, 0, 0, 0.83);
+}
+.md-dialogFieldset {
+    border:1px solid #614875; 
+    position:relative; 
+    padding: 20px 10px 5px 10px; 
+    margin:15px 0px 10px 0px;
+    background-color: #ffffff;
+}
+.md-dialogFieldsetCaption {
+    position:absolute; 
+    top:-10px; 
+    left:10px; 
+    background-color:#ffffff; 
+    padding: 0px 2px; 
+    font-weight:bold;
+}
+.md-dialogFlexRow {
+    display:flex; 
+    margin:6px 0px;
+}
+.md-dialogFlexCol{
+    display:flex; 
+    flex-direction:column;
+    flex:1;
+}
+.md-dialogFlexRight{
+    justify-content: flex-end;
+}
+.md-dialogFlexGrow{
+    flex-grow: 1;
+}
+.md-dialogFlexItem {
+    flex:1; margin:0px 6px;
+}
+//Android Lollipop splash effect
+.ink {
+	display: block; 
+	position: absolute;
+	background: rgba(12,34,78,0.8);
+	border-radius: 100%;
+	transform: scale(0);
+	-webkit-transform: scale(0);
+}
+/*animation effect*/
+.ink.animate {
+	animation: ripple 0.25s linear;
+}
+@keyframes ripple {
+	/*scale the element to 250% to safely cover the entire link and fade it out*/
+	100% {
+    	opacity: 0;
+    	transform: scale(2.5); 
+    }
+}
+.button-wrap{
+	position:relative;
+	overflow:hidden;
+	display:inline-block;
+	border:1px solid #000000;
+	background-color:#ffffff;
+	transition:0.15s background-color ease;
+}
+a.button{
+	color:#000000;
+	font-weight:bold;
+	text-decoration:none;
+  display:block;
+	padding:20px 30px;
+}
+ul.menu{
+  padding:0;
+  margin:0;
+  li{
+    border:1px solid #000;
+    position:relative;
+	  overflow:hidden;
+    width:200px;
+    a{
+      color:#000000;
+	    font-weight:bold;
+	    text-decoration:none;
+      padding:20px;
+      display:block;
+    }
+  }
 }

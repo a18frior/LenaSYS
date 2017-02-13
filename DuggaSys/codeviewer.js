@@ -375,6 +375,7 @@ function displayEditExample(boxid)
 	}
 	$("#before").html(bestr);
 	$("#after").html(afstr);
+	$("#overlay").css("display","block");
 	$("#editExample").css("display","block");
 }
 
@@ -421,7 +422,7 @@ function updateExample()
 		addedWords = [];
 		removedWords = [];
 	}
-	
+	$("#overlay").css("display","none");
 	$("#editExample").css("display","none");
 }
 
@@ -1651,6 +1652,7 @@ function updateTemplate()
 //----------------------------------------------------------------------------------
 function closeEditContent()
 {
+		$("#overlay").css("display","none");
 		$("#editContent").css("display","none");
 }
 //----------------------------------------------------------------------------------
@@ -1659,6 +1661,7 @@ function closeEditContent()
 //----------------------------------------------------------------------------------
 function closeEditExample()
 {
+		$("#overlay").css("display","none");
 		$("#editExample").css("display","none");
 }
 //----------------------------------------------------------------------------------

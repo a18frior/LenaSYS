@@ -711,33 +711,6 @@
 	cursor:pointer;
 }
 
-#editExample{
-    top: 185px;
-    width: 464px;
-    margin-left: -232px;
-}
-
-#editExample td {
-    width: 50%;
-    padding: 5px 5px 0px 5px;
-    vertical-align: top;
-}
-
-#editExample input[type="text"] {
-    width: 100%;
-}
-
-#editExample fieldset {
-    border: 1px solid #999;
-    margin-top: 10px;
-    padding-bottom: 5px;
-}
-
-#editExample legend {
-    margin-left: 5px;
-    font-weight: bold;
-}
-
 /* Shapes and color for the buttons in Editexample box*/
 .newSequence, .deleteSequence, .updateSequence  {
     background-color: rgb(97, 72, 117);

@@ -226,35 +226,129 @@ Testing Link:
 			</table>
 		</div>
 		<!-- Example Content Cog Wheel Dialog END -->
+		<script>
+		
+		$(document).ready(function(){
+  $('.md-dialogButton').wrap('<div class="button-wrap"></div>');
+});
+
+$(document).delegate('.md-dialogButton', 'click', function(e) {
+    parent = $(this).parent();
+    e.preventDefault();
+  
+    //create .ink element if it doesn't exist
+    if (parent.find(".ink").length == 0) {
+      parent.prepend("<span class='ink'></span>");
+    }
+
+    ink = parent.find("> .ink");
+    //incase of quick double clicks stop the previous animation
+    ink.removeClass("animate");
+
+    //set size of .ink
+    if (!ink.height() && !ink.width()) {
+      //use parent's width or height whichever is larger for the diameter to make a circle which can cover the entire element.
+      d = Math.max(parent.outerWidth(), parent.outerHeight());
+      ink.css({
+        height: d,
+        width: d
+      });
+    }
+
+    //get click coordinates
+    //logic = click coordinates relative to page - parent's position relative to page - half of self height/width to make it controllable from the center;
+    x = e.pageX - parent.offset().left - ink.width() / 2;
+    y = e.pageY - parent.offset().top - ink.height() / 2;
+
+    //set the position and add class .animate
+    ink.css({
+      top: y + 'px',
+      left: x + 'px'
+    }).addClass("animate");
+
+  });
+		
+		var isResizing = false,
+		lastDownX = 0;
+		lastDownY = 0;
+
+$(function () {
+    var container = $('body'),
+        //left = $('#left_panel'),
+        right = $('#editExample'),
+        handleRight = $('#editDragRight');
+				handleLeft = $('#editDragLeft');
+
+				handleRight.on('mousedown', function (e) {
+		        isResizing = true;
+						lastDownX = e.clientX;
+						lastDownY = e.clientY;
+		    });
+				handleLeft.on('mousedown', function (e) {
+		        isResizing = true;
+		        lastDownX = e.clientX;
+						lastDownY = e.clientY;
+		    });
+
+    $(document).on('mousemove', function (e) {
+        // we don't want to do anything if we aren't resizing.
+        if (!isResizing) 
+            return;
+        
+        var offsetRight = container.width() - (e.clientX - container.offset().left);
+				console.log(offsetRight);
+
+        //left.css('right', offsetRight);
+        right.css('width', offsetRight);
+    }).on('mouseup', function (e) {
+        // stop resizing
+        isResizing = false;
+    });
+});
+		</script>
+		
 		<!-- Code Example Cog Wheel Dialog START -->
-		<div id='editExample' class='loginBox' style='width:464x;display:none;'>
-			<div class='loginBoxheader'>
+		<div id="overlay" style="display:none;"></div>		
+		<div id='editExample' class='md-dialog' style=''>
+			<div id="editDragRight" style="position: absolute;right: -4px;top: 0;bottom: 4px;width: 8px;cursor: w-resize; "></div>
+			<div id="editDragLeft" style="position: absolute;left: -4px;top: 0;bottom: 0;width: 8px;cursor: w-resize;"></div>			
+			<div id="editDragBottom" style="position: absolute;left: 4px;right: 4px;bottom: -4px;height: 8px;cursor: n-resize;"></div>
+			<div id="editDragRightQ" style="position: absolute;right: -4px;bottom: -4px;width: 8px;height:8px;cursor: se-resize;"></div>			
+			<div id="editDragLeftQ" style="position: absolute;left: -4px;height: 8px;bottom: -4px;width: 8px;cursor: sw-resize;"></div>
+			<div class='md-dialogBoxheader'>
 				<h3>Edit Example</h3>
 				<div onclick='closeEditExample();'>x</div>
 			</div>
-			<fieldset>
-				<legend>Example Info</legend>
-				<table width="100%">
-					<tr>
-						<td>Section Title:<input class='form-control textinput' type='text' id='secttitle' value='&lt;Secrion Title&gt;' /></td>		
-						<td>Title:<input class='form-control textinput' type='text' id='title' value='&lt;Title&gt;' /></td>		
-					</tr>
+			<!--<div class="md-dialogFieldset">-->
+				<!--<div class="md-dialogFieldsetCaption"> Example Info </div>-->
+				<div class="md-dialogFlexRow">
+					<label class="md-dialogFlexItem">Section Title:<input class='form-control textinput' type='text' id='secttitle' value='&lt;Section Title&gt;' /></label>		
+					<label class="md-dialogFlexItem">Example Title:<input class='form-control textinput' type='text' id='title' value='&lt;Title&gt;' /></label>		
+				</div>
+				<div class="md-dialogFlexRow">
+					<label class="md-dialogFlexItem">Previous Example:<select id='before' style="width:100%"></select></label>		
+					<label class="md-dialogFlexItem">Next Example:<select id='after' style="width:100%"></select></label>		
+				</div>
 
-					<tr>
-						<td>Before:<select id='before'></select></td>		
-						<td>After:<select id='after'></select></td>		
-					</tr>
+				<div class="md-dialogFlexRow md-dialogFlexGrow">
+					<label class="md-dialogFlexItem">Play Link:<input class='form-control textinput' type='text' id='playlink' value='User Name' /></label>
+					<div class="md-dialogFlexCol md-dialogFlexItem">
+								<label>Important Words:</label>
+								<div class="md-dialogFlexItem">
+									<input class="md-dialogFlexGrow" style="border:0;" class='form-control textinput' type='text' id='impword' placeholder="<Important word>" />
+									<input style="width:32px;margin-top:3px;margin-bottom:3px;" class='md-dialogButton' type='button' value='+' onclick='editImpWords("+");' />
+								</div>
+								<div class="md-dialogFlexItem">
+									<select class="md-dialogFlexGrow" style="width:100%; border:0; margin-top:3px;" id='impwords'></select>
+									<input style="width:32px;margin-top:3px;" class='md-dialogButton' type='button' value='-' onclick='editImpWords("-");' />
+								</div>		
+					</div>
+				<!--</div>-->
+				</div>
+				<div class="md-dialogFlexRow md-dialogFlexRight">
+						<label><input class='md-dialogButton' type='button' value='Save' onclick='updateExample();' /></label>
+				</div>
 
-					<tr>
-						<td>Play Link:<input class='form-control textinput' type='text' id='playlink' value='User Name' /></td>
-						<td>Important Words:<input class='form-control textinput' type='text' id='impword' placeholder="<Important word>" /><input style="width:32px; float:none; margin-left:5px; margin-top:0px;" class='submit-button' type='button' value='+' onclick='editImpWords("+");' /><select style="float:none;" id='impwords'><input style="width:32px; float:none; margin-left:5px; margin-top:0px;" class='submit-button' type='button' value='-' onclick='editImpWords("-");' /></select></td>			
-					</tr>
-					<tr>
-						<td></td>
-						<td align='right'><input class='submit-button' type='button' value='Save' onclick='updateExample();' /></td>
-					</tr>	
-				</table>
-			</fieldset>
 		</div>
 		<!-- Code Example Cog Wheel Dialog END -->
 		<div id='chooseTemplate' class='loginBox' style='width:464px;display:none;'>
