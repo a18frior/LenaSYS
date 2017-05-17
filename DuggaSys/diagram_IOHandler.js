@@ -36,16 +36,14 @@ function saveToServer(dia) {
     });
 
 }
-function createFolder(name){
 
-}
-function redirect(doc){
-    var a = doc.value;
+/*function redirect(doc){
+    var ID = doc.value;
 
     $.ajax({
         type: "POST",
         url: "diagram_IOHandler.php",
-        data: {'GetID':a },
+        data: {'GetID':ID },
 
         success: function(data){ // <-- note the parameter here, not in your code
                 //
@@ -54,15 +52,15 @@ function redirect(doc){
 
     });
 
-    location.href="diagram.php?id="+0+"&folder="+a;
+    location.href="diagram.php?id="+0+"&folder="+ID;
 
-}
+}*/
 function redirectas(doc,folder){
         location.href="diagram.php?id="+doc.value+"&folder="+folder;
 }
-function newProject(){
+/*function newProject(){
     document.getElementById('newProject').style.display = "block";
-}
+}*/
 function loadNew(){
 
     document.getElementById('showStoredFolders').style.display = "none";
@@ -73,9 +71,9 @@ function loadStored(){
     document.getElementById('showNew').style.display = "none";
     document.getElementById('showStored').style.display = "block";
 }
-function loadStoredFolders(f){
+//function loadStoredFolders(f){
 
-    document.getElementById('showStoredFolders').style.display = "block";
+  //  document.getElementById('showStoredFolders').style.display = "block";
     //e.preventDefault();
 //
     //$.ajax({
@@ -89,7 +87,7 @@ function loadStoredFolders(f){
     //    });
 ////
 
-}
+//}
 function loadUpload(){
 
 }

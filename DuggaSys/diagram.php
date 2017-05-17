@@ -174,11 +174,7 @@
         include '../Shared/loginbox.php';
     ?>
 
-    <?php
-        if(isset($_POST['id'])){
 
-        }
-    ?>
 
 
     <?php
@@ -193,14 +189,24 @@
 //
          //}
     ?>
-
     <?php
-    if(isset($_POST['StringDiagram'])) {
+    if(isset($_POST['id']) && isset($_POST['folder'])){
+        $id = $_POST['id'];
+        $folder = $_POST['folder'];
+
+        //TODO SAVE
+        //TODO GET NEWEST FILE
+    }
+
+    ?>
+    <?php
+   if (isset($_POST['StringDiagram'])) {
             $str = $_POST['StringDiagram'];
             $hash = $_POST['Hash'];
             save($str,$hash);
         }
     function save($data, $hash) {
+
         $getID = fopen("Save/id.txt", "r");
         $a = intval(fread($getID,filesize("Save/id.txt")));
         $myfile = fopen("Save/$a/$hash.txt", "w");
