@@ -239,46 +239,36 @@
          //}
     ?>
     <?php
-    global $ida;
-    global $folders;
+
     ?>
     <?php
 
-    if (isset($_POST['StringDiagram'])) {
-
-        $str = $_POST['StringDiagram'];
-        $hash = $_POST['Hash'];
-        ?><script>alert('<?php print $hash ?>')</script><?php
-        save($str,$hash,$ida,$folders);
-    }
-    function save($data, $hash,$id,$folder) {
-
-        $myfile = fopen("Save/$folder/$$id/1.txt", "w");
-        fwrite($myfile, $data);
-        //<script type="text/javascript">var c_id = "<?= $a
-        //?//>";</script>
-        //<script type="text/javascript" src="diagram_IOHandler.js"></script>
-    }
-
-
-    ?>
-
-    <?php
     if(isset($_GET['id']) && isset($_GET['folder'])){
-        $id = $_GET['id'];
-        $folder = $_GET['folder'];
-        $ida = $id;
-        $folders = $folder;
+       $id = $_GET['id'];
+       $folder = $_GET['folder']; ?>
+        <script type="text/javascript">var id = "<?= $id ?>";</script>
+        <script type="text/javascript">var folder = "<?= $folder ?>";</script>
+        <script type="text/javascript" src="diagram_IOHandler.js"></script>
+    <?php
+        save('{"diagram":[],"points":["","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","",""],"diagramNames":["Path","Symbol","Symbol","Path","Symbol","Symbol","Symbol"]}',"000000",$id,$folder);
         //TODO SAVE
         //TODO GET NEWEST FILE
     }
-    ?>
+    if (isset($_POST['StringDiagram'])) {
+        $str = $_POST['StringDiagram'];
+        $hash = $_POST['Hash'];
+        $id = $_POST['ID'];
+        $folder = $_POST['Folder'];
+        save($str,$hash,$id,$folder);
+    }
+    function save($data, $hash,$id,$folder) {
 
-    <?php
+        $myfile = fopen("Save/$folder/$id/$hash.txt", "w");
+        fwrite($myfile, $data);
 
-    ?>
+    }
 
-
+?>
 
 </body>
 </html>
