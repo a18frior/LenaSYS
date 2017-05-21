@@ -803,6 +803,7 @@ function hashFunction() {
             hash = hash & hash;         // Convert to 32bit integer
         }
         var hexHash = hash.toString(16);
+
         if (currentHash != hexHash) {
             localStorage.setItem('localhash', hexHash);
             for (var i = 0; i < diagram.length; i++) {
@@ -811,6 +812,8 @@ function hashFunction() {
             }
             a = JSON.stringify({diagram:diagram, points:points, diagramNames:c});
             localStorage.setItem('localdiagram', a);
+            return hexHash;
+        } else {
             return hexHash;
         }
     }

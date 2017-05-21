@@ -29,11 +29,14 @@ function downloadMode(el) {
 function saveToServer(dia) {
 
     $.ajax({
+
         url: 'diagram.php',
         type: 'POST', // GET or POST
         data: {StringDiagram : dia, Hash: hashFunction()}
 
     });
+    // alert(hashFunction());
+
 
 }
 
@@ -105,7 +108,7 @@ function Save() {
     }
     var obj = {diagram:diagram, points:points, diagramNames:c};
     a = JSON.stringify(obj);
-   // saveToServer(a);
+    saveToServer(a);
     console.log("State is saved");
 }
 

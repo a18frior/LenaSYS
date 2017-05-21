@@ -52,7 +52,7 @@
 
                         </div>
                         <div class="drop-down-item">
-                            <a href="#" id="buttonid" value='getImage'>Import</a>
+                            <a href="#" id="buttonid" value='getImage'>getImage</a>
                         </div>
                         <div class="drop-down-item">
                             <a href="#" id="fileid" onclick='SaveFile(this);'>Export</a>
@@ -190,31 +190,43 @@
          //}
     ?>
     <?php
-    if(isset($_POST['id']) && isset($_POST['folder'])){
-        $id = $_POST['id'];
-        $folder = $_POST['folder'];
-
-        //TODO SAVE
-        //TODO GET NEWEST FILE
-    }
-
+    global $ida;
+    global $folders;
     ?>
     <?php
-   if (isset($_POST['StringDiagram'])) {
-            $str = $_POST['StringDiagram'];
-            $hash = $_POST['Hash'];
-            save($str,$hash);
-        }
-    function save($data, $hash) {
 
-        $getID = fopen("Save/id.txt", "r");
-        $a = intval(fread($getID,filesize("Save/id.txt")));
-        $myfile = fopen("Save/$a/$hash.txt", "w");
+    if (isset($_POST['StringDiagram'])) {
+
+        $str = $_POST['StringDiagram'];
+        $hash = $_POST['Hash'];
+        ?><script>alert('<?php print $hash ?>')</script><?php
+        save($str,$hash,$ida,$folders);
+    }
+    function save($data, $hash,$id,$folder) {
+
+        $myfile = fopen("Save/$folder/$$id/1.txt", "w");
         fwrite($myfile, $data);
         //<script type="text/javascript">var c_id = "<?= $a
         //?//>";</script>
         //<script type="text/javascript" src="diagram_IOHandler.js"></script>
     }
+
+
+    ?>
+
+    <?php
+    if(isset($_GET['id']) && isset($_GET['folder'])){
+        $id = $_GET['id'];
+        $folder = $_GET['folder'];
+        $ida = $id;
+        $folders = $folder;
+        //TODO SAVE
+        //TODO GET NEWEST FILE
+    }
+    ?>
+
+    <?php
+
     ?>
 
 
