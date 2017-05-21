@@ -26,6 +26,18 @@
     <script src="diagram_IOHandler.js"></script>
     <script src="diagram_dialog.js"></script>
     <script src="diagram_toolbox.js"></script>
+
+    /*/this script fix so that the drop down menus close after you have clicked on something on them./*/
+    <script>
+        $(document).ready(function(){
+        $(".drop-down-item").click(function(){
+        $("a").slideUp(); });
+
+        $(".drop-down-item").click(function(){
+        $("a").slideDown(); });
+    });
+    </script>
+
 </head>
 <!-- Reads the content from the js-files -->
 <!-- updateGraphics() must be last -->
@@ -38,33 +50,6 @@
     <div id="content">
         <div id="buttonDiv">
             <div class="document-settings">
-                <div class="menu-drop-down">
-                    <span class="label">File</span>
-                    <div class="drop-down">
-                        <div class="drop-down-item">
-                            <a href="#" value='Save'>Save</a>
-
-                        </div>
-                        <div class="drop-down-item">
-                            <a href="#">Load</a>
-                        </div>
-                        <div class="drop-down-divider">
-
-                        </div>
-                        <div class="drop-down-item">
-                            <a href="#" id="buttonid" value='getImage'>getImage</a>
-                        </div>
-                        <div class="drop-down-item">
-                            <a href="#" id="fileid" onclick='SaveFile(this);'>Export</a>
-                        </div>
-                        <div class="drop-down-divider">
-
-                        </div>
-                        <div class="drop-down-item">
-                            <a href="#" onclick='clearCanvas(); removeLocalStorage();'>Clear Diagram</a>
-                        </div>
-                    </div>
-                </div>
                 <div id="diagram-toolbar" class="application-toolbar-wrap">
                     <h3 class="application-header">Toolbar</h3>
                     <div class='application-toolbar'>
@@ -89,7 +74,42 @@
                     </div>
                 </div>
                 <div class="menu-drop-down">
+                    <span class="label">File</span>
+                    <div class="drop-down">
+                        <div class="drop-down-item">
+                            <a href="#" value='Save'>Save</a>
+
+                        </div>
+                        <div class="drop-down-item">
+                            <a href="#">Load</a>
+                        </div>
+                        <div class="drop-down-divider">
+
+                        </div>
+                        <div class="drop-down-item">
+                            <a href="#" id="buttonid" value='getImage'>getImage</a>
+                        </div>
+                        <div class="drop-down-item">
+                            <a href="#" id="fileid" onclick='SaveFile(this);'>Export JSON</a>
+                        </div>
+                        <div class="drop-down-item"> 
+                            <a href="#" id="picid">Export Picture</a> 
+                        </div>
+                        <div class="drop-down-divider">
+
+                        </div>
+                        <div class="drop-down-item">
+                            <a href="#" onclick='clearCanvas(); removeLocalStorage();'>Clear Diagram</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="menu-drop-down">
                     <span class="label">Edit</span>
+                    <div class="drop-down">
+                        <div class="drop-down-item">
+                            <a href="#" onclick='globalAppearanceMenu();'>Global Appearance</a>
+                        </div>
+                    </div>
                 </div>
                 <div class="menu-drop-down">
                     <span class="label">View</span>
@@ -102,6 +122,33 @@
                         </div>
                     </div>
                 </div>
+                <div class="menu-drop-down">
+                    <span class="label">Align</span>
+                    <div class="drop-down">
+                        <div class="drop-down-item">
+                            <a href="#" onclick="align('top');">Top</a>
+                        </div>
+                        <div class="drop-down-item">
+                            <a href="#" onclick="align('right');">Right</a>
+                        </div>
+                        <div class="drop-down-item">
+                            <a href="#" onclick="align('bottom');">Bottom</a>
+                        </div>
+                        <div class="drop-down-item">
+                            <a href="#" onclick="align('left');">Left</a>
+                        </div>
+                        <div class="drop-down-divider">
+
+                        </div>
+                        <div class="drop-down-item">
+                            <a href="#" onclick="align('verticalCenter');">Vertical center</a>
+                        </div>
+                        <div class="drop-down-item">
+                            <a href="#" onclick="align('horizontalCenter');">Horizontal center</a>
+                        </div>
+
+                    </div>
+                </div>
             </div>
             </br>
             </br>
@@ -109,7 +156,6 @@
             <!-- THESE OBJECTS ARE NOT IN THE TOOLBOX OR THE MENU-->
             <!-- AS THEY PROBABLY SHOULD BE IMPLEMENTED SOMEWHERE WITHIN ISSUE #3750-->
             <button onclick='openAppearanceDialogMenu();'>Change Appearance</button>
-            <button onclick='globalAppearanceMenu();'>Global Appearance</button>
             <button onclick='eraseSelectedObject();'>Delete Object</button>
             <!-- THESE OBJECTS ARE NOT IN THE TOOLBOX OR THE MENU-->
             <!-- AS THEY PROBABLY SHOULD BE IMPLEMENTED SOMEWHERE WITHIN ISSUE #3750-->
@@ -129,11 +175,14 @@
             <button id='moveButton' class='unpressed' style='right: 0; position: absolute; margin-right: 2px;'>Start Moving</button><br>
         </div>
         <div id="canvasDiv"></div>
-        <div id="consoleDiv" style='position: relative;'>
-            <!--<div id='consloe' style='position: fixed; left: 0px; right: 0px; bottom: 0px; height: 133px; background: #dfe; border: 1px solid #284; z-index: 5000; overflow: scroll; color: #4A6; font-family:lucida console; font-size: 13px; -webkit-touch-callout: none; -webkit-user-select: none; -khtml-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; cursor: default;'>Application console</div>-->
+        <div id="consoleDiv">
+            <!--
+                Can be used for a later date. Not needed now.
+            <div id='consloe' style='position: fixed; left: 0px; right: 0px; bottom: 0px; height: 133px; background: #dfe; border: 1px solid #284; z-index: 5000; overflow: scroll; color: #4A6; font-family:lucida console; font-size: 13px; -webkit-touch-callout: none; -webkit-user-select: none; -khtml-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; cursor: default;'>Application console</div>
+            <input id='Hide Console' style='position: fixed; right: 0; bottom: 133px;' type='button' value='Hide Console' onclick='Consolemode(1);' />
+            <input id='Show Console' style='display: none; position: fixed; right: 0; bottom: 133px;' type='button' value='Show Console' onclick='Consolemode(2);' />
+            -->
             <div id='valuesCanvas'></div>
-            <!--<input id='Hide Console' style='position: fixed; right: 0; bottom: 133px;' type='button' value='Hide Console' onclick='Consolemode(1);' />
-            <input id='Show Console' style='display: none; position: fixed; right: 0; bottom: 133px;' type='button' value='Show Console' onclick='Consolemode(2);' />-->
             <div id="selectDiv">
                 <select name="Zoom" id="ZoomSelect" onchange="zoomInMode();">
                     <option selected='selected' disabled>Choose zoom</option>
