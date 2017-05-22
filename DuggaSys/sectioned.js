@@ -698,7 +698,7 @@ function returnedSection(data)
     str+="<div class='course' style='display: flex;align-items: center;justify-content: center;'>";
 
      		/*Adds the Show/hide all arrow and text to the section editor*/
-        	str+="<div class='hideAllArrow hideMetaButton' id='course-showhide' value='Show/Hide all' style='position:absolute;  cursor: pointer; left:10px; margin-top: 12px; display:inline-block;' ><img src='../Shared/icons/desc_complement.svg' class='arrowComp'><img src='../Shared/icons/right_complement.svg' class='arrowRight' style='display:none;'>";
+        	str+="<div class='hideAllArrow hideMetaButton' id='course-showhide' value='Show/Hide all' style='position:absolute;  cursor: pointer; left:10px; margin-top: 10px; display:inline-block;' ><img src='../Shared/icons/desc_complement.svg' class='arrowComp'><img src='../Shared/icons/right_complement.svg' class='arrowRight' style='display:none;'>";
 
         	str+="</div>";
 
@@ -959,13 +959,13 @@ function returnedSection(data)
 				if (parseInt(item['kind']) == 0) {				// Header
 					str+="<span style='padding-left:5px;' title='"+item['entryname']+"'>"+item['entryname']+"</span>";
 				}else if (parseInt(item['kind']) == 1) {		// Section
-					str+="<div style='display:inline-block;'><div class='nowrap"+blorf+"' style='padding-left:5px;' title='"+item['entryname']+"'><span class='ellipsis'>"+item['entryname']+"</span></div></div><img src='../Shared/icons/desc_complement.svg' class='arrowComp' style='display:inline-block;'><img src='../Shared/icons/right_complement.svg' class='arrowRight' style='display:none;'>";
+					str+="<div style='display:inline-block;'><div class='nowrap"+blorf+"' style='padding-left:5px;' title='"+item['entryname']+"'><span class='ellipsis'>"+item['entryname']+"</span><img src='../Shared/icons/desc_complement.svg' class='arrowComp' style='display:inline-block;'><img src='../Shared/icons/right_complement.svg' class='arrowRight' style='display:none;'></div></div>";
 				}else if (parseInt(item['kind']) == 4) {		// Moment
           			var momentsplit = item['entryname'].split(" ");
           			var momentname = momentsplit.splice(0,momentsplit.length-1);
           			var momenthp = momentsplit[momentsplit.length-1];
 
-          			str+="<div style='display:inline-block;'><div class='nowrap"+blorf+"' style='padding-left:5px;' title='"+momentname+" "+momenthp+"'><span class='ellipsis'>"+momentname+"</span> "+momenthp+"</div></div><img src='../Shared/icons/desc_complement.svg' class='arrowComp' style='display:inline-block;'><img src='../Shared/icons/right_complement.svg' class='arrowRight' style='display:none;'>";
+          			str+="<div style='display:inline-block;'><div class='nowrap"+blorf+"' style='padding-left:5px;' title='"+momentname+" "+momenthp+"'><span class='ellipsis'>"+momentname+"</span><span class='ellipsis'> "+momenthp+" </span><img src='../Shared/icons/desc_complement.svg' class='arrowComp' style='display:inline-block;'><img src='../Shared/icons/right_complement.svg' class='arrowRight' style='display:none;'></div></div>";
 				}else if (parseInt(item['kind']) == 2) {		// Code Example
 					str+="<span><a class='"+blorf+"' style='margin-left:15px;' href='codeviewer.php?exampleid="+item['link']+"&courseid="+querystring['courseid']+"&cvers="+querystring['coursevers']+"' title='"+item['entryname']+"'>"+item['entryname']+"</a></span>";
 				}else if (parseInt(item['kind']) == 3 ) {	
