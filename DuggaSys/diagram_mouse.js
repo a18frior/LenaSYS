@@ -17,6 +17,16 @@ function zoomInMode() {
     updateGraphics();
 }
 
+function zoomInWhileMoveAround(){
+
+    zoomInMode();
+    document.getElementById("moveButton").addEventListener('click', movemode, true);
+    canvas.addEventListener('dblclick', doubleclick, true);
+    canvas.addEventListener('touchmove', mousemoveevt, true);
+    canvas.addEventListener('touchstart', mousedownevt, true);
+    canvas.addEventListener('touchend', mouseupevt, true);
+}
+
 // Recursive Pos of div in document - should work in most browsers
 function findPos(obj) {
     var curleft = 0;
@@ -452,7 +462,7 @@ function resize() {
 //---------------------------------------
 function movemode(e, t) {
     uimode = "MoveAround";
-    initializeCanvas();
+
 	$(".buttonsStyle").removeClass("pressed").addClass("unpressed");
     var button = document.getElementById("moveButton").className;
     var buttonStyle = document.getElementById("moveButton");
