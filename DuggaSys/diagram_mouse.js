@@ -494,8 +494,8 @@ function mousemoveposcanvas(e) {
     mousemoveY = e.clientY;
     mouseDiffX = (mousedownX - mousemoveX);
     mouseDiffY = (mousedownY - mousemoveY);
-    startX += (mouseDiffX/zoomValue);
-    startY += (mouseDiffY/zoomValue);
+    startX += mouseDiffX;
+    startY += mouseDiffY;
     mousedownX = mousemoveX;
     mousedownY = mousemoveY;
     moveValue = 1;

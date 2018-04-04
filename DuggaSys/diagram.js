@@ -839,12 +839,12 @@ function drawGrid() {
     var quadrantX;
     var quadrantY;
     if (startX < 0) {
-        quadrantX = startX;
+        quadrantX = (startX/zoomValue);
     } else {
         quadrantX = -startX;
     }
     if (startY < 0) {
-        quadrantY = startY;
+        quadrantY = (startY/zoomValue);
     } else {
         quadrantY = -startY;
     }
