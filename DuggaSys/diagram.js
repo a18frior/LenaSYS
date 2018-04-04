@@ -839,12 +839,12 @@ function drawGrid() {
     var quadrantX;
     var quadrantY;
     if (startX < 0) {
-        quadrantX = (startX/zoomValue);
+        quadrantX = startX;
     } else {
         quadrantX = -startX;
     }
     if (startY < 0) {
-        quadrantY = (startY/zoomValue);
+        quadrantY = startY;
     } else {
         quadrantY = -startY;
     }
@@ -854,7 +854,7 @@ function drawGrid() {
             i++;
         }
         canvasContext.beginPath();
-        canvasContext.moveTo(i * gridSize, 0 + startY);
+        canvasContext.moveTo(i * gridSize, 0 + (startY/zoomValue));
         canvasContext.lineTo(i * gridSize, (heightWindow / zoomValue) + startY);
         canvasContext.stroke();
         canvasContext.closePath();
@@ -864,7 +864,7 @@ function drawGrid() {
             i++;
         }
         canvasContext.beginPath();
-        canvasContext.moveTo(0 + startX, i * gridSize);
+        canvasContext.moveTo(0 + (startX/zoomValue), i * gridSize);
         canvasContext.lineTo((widthWindow / zoomValue) + startX, i * gridSize);
         canvasContext.stroke();
         canvasContext.closePath();
