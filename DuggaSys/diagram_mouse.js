@@ -4,12 +4,13 @@
 
 // Function for the zoom in and zoom out in the canvas element
 function zoomInMode() {
-    console.log("zoomValue " + zoomValue);
     var oldZoom = zoomValue;
     console.log("oldZoom " + oldZoom);
     alert(zoomValue);
 
     zoomValue = document.getElementById("ZoomSelect").value;
+    console.log("zoomValue " + zoomValue);
+
   //  var newScale = (zoomValue/oldZoom);
     canvasSize();
 
