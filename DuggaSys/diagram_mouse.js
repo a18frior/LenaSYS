@@ -459,6 +459,9 @@ function movemode(e, t) {
     canvas.removeEventListener("dblclick", doubleclick, false);
     if (button == "unpressed") {
         
+        drawGrid();
+        updateGraphics();
+        reWrite();
 
 		buttonStyle.className = "pressed";
         canvas.style.cursor = "all-scroll";
@@ -501,7 +504,7 @@ function mousemoveposcanvas(e) {
     updateGraphics();
     reWrite();
 
-    
+
 }
 
 function mouseupcanvas(e) {
