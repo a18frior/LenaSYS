@@ -463,7 +463,9 @@ function resize() {
 function movemode(e, t) {
     uimode = "MoveAround";
 
-	$(".buttonsStyle").removeClass("pressed").addClass("unpressed");
+    zoomInWhileMoveAround();
+	
+    $(".buttonsStyle").removeClass("pressed").addClass("unpressed");
     var button = document.getElementById("moveButton").className;
     var buttonStyle = document.getElementById("moveButton");
     canvas.removeEventListener("dblclick", doubleclick, false);
