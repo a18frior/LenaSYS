@@ -12,7 +12,6 @@ function zoomInMode() {
 
     var newScale = (zoomValue/oldZoom);
     canvasContext.scale(newScale,newScale);
-    //canvasSize();
 
     reWrite();
     updateGraphics();
@@ -453,7 +452,7 @@ function resize() {
 //---------------------------------------
 function movemode(e, t) {
     uimode = "MoveAround";
-    zoomInMode();
+    canvasSize();
 	$(".buttonsStyle").removeClass("pressed").addClass("unpressed");
     var button = document.getElementById("moveButton").className;
     var buttonStyle = document.getElementById("moveButton");
