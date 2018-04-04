@@ -7,6 +7,7 @@ function zoomInMode() {
     console.log("zoomValue " + zoomValue);
     var oldZoom = zoomValue;
     console.log("oldZoom " + oldZoom);
+    alert(zoomValue);
 
     zoomValue = document.getElementById("ZoomSelect").value;
   //  var newScale = (zoomValue/oldZoom);
@@ -15,7 +16,7 @@ function zoomInMode() {
 
   //  canvasContext.scale(newScale,newScale);
     reWrite();
-    updateGraphics();
+   // updateGraphics();
 }
 
 // Recursive Pos of div in document - should work in most browsers
@@ -212,7 +213,6 @@ function mousemoveevt(ev, t) {
 }
 
 function mousedownevt(ev) {
-    console.log(uimode);
     if (uimode == "CreateLine") {
         md = 4;            // Box select or Create mode.
         startMouseCoordinateX = currentMouseCoordinateX;
