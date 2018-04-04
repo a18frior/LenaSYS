@@ -7,7 +7,8 @@ function zoomInMode() {
     var oldZoom = zoomValue;
     zoomValue = document.getElementById("ZoomSelect").value;
     var newScale = (zoomValue/oldZoom);
-    canvasContext.scale(newScale,newScale);
+    //canvasContext.scale(newScale,newScale);
+    canvasContext.moveTo(newScale, newScale);
     reWrite();
     updateGraphics();
 }
