@@ -848,7 +848,8 @@ function drawGrid() {
     } else {
         quadrantY = -startY;
     }
-    for (var i = 0 + quadrantX; i < quadrantX + widthWindow; i++) {
+
+    for (var i = 0 + quadrantX; i < quadrantX + (widthWindow / zoomValue); i++) {
         if (i % 5 == 0) {
             i++;
         }
