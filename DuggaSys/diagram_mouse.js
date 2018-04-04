@@ -495,9 +495,9 @@ function mousemoveposcanvas(e) {
     mousedownX = mousemoveX;
     mousedownY = mousemoveY;
     moveValue = 1;
-    
-    drawGrid();
     zoomInMode();
+
+    drawGrid();
     //updateGraphics();
     //reWrite();
 }
