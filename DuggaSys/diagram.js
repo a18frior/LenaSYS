@@ -864,7 +864,7 @@ function drawGrid() {
             i++;
         }
         canvasContext.beginPath();
-        canvasContext.moveTo(0 + (startX/zoomValue), i * gridSize);
+        canvasContext.moveTo(0 + startX, i * gridSize);
         canvasContext.lineTo((widthWindow / zoomValue) + startX, i * gridSize);
         canvasContext.stroke();
         canvasContext.closePath();
@@ -883,7 +883,7 @@ function drawGrid() {
     for (var i = 0 + quadrantY; i < quadrantY + (heightWindow / zoomValue); i++) {
         if (i % 5 == 0) {
             canvasContext.beginPath();
-            canvasContext.moveTo(0 + startX, i * gridSize);
+            canvasContext.moveTo(0 + (startX/zoomValue), i * gridSize);
             canvasContext.lineTo((widthWindow / zoomValue) + startX, i * gridSize);
             canvasContext.stroke();
             canvasContext.closePath();
