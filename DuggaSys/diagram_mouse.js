@@ -457,15 +457,15 @@ function movemode(e, t) {
     var buttonStyle = document.getElementById("moveButton");
     canvas.removeEventListener("dblclick", doubleclick, false);
     if (button == "unpressed") {
-    canvasSize();
+        updateGraphics();
 
 		buttonStyle.className = "pressed";
         canvas.style.cursor = "all-scroll";
         canvas.addEventListener('mousedown', getMousePos, false);
         canvas.addEventListener('mouseup', mouseupcanvas, false);
     } else {
-            canvasSize();
-
+        updateGraphics();
+        
 		buttonStyle.className = "unpressed";
         canvas.addEventListener('dblclick', doubleclick, false);
         mousedownX = 0; mousedownY = 0;
