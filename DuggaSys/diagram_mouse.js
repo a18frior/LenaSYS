@@ -494,14 +494,12 @@ function mousemoveposcanvas(e) {
     mousemoveY = e.clientY;
     mouseDiffX = (mousedownX - mousemoveX);
     mouseDiffY = (mousedownY - mousemoveY);
-    startX += mouseDiffX;
-    startY += mouseDiffY;
+    startX += (mouseDiffX/zoomValue);
+    startY += (mouseDiffY/zoomValue);
     mousedownX = mousemoveX;
     mousedownY = mousemoveY;
     moveValue = 1;
 
-    startX = startX/zoomValue;
-    startY = startY/zoomValue;
 
     drawGrid();
     updateGraphics();
