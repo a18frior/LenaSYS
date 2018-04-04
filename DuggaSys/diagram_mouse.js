@@ -11,8 +11,9 @@ function zoomInMode() {
     console.log("zoomValue " + zoomValue);
 
     var newScale = (zoomValue/oldZoom);
-    canvasContext.scale(1,1);
     canvasContext.scale(newScale,newScale);
+    startX = startX/zoomValue;
+    startY = startY/zoomValue;
 
     reWrite();
     updateGraphics();
