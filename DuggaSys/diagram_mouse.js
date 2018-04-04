@@ -13,8 +13,8 @@ function zoomInMode() {
     var newScale = (zoomValue/oldZoom);
     canvasContext.scale(newScale,newScale);
 
-  //  reWrite();
-   // updateGraphics();
+    reWrite();
+    updateGraphics();
 }
 
 // Recursive Pos of div in document - should work in most browsers
@@ -495,9 +495,11 @@ function mousemoveposcanvas(e) {
     mousedownX = mousemoveX;
     mousedownY = mousemoveY;
     moveValue = 1;
+    
     drawGrid();
-    updateGraphics();
-    reWrite();
+    zoomInMode();
+    //updateGraphics();
+    //reWrite();
 }
 
 function mouseupcanvas(e) {
