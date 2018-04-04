@@ -874,7 +874,7 @@ function drawGrid() {
     for (var i = 0 + quadrantX; i < quadrantX + (widthWindow / zoomValue); i++) {
         if (i % 5 == 0) {
             canvasContext.beginPath();
-            canvasContext.moveTo(i * gridSize, 0 + (startY/zoomValue);
+            canvasContext.moveTo(i * gridSize, 0 + (startY/zoomValue));
             canvasContext.lineTo(i * gridSize, (heightWindow / zoomValue) + startY);
             canvasContext.stroke();
             canvasContext.closePath();
