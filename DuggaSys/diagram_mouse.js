@@ -11,11 +11,10 @@ function zoomInMode() {
     zoomValue = document.getElementById("ZoomSelect").value;
     console.log("zoomValue " + zoomValue);
 
-  //  var newScale = (zoomValue/oldZoom);
-    canvasSize();
+    var newScale = (zoomValue/oldZoom);
+    canvasContext.scale(newScale,newScale);
+    
 
-
-  //  canvasContext.scale(newScale,newScale);
     reWrite();
     updateGraphics();
 }
@@ -455,6 +454,7 @@ function resize() {
 //---------------------------------------
 function movemode(e, t) {
     uimode = "MoveAround";
+    zoomInMode();
 	$(".buttonsStyle").removeClass("pressed").addClass("unpressed");
     var button = document.getElementById("moveButton").className;
     var buttonStyle = document.getElementById("moveButton");
