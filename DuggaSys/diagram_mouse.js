@@ -12,8 +12,7 @@ function zoomInMode() {
 
     var newScale = (zoomValue/oldZoom);
     canvasContext.scale(newScale,newScale);
-    startX = startX/zoomValue;
-    startY = startY/zoomValue;
+
 
     reWrite();
     updateGraphics();
@@ -501,6 +500,8 @@ function mousemoveposcanvas(e) {
     mousedownY = mousemoveY;
     moveValue = 1;
 
+    startX = startX/zoomValue;
+    startY = startY/zoomValue;
 
     drawGrid();
     updateGraphics();
