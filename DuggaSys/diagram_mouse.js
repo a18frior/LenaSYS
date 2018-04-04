@@ -496,7 +496,7 @@ function mousemoveposcanvas(e) {
     mousedownY = mousemoveY;
     moveValue = 1;
 
-    clearCanvas();
+    
     canvasSize();
     drawGrid();
 
