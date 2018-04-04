@@ -496,11 +496,13 @@ function mousemoveposcanvas(e) {
     mousedownY = mousemoveY;
     moveValue = 1;
 
-    //drawGrid();
-    zoomInMode();
+    clearCanvas();
+    canvasSize();
+    drawGrid();
 
-    //updateGraphics();
-    //reWrite();
+
+    updateGraphics();
+    reWrite();
 }
 
 function mouseupcanvas(e) {
