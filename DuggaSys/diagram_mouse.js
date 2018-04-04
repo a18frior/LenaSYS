@@ -6,14 +6,13 @@
 function zoomInMode() {
     var oldZoom = zoomValue;
     console.log("oldZoom " + oldZoom);
-    alert(zoomValue);
 
     zoomValue = document.getElementById("ZoomSelect").value;
     console.log("zoomValue " + zoomValue);
 
     var newScale = (zoomValue/oldZoom);
     canvasContext.scale(newScale,newScale);
-    
+    //canvasSize();
 
     reWrite();
     updateGraphics();

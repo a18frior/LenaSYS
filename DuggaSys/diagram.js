@@ -609,7 +609,7 @@ function canvasSize() {
     canvas.setAttribute("height", heightWindow);
     canvasContext.clearRect(startX, startY, widthWindow, heightWindow);
     canvasContext.translate(startX, startY);
-  //  canvasContext.scale(1, 1);
+    canvasContext.scale(1, 1);
     canvasContext.scale(zoomValue, zoomValue);
 }
 
