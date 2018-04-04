@@ -602,13 +602,14 @@ function getUploads() {
 // Function that is used for the resize
 // Making the page more responsive
 function canvasSize() {
+    console.log("canvasSize");
     widthWindow = (window.innerWidth - 20);
     heightWindow = (window.innerHeight - 144);
     canvas.setAttribute("width", widthWindow);
     canvas.setAttribute("height", heightWindow);
     canvasContext.clearRect(startX, startY, widthWindow, heightWindow);
     canvasContext.translate(startX, startY);
-    canvasContext.scale(1, 1);
+  //  canvasContext.scale(1, 1);
     canvasContext.scale(zoomValue, zoomValue);
 }
 
@@ -616,6 +617,7 @@ function canvasSize() {
 window.addEventListener('resize', canvasSize);
 
 function updateGraphics() {
+    console.log("updateGraphics");
     canvasContext.clearRect(startX, startY, (widthWindow / zoomValue), (heightWindow / zoomValue));
     if (moveValue == 1) {
         canvasContext.translate((-mouseDiffX), (-mouseDiffY));
@@ -1024,6 +1026,7 @@ function removeLocalStorage() {
 
 // Function that rewrites the values of zoom and x+y that's under the canvas element
 function reWrite() {
+    console.log("reWrite");
     document.getElementById("valuesCanvas").innerHTML = "<p><b>Zoom:</b> " + Math.round((zoomValue * 100)) + "%   |   <b>Coordinates:</b> X=" + startX + " & Y=" + startY + "</p>";
 }
 
