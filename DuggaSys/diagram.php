@@ -227,7 +227,7 @@
             -->
             <div id='valuesCanvas'></div>
             <div id="selectDiv">
-                <select name="Zoom" id="ZoomSelect" onclick="zoomInMode();">
+                <select name="Zoom" id="ZoomSelect" onchange="zoomInMode();">
                     <option selected='selected' disabled>Choose zoom</option>
                     <option value="0.05">5%</option>
                     <option value="0.1">10%</option>

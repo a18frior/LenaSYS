@@ -13,8 +13,8 @@ function zoomInMode() {
     var newScale = (zoomValue/oldZoom);
     canvasContext.scale(newScale,newScale);
 
-    reWrite();
-    updateGraphics();
+  //  reWrite();
+   // updateGraphics();
 }
 
 // Recursive Pos of div in document - should work in most browsers
