@@ -490,11 +490,10 @@ function getMousePos(e) {
 }
 
 function mousemoveposcanvas(e) {
-    drawGrid();
     mousemoveX = e.clientX;
     mousemoveY = e.clientY;
-    mouseDiffX = (mousedownX - mousemoveX);
-    mouseDiffY = (mousedownY - mousemoveY);
+    mouseDiffX = ((mousedownX - mousemoveX)/zoomValue);
+    mouseDiffY = ((mousedownY - mousemoveY)/zoomValue);
     startX += mouseDiffX;
     startY += mouseDiffY;
     mousedownX = mousemoveX;
@@ -502,7 +501,7 @@ function mousemoveposcanvas(e) {
     moveValue = 1;
 
 
-    
+    drawGrid();
     updateGraphics();
     reWrite();
 
