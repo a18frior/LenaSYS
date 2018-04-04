@@ -492,8 +492,8 @@ function getMousePos(e) {
 function mousemoveposcanvas(e) {
     mousemoveX = e.clientX;
     mousemoveY = e.clientY;
-    mouseDiffX = ((mousedownX - mousemoveX)/zoomValue);
-    mouseDiffY = ((mousedownY - mousemoveY)/zoomValue);
+    mouseDiffX = (mousedownX - mousemoveX);
+    mouseDiffY = (mousedownY - mousemoveY);
     startX += mouseDiffX;
     startY += mouseDiffY;
     mousedownX = mousemoveX;
