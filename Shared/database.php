@@ -1,7 +1,7 @@
 <?php
 
+include_once "../../coursesyspw.php";
 
-include_once("../../coursesyspw.php");
 
 
 
