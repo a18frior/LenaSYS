@@ -195,8 +195,8 @@
                     </div>
                 </div>
             </div>
-            </br>
-            </br>
+            <br/>
+            <br/>
 
             <!-- THESE OBJECTS ARE NOT IN THE TOOLBOX OR THE MENU-->
             <!-- AS THEY PROBABLY SHOULD BE IMPLEMENTED SOMEWHERE WITHIN ISSUE #3750-->
