@@ -225,7 +225,7 @@
             <input id='Hide Console' style='position: fixed; right: 0; bottom: 133px;' type='button' value='Hide Console' onclick='Consolemode(1);' />
             <input id='Show Console' style='display: none; position: fixed; right: 0; bottom: 133px;' type='button' value='Show Console' onclick='Consolemode(2);' />
             -->
-            <div id='valuesCanvas'></div>
+            <div id='valuesCanvas' onclick="changeArrow();"></div>
             <div id="selectDiv">
                 <select name="Zoom" id="ZoomSelect" onchange="zoomInMode();">
                     <option selected='selected' disabled>Choose zoom</option>
@@ -247,7 +247,7 @@
                     <option value="14">1400%</option>
                     <option value="16">1600%</option>
                 </select>
-                <i class="ikonPil"></i>
+                <span id="arrow" class="ikonPil"></span>
             </div>
         </div>
     </div>
