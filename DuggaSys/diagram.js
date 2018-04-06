@@ -575,9 +575,24 @@ function initializeCanvas() {
     canvas.addEventListener('touchstart', mousedownevt, false);
     canvas.addEventListener('touchend', mouseupevt, false);
     //canvas.addEventListener('mouseup', saveLocalStorage, false);
+}
+
+$(document).ready(function(){
     $("#ZoomSelect").click(function() {
-        $(this).parent().find(".ikonPil").toggleClass("ikonPilRotation");
+        changeArrow();
     });
+}); 
+
+
+//Change the arrow depending on the status of the dropdown menu. 
+function changeArrow() {
+    if ($("#arrow").is(".ikonPil")){
+        $("#arrow").removeClass("ikonPil");
+        $("#arrow").addClass("arrowDown");
+    } else {
+        $("#arrow").removeClass("arrowDown");
+        $("#arrow").addClass("ikonPil");
+    }
 }
 
 // Function to enable and disable the grid, functionality is related to currentMouseCoordinateX and currentMouseCoordinateY

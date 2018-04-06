@@ -2766,16 +2766,16 @@ ul.hamburgerList button.menuButton {
 }
 
 /* Is used to style a Select-box in diagram.php. */
-#selectDiv {
-  border-radius: 6px;
-  border: 2px solid #d4d4d4;
-  height: 34px;
-  position: absolute;
-  right: 0;
-  bottom: 25px;
-  -webkit-box-shadow: 0px 2px 10px 1px rgba(219,219,219,1);
-  -moz-box-shadow: 0px 2px 10px 1px rgba(219,219,219,1);
-  box-shadow: 0px 2px 10px 1px rgba(219,219,219,1);
+#selectDiv{
+    border-radius: 6px;
+    border: 2px solid #d4d4d4;
+    height: 34px;
+    position: absolute;
+    right: 0;
+    bottom: 25px;
+    -webkit-box-shadow: 0px 2px 10px 1px rgba(219,219,219,1);
+    -moz-box-shadow: 0px 2px 10px 1px rgba(219,219,219,1);
+    box-shadow: 0px 2px 10px 1px rgba(219,219,219,1);
 }
 
 #selectDiv select {
@@ -2800,36 +2800,29 @@ ul.hamburgerList button.menuButton {
   padding: 0;
 }
 
-#selectDiv .ikonPil {
-  display: block;
-  background: url("../icons/arrow.svg") no-repeat;
-  position: absolute;
-  right: 12px;
-  top: 14px;
-  width: 12px;
-  height: 15px;
+.ikonPil, .arrowDown {    
+    position: absolute;
+    right: 12px;
+    width: 12px;
+    height: 15px;
+    top: 14px; 
 }
 
-#selectDiv .ikonPilRotation {
-  top: 8px;
-  animation-name: roteraPil;
-  animation-duration: 0.2s;
-  animation-fill-mode: forwards;
+.ikonPil {
+    display: block;
+    background: url("../icons/arrow.svg") no-repeat;  
 }
 
-/* Used to rotate the picture that is used as a arrow */
-@keyframes roteraPil {
-  0% {
-    -ms-transform: rotate(0deg); /* IE 9 */
-    -webkit-transform: rotate(0deg); /* Chrome, Safari, Opera */
-    transform: rotate(0deg);
-  }
-  100% {
-    -ms-transform: rotate(180deg); /* IE 9 */
-    -webkit-transform: rotate(180deg); /* Chrome, Safari, Opera */
-    transform: rotate(180deg);
-  }
+.arrowDown {
+    display: block;
+    background: url("../icons/arrow2.svg") no-repeat;
 }
+
+#ZoomSelect{
+    z-index: 1;
+}
+
+
 /* Style for the div that presents the coordinants and zoomvalue in diagram */
 #valuesCanvas {
   -webkit-box-shadow: 0px 2px 10px 1px rgba(219,219,219,1);
