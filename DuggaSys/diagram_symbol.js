@@ -386,6 +386,7 @@ function Symbol(kind) {
     // Empties every connector of the object
     //--------------------------------------------------------------------
     this.emptyConnectors = function () {
+        console.log("Kind: " + this.symbolkind);
         for (var i = 0; i < this.connectorTop.length; i++) {
             this.connectorTop.splice(i, 1);
             i--;
@@ -478,16 +479,20 @@ function Symbol(kind) {
         }
         
         for(var i = 0; i < this.connectorBottom.length; i++){
-            if(connectorBottom[i] > i) connectorBottom[i]--;
+            if(connectorBottom[i].to > i) connectorBottom[i].to--;
+            if(connectorBottom[i].from > i) connectorBottom[i].from--;
         }
         for(var i = 0; i < this.connectorRight.length; i++){
-            if(connectorRight[i] > i) connectorRight[i]--;
+            if(connectorRight[i].to > i) connectorRight[i].to--;
+            if(connectorRight[i].from > i) connectorRight[i].from--;
         }
         for(var i = 0; i < this.connectorLeft.length; i++){
-            if(connectorLeft[i] > i) connectorLeft[i]--;
+            if(connectorLeft[i].to > i) connectorLeft[i].to--;
+            if(connectorLeft[i].from > i) connectorLeft[i].from--;
         }
         for(var i = 0; i < this.connectorTop.length; i++){
-            if(connectorTop[i] > i) connectorTop[i]--;
+            if(connectorTop[i].to > i) connectorTop[i].to--;
+            if(connectorTop[i].from > i) connectorTop[i].from--;
         }
     }
     
