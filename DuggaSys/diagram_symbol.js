@@ -97,6 +97,7 @@ function Symbol(kind) {
         // Fix right connector box (1)
         var i = 0;
         while (i < this.connectorRight.length) {
+            console.log(this.connectorRight[i].to);
             var xk = points[this.connectorRight[i].to].x;
             var yk = points[this.connectorRight[i].to].y;
             var bb = this.getquadrant(xk, yk);
