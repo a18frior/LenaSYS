@@ -415,11 +415,17 @@ function Symbol(kind) {
         points[this.centerPoint] = "remove";
         points[this.middleDivider] = "remove";
         
+        for(var i = 0; i < diagram.length; i++){
+            diagram[i].removePointFromConnector(this.topLeft);
+            diagram[i].removePointFromConnector(this.bottomRight);
+            diagram[i].removePointFromConnector(this.centerPoint);
+            diagram[i].removePointFromConnector(this.middleDivider);
+        }
+        
         for(var i = 0; i < points.length;){
             if(points[i] == "remove"){
                 //now we need to decrement all pointindex for symbols with higher index then i
                 for(var j = 0; j < diagram.length; j++){
-                    diagram[j].removePointFromConnector(i);
                     diagram[j].decrementPoints(i);
                 }
                 points.splice(i, 1);
@@ -434,34 +440,30 @@ function Symbol(kind) {
     // IMP!: Should not be moved back on canvas after this function is run.
     //--------------------------------------------------------------------
     this.removePointFromConnector = function(point) {
-        var broken = false;
         for(var i = 0; i < this.connectorTop.length; i++){
             if(this.connectorTop[i].to == point || this.connectorTop[i].from == point){
                 this.connectorTop.splice(i,1);
-                broken = true;
                 break;
             }
         }
-        if(!broken){
-            for(var i = 0; i < this.connectorBottom.length; i++){
-                if(this.connectorBottom[i].to == point || this.connectorBottom[i].from == point){
-                    this.connectorBottom.splice(i,1);
-                    break;
-                }
-            }
-            for(var i = 0; i < this.connectorRight.length; i++){
-                if(this.connectorRight[i].to == point || this.connectorRight[i].from == point){
-                    this.connectorRight.splice(i,1);
-                    break;
-                }
-            }
-            for(var i = 0; i < this.connectorLeft.length; i++){
-                if(this.connectorLeft[i].to == point || this.connectorLeft[i].from == point){
-                    this.connectorLeft.splice(i,1);
-                    break;
-                }
+        for(var i = 0; i < this.connectorBottom.length; i++){
+            if(this.connectorBottom[i].to == point || this.connectorBottom[i].from == point){
+                this.connectorBottom.splice(i,1);
+                break;
             }
         }
+        for(var i = 0; i < this.connectorRight.length; i++){
+            if(this.connectorRight[i].to == point || this.connectorRight[i].from == point){
+                this.connectorRight.splice(i,1);
+                break;
+            }
+        }
+        for(var i = 0; i < this.connectorLeft.length; i++){
+            if(this.connectorLeft[i].to == point || this.connectorLeft[i].from == point){
+                this.connectorLeft.splice(i,1);
+                break;
+            }
+        } 
     }
     
     this.decrementPoints = function(i){
