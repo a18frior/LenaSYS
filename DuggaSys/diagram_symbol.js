@@ -418,6 +418,7 @@ function Symbol(kind) {
             if(points[i] == "remove"){
                 //now we need to decrement all pointindex for symbols with higher index then i
                 for(var j = 0; j < diagram.length; j++){
+                    diagram[j].removePointFromConnector(i);
                     diagram[j].decrementPoints(i);
                 }
                 points.splice(i, 1);
