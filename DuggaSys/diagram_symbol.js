@@ -409,7 +409,6 @@ function Symbol(kind) {
     // IMP!: Should not be moved back on canvas after this function is run.
     //--------------------------------------------------------------------
     this.movePoints = function () {
-        if (this.symbolkind == 4) return;
         points[this.topLeft] = "remove";
         points[this.bottomRight] = "remove";
         points[this.centerPoint] = "remove";
@@ -417,25 +416,20 @@ function Symbol(kind) {
         
         for(var i = 0; i < points.length;){
             if(points[i] == "remove"){
-                console.log("We removed a point for real");
                 points.splice(i, 1);
                 //now we need to decrement all pointindex for symbols with higher index then I
                 for(var j = 0; j < diagram.length; j++){
                     var symbol = diagram[j];
                     if(symbol.topLeft > i){
-                        console.log(symbol.topLeft);
                         symbol.topLeft--;
                     }
                     if(symbol.bottomRight > i){
-                        console.log(symbol.bottomRight);
                         symbol.bottomRight--;
                     }
                     if(symbol.centerPoint > i){
-                        console.log(symbol.centerPoint);
                         symbol.centerPoint--;
                     }
                     if(symbol.middleDivider > i){
-                        console.log(symbol.middleDivider);
                         symbol.middleDivider--;
                     }
                 }                
