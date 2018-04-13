@@ -393,15 +393,16 @@ diagram.eraseLines = function(privateLines) {
             for(var j = 0; j < connected_objects.length; j++){
                 connected_objects[j].removePointFromConnector(privateLines[i].topLeft);
             }
-            points[privateLines[i].topLeft] = waldoPoint;
+            points[privateLines[i].topLeft] = "remove";
         }
         if(!eraseRight) {
             for(var j = 0; j < connected_objects.length; j++){
                 connected_objects[j].removePointFromConnector(privateLines[i].bottomRight);
             }
-            points[privateLines[i].bottomRight] = waldoPoint;
+            points[privateLines[i].bottomRight] = "remove";
         }
-        diagram.deleteObject(privateLines[i]);
+        //diagram.deleteObject(privateLines[i]);
+        privateLines[i].erase();
     }
 }
 
