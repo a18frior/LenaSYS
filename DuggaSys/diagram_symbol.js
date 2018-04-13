@@ -410,10 +410,36 @@ function Symbol(kind) {
     //--------------------------------------------------------------------
     this.movePoints = function () {
         if (this.symbolkind == 4) return;
-        points[this.topLeft] = waldoPoint;
-        points[this.bottomRight] = waldoPoint;
-        points[this.centerPoint] = waldoPoint;
-        points[this.middleDivider] = waldoPoint;
+        points[this.topLeft] = "remove";
+        points[this.bottomRight] = "remove";
+        points[this.centerPoint] = "remove";
+        points[this.middleDivider] = "remove";
+        
+        for(var i = 0; i < points.length;){
+            if(points[i] == "remove"){
+                console.log("We removed a point for real");
+                points.splice(i, 1);
+                //now we need to decrement all pointindex for symbols with higher index then I
+                for(var j = 0; j < diagram.length; j++){
+                    var symbol = diagram[j];
+                    if(symbol.topLeft > i){
+                        symbol.topLeft--;
+                    }
+                    if(symbol.bottomRight > i){
+                        symbol.bottomRight--;
+                    }
+                    if(symbol.topLeft > i){
+                        symbol.centerPoint--;
+                    }
+                    if(symbol.topLeft > i){
+                        symbol.middleDivider--;
+                    }
+                }                
+            }else{
+                i++;
+            }
+        }
+        
     }
     //--------------------------------------------------------------------
     // Moves all relevant points, within the object, off the canvas.
