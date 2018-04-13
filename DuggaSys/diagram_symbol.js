@@ -419,19 +419,8 @@ function Symbol(kind) {
                 points.splice(i, 1);
                 //now we need to decrement all pointindex for symbols with higher index then I
                 for(var j = 0; j < diagram.length; j++){
-                    var symbol = diagram[j];
-                    if(symbol.topLeft > i){
-                        symbol.topLeft--;
-                    }
-                    if(symbol.bottomRight > i){
-                        symbol.bottomRight--;
-                    }
-                    if(symbol.centerPoint > i){
-                        symbol.centerPoint--;
-                    }
-                    if(symbol.middleDivider > i){
-                        symbol.middleDivider--;
-                    }
+                    diagram[j].decrementPoints(i);
+                    diagram[j].removePointFromConnector(points[i]);
                 }                
             }else{
                 i++;
@@ -473,6 +462,22 @@ function Symbol(kind) {
             }
         }
     }
+    
+    this.decrementPoints = function(i){
+        if(this.topLeft > i){
+            this.topLeft--;
+        }
+        if(this.bottomRight > i){
+            this.bottomRight--;
+        }
+        if(this.centerPoint > i){
+            this.centerPoint--;
+        }
+        if(this.middleDivider > i){
+            this.middleDivider--;
+        }
+    }
+    
     this.getPoints = function() {
         var privatePoints = [];
         if(this.symbolkind==3){
