@@ -393,16 +393,15 @@ diagram.eraseLines = function(privateLines) {
             for(var j = 0; j < connected_objects.length; j++){
                 connected_objects[j].removePointFromConnector(privateLines[i].topLeft);
             }
-            points[privateLines[i].topLeft] = "remove";
+            points[privateLines[i].topLeft] = waldoPoint;
         }
         if(!eraseRight) {
             for(var j = 0; j < connected_objects.length; j++){
                 connected_objects[j].removePointFromConnector(privateLines[i].bottomRight);
             }
-            points[privateLines[i].bottomRight] = "remove";
+            points[privateLines[i].bottomRight] = waldoPoint;
         }
-        //diagram.deleteObject(privateLines[i]);
-        privateLines[i].erase();
+        diagram.deleteObject(privateLines[i]);
     }
 }
 
@@ -603,7 +602,7 @@ function eraseObject(object) {
     canvas.style.cursor = "default";
     if (object.kind == 2) {
         object.erase();
-        diagram.eraseLines(object, object.getLines());
+        //diagram.eraseLines(object, object.getLines());
     } else if (object.kind == 1) {
         object.erase();
     }
