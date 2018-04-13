@@ -423,15 +423,19 @@ function Symbol(kind) {
                 for(var j = 0; j < diagram.length; j++){
                     var symbol = diagram[j];
                     if(symbol.topLeft > i){
+                        console.log(symbol.topLeft);
                         symbol.topLeft--;
                     }
                     if(symbol.bottomRight > i){
+                        console.log(symbol.bottomRight);
                         symbol.bottomRight--;
                     }
-                    if(symbol.topLeft > i){
+                    if(symbol.centerPoint > i){
+                        console.log(symbol.centerPoint);
                         symbol.centerPoint--;
                     }
-                    if(symbol.topLeft > i){
+                    if(symbol.middleDivider > i){
+                        console.log(symbol.middleDivider);
                         symbol.middleDivider--;
                     }
                 }                
