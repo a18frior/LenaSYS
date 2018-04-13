@@ -416,12 +416,11 @@ function Symbol(kind) {
         
         for(var i = 0; i < points.length;){
             if(points[i] == "remove"){
-                points.splice(i, 1);
-                //now we need to decrement all pointindex for symbols with higher index then I
+                //now we need to decrement all pointindex for symbols with higher index then i
                 for(var j = 0; j < diagram.length; j++){
                     diagram[j].decrementPoints(i);
-                    diagram[j].removePointFromConnector(points[i]);
-                }                
+                }
+                points.splice(i, 1);
             }else{
                 i++;
             }
@@ -475,6 +474,19 @@ function Symbol(kind) {
         }
         if(this.middleDivider > i){
             this.middleDivider--;
+        }
+        
+        for(var i = 0; i < this.connectorBottom.length; i++){
+            if(connectorBottom[i] > i) connectorBottom[i]--;
+        }
+        for(var i = 0; i < this.connectorRight.length; i++){
+            if(connectorRight[i] > i) connectorRight[i]--;
+        }
+        for(var i = 0; i < this.connectorLeft.length; i++){
+            if(connectorLeft[i] > i) connectorLeft[i]--;
+        }
+        for(var i = 0; i < this.connectorTop.length; i++){
+            if(connectorTop[i] > i) connectorTop[i]--;
         }
     }
     
