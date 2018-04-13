@@ -378,8 +378,8 @@ function Symbol(kind) {
     // attempts to erase object completely from canvas
     //--------------------------------------------------------------------
     this.erase = function () {
-        this.movePoints();
         this.emptyConnectors();
+        this.movePoints();
     }
 
     //--------------------------------------------------------------------
