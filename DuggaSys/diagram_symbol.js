@@ -435,6 +435,7 @@ function Symbol(kind) {
     // IMP!: Should not be moved back on canvas after this function is run.
     //--------------------------------------------------------------------
     this.removePointFromConnector = function(point) {
+        console.log("trying to remove point from connector");
         for(var i = 0; i < this.connectorTop.length; i++){
             if(this.connectorTop[i].to == point || this.connectorTop[i].from == point){
                 this.connectorTop.splice(i,1);
@@ -464,16 +465,16 @@ function Symbol(kind) {
     }
     
     this.decrementPoints = function(i){
-        if(this.topLeft > i){
+        if(this.topLeft >= i){
             this.topLeft--;
         }
-        if(this.bottomRight > i){
+        if(this.bottomRight >= i){
             this.bottomRight--;
         }
-        if(this.centerPoint > i){
+        if(this.centerPoint >= i){
             this.centerPoint--;
         }
-        if(this.middleDivider > i){
+        if(this.middleDivider >= i){
             this.middleDivider--;
         }
         /*
