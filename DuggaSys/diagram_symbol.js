@@ -410,6 +410,7 @@ function Symbol(kind) {
     // IMP!: Should not be moved back on canvas after this function is run.
     //--------------------------------------------------------------------
     this.movePoints = function () {
+        console.log("Points to remove: " + this.topLeft + " " + this.bottomRight + " " + this.centerPoint + " " + this.middleDivider);
         for(var i = 0; i < diagram.length; i++){
             if(!diagram[i].removePointFromConnector(this.topLeft)) points[this.topLeft] = "remove";
             if(!diagram[i].removePointFromConnector(this.bottomRight)) points[this.bottomRight] = "remove";
