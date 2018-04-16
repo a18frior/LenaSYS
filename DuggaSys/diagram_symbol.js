@@ -412,8 +412,8 @@ function Symbol(kind) {
     this.movePoints = function () {
         points[this.topLeft] = "remove";
         points[this.bottomRight] = "remove";
-        points[this.centerPoint] = "remove";
-        points[this.middleDivider] = "remove";
+        if(this.centerPoint) points[this.centerPoint] = "remove";
+        if(this.middleDivider) points[this.middleDivider] = "remove";
         
         for(var i = 0; i < diagram.length; i++){
             diagram[i].removePointFromConnector(this.topLeft);
