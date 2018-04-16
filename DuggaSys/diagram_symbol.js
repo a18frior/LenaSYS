@@ -410,16 +410,11 @@ function Symbol(kind) {
     // IMP!: Should not be moved back on canvas after this function is run.
     //--------------------------------------------------------------------
     this.movePoints = function () {
-        points[this.topLeft] = "remove";
-        points[this.bottomRight] = "remove";
-        //if(this.centerPoint) points[this.centerPoint] = "remove";
-        //if(this.middleDivider) points[this.middleDivider] = "remove";
-        
         for(var i = 0; i < diagram.length; i++){
-            diagram[i].removePointFromConnector(this.topLeft);
-            diagram[i].removePointFromConnector(this.bottomRight);
-            diagram[i].removePointFromConnector(this.centerPoint);
-            diagram[i].removePointFromConnector(this.middleDivider);
+            if(!diagram[i].removePointFromConnector(this.topLeft)) points[this.topLeft] = "remove";
+            if(!diagram[i].removePointFromConnector(this.bottomRight)) points[this.bottomRight] = "remove";
+            if(!diagram[i].removePointFromConnector(this.centerPoint)) points[this.centerPoint] = "remove";
+            if(!diagram[i].removePointFromConnector(this.middleDivider)) points[this.middleDivider] = "remove";
         }
         
         for(var i = 0; i < points.length;){
@@ -443,27 +438,28 @@ function Symbol(kind) {
         for(var i = 0; i < this.connectorTop.length; i++){
             if(this.connectorTop[i].to == point || this.connectorTop[i].from == point){
                 this.connectorTop.splice(i,1);
-                break;
+                return true;
             }
         }
         for(var i = 0; i < this.connectorBottom.length; i++){
             if(this.connectorBottom[i].to == point || this.connectorBottom[i].from == point){
                 this.connectorBottom.splice(i,1);
-                break;
+                return true;
             }
         }
         for(var i = 0; i < this.connectorRight.length; i++){
             if(this.connectorRight[i].to == point || this.connectorRight[i].from == point){
                 this.connectorRight.splice(i,1);
-                break;
+                return true;
             }
         }
         for(var i = 0; i < this.connectorLeft.length; i++){
             if(this.connectorLeft[i].to == point || this.connectorLeft[i].from == point){
                 this.connectorLeft.splice(i,1);
-                break;
+                return true;
             }
-        } 
+        }
+        return false;
     }
     
     this.decrementPoints = function(i){
