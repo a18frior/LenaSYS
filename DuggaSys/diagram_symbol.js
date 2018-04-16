@@ -477,7 +477,7 @@ function Symbol(kind) {
         if(this.middleDivider >= i){
             this.middleDivider--;
         }
-        /*
+        
         for(var i = 0; i < this.connectorBottom.length; i++){
             if(connectorBottom[i].to > i) connectorBottom[i].to--;
             if(connectorBottom[i].from > i) connectorBottom[i].from--;
@@ -493,7 +493,7 @@ function Symbol(kind) {
         for(var i = 0; i < this.connectorTop.length; i++){
             if(connectorTop[i].to > i) connectorTop[i].to--;
             if(connectorTop[i].from > i) connectorTop[i].from--;
-        }*/
+        }
     }
     
     this.getPoints = function() {
