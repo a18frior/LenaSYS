@@ -459,7 +459,7 @@ function Symbol(kind) {
                 return true;
             }
         }
-        conolse.log("we didnt succeed removing point from any connector");
+        console.log("we didnt succeed removing point from any connector");
         return false;
     }
     
