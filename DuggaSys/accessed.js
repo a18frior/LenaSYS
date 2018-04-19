@@ -3,6 +3,11 @@ var querystring=parseGet();
 var versions;
 var dataInfo;
 
+var listOfTeachers = {};
+if (obj.access == 'W') {
+	for(int i; i<){}
+}
+
 AJAXService("GET",{cid:querystring['cid'],coursevers:querystring['coursevers']},"ACCESS");
 
 //----------------------------------------
@@ -17,13 +22,13 @@ function importUsers()
 	for (var i=0; i<myArr.length; i++){
 			newUsersArr.push(myArr[i].split("\t"));
 	}
-	var newUserJSON = JSON.stringify(newUsersArr);	
+	var newUserJSON = JSON.stringify(newUsersArr);
 
 	AJAXService("ADDUSR",{cid:querystring['cid'],newusers:newUserJSON,coursevers:querystring['coursevers']},"ACCESS");
 	hideImportUsersPopup();
 }
 
-function addSingleUser() 
+function addSingleUser()
 {
 	var newUser = new Array();
 	newUser.push($("#addSsn").val());
@@ -137,14 +142,14 @@ function selectUser(uid,username,ssn,firstname,lastname,access,className)
     		}
 	};
 
-*/	
-	// Set Name		
+*/
+	// Set Name
 	$("#firstname").val(firstname);
 	$("#lastname").val(lastname);
-		
+
 	// Set User name
 	$("#usrnme").val(username);
-		
+
 	//Set SSN
 	$("#ussn").val(ssn);
 	if (className != "null" || className != "UNK") {$("#class").val(className);}
@@ -152,7 +157,7 @@ function selectUser(uid,username,ssn,firstname,lastname,access,className)
 
 	// Displays the cogwheel box
 	$("#editUsers").css("display","flex");
-	
+
 	//$("#overlay").css("display","block");
 }
 
@@ -167,7 +172,7 @@ function updateUser()
 	var teach=$("#teacher").val();
 
 	AJAXService("UPDATE",{ssn:ussn,uid:uid,firstname:firstname,lastname:lastname,username:usrnme,className:className,cid:querystring['cid'],coursevers:querystring['coursevers'],teacher:teach},"ACCESS");
-	
+
 	$("#editUsers").css("display","none");
 	//$("#overlay").css("display","none");
 }
@@ -182,7 +187,7 @@ function resetPw(uid,username)
 	rnd=randomstring();
 
 	window.location="mailto:"+username+"@student.his.se?Subject=LENASys%20Password%20Reset&body=Your%20new%20password%20for%20LENASys%20is:%20"+rnd+"%0A%0A/LENASys Administrators";
-	
+
 	AJAXService("CHPWD",{cid:querystring['cid'],uid:uid,pw:rnd,coursevers:querystring['coursevers']},"ACCESS");
 }
 
@@ -226,11 +231,14 @@ function renderCell(col,celldata,cellid) {
         str+="<option ";
         if(celldata[i]['username'] === celldata[celldata.length - 1]['teacher']) {
           str+="selected='selected' ";
+					for(int i;i<celldata.length; i++){
+						listOfTeachers[i] = obj.username;
+					}
         }
         str+="value='"+celldata[i]['username']+"'>"+celldata[i]['username']+"</option>";
       }
       str+="</select>";
-    } 
+    }
     return str;
   }else if(col == "access"){
     obj=JSON.parse(celldata);
@@ -299,7 +307,7 @@ function returnedAccess(data) {
 	    null,
 	    null,
 	    [],
-	    [],				
+	    [],
 	    "",
 	    null,
 	    null,
@@ -311,7 +319,7 @@ function returnedAccess(data) {
 	);
 
 	myTable.renderTable();
-	
+
 	if(data['debug']!="NONE!") alert(data['debug']);
 
 	makeAllSortable();
