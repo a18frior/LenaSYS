@@ -233,7 +233,6 @@ function renderCell(col,celldata,cellid) {
           str+="selected='selected' ";
 					for(int i;i<celldata.length; i++){
 						listOfTeachers[i] = obj.username;
-						console.log(listOfTeachers);
 					}
         }
         str+="value='"+celldata[i]['username']+"'>"+celldata[i]['username']+"</option>";
