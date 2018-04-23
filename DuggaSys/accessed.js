@@ -3,11 +3,6 @@ var querystring=parseGet();
 var versions;
 var dataInfo;
 
-var listOfTeachers = {};
-if (obj.access == 'W') {
-	for(int i; i<){}
-}
-
 AJAXService("GET",{cid:querystring['cid'],coursevers:querystring['coursevers']},"ACCESS");
 
 //----------------------------------------
@@ -231,9 +226,6 @@ function renderCell(col,celldata,cellid) {
         str+="<option ";
         if(celldata[i]['username'] === celldata[celldata.length - 1]['teacher']) {
           str+="selected='selected' ";
-					for(int i;i<celldata.length; i++){
-						listOfTeachers[i] = obj.username;
-					}
         }
         str+="value='"+celldata[i]['username']+"'>"+celldata[i]['username']+"</option>";
       }
