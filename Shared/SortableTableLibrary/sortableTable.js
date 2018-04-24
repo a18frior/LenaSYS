@@ -563,12 +563,20 @@ function SortableTable(tbl,tableid,filterid,caption,renderCell,renderSortOptions
 	        childrenTH = childrenTR.children[col],
 	        imgDesc = childrenTH.children[0],
 	        imgAsc = childrenTH.children[1],
-	        reg = /^\d+$/;
+	        reg = /^\d+$/,
+	        sizeReg = /^([\d]*[.]?[\d]*)([ ]?)([a-zA-Z][B])$/,
+	        bytesReg = /^([\d]*[.]?[\d]*)([ ]?)([B][y][t][e][s])$/,
+	        sizeColumn;
 
 	    reverse = -((+reverse) || -1);
 	    tr = tr.sort(function (a, b) { // sort rows
+
+	    	if (a.cells[col].textContent.match(sizeReg) || a.cells[col].textContent.match(bytesReg)) {
+    			sizeColumn = a.cells[col].className;
+    			a.cells[col].textContent = SIprefixToBytes(a.cells[col].textContent);
+	    	}
 	    	// Checks if the text content is a single number
-	    	if (a.cells[col].textContent.match(reg)) {
+	    	else if (a.cells[col].textContent.match(reg)) {
 	    		if (a.cells[col].textContent.length < 2) {
 	    			// Adds a 0 to the beginning of the number so that the
 	    			// sorting can work properly
@@ -601,11 +609,34 @@ function SortableTable(tbl,tableid,filterid,caption,renderCell,renderSortOptions
 	    	for (var x = 0; x < tr[i].children.length; x++) {
 		    	if (tr[i].children[x].textContent.charAt(0) == "0" && tr[i].children[x].textContent.length == 2) {
 		    		tr[i].children[x].textContent = tr[i].children[x].textContent.substr(1);
+		    	} else if (tr[i].children[x].className == sizeColumn) {
+		    		tr[i].children[x].textContent = formatBytes(tr[i].children[x].textContent, 0);
 		    	}
 	    	}
 	    	tb.appendChild(tr[i]); // append each row in order
 	    }
 	}
+}
+
+function SIprefixToBytes(data) {
+	var splitData = data.split(" ");
+	var returnData;
+
+	if (splitData[1] == "Bytes") {
+		returnData = parseFloat(splitData[0]);
+	} else if (splitData[1] == "kB") {
+		returnData = parseFloat(splitData[0])*1000;
+	}
+	return returnData;
+}
+
+function formatBytes(bytes,decimals) {
+   if (bytes == 0) return '0 Bytes';
+   var k = 1000,
+       dm = decimals + 1 || 3,
+       sizes = ['Bytes', 'kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'],
+       i = Math.floor(Math.log(bytes) / Math.log(k));
+   return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
 }
 
 function showVariant(param){
