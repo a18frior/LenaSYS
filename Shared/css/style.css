@@ -2657,23 +2657,21 @@ table {
 }
 
 /*end, styling for contribution.php*/
-#sortingBar {
+.sortingBar {
   width: 50%;
   position: relative;
   top: 28px;
 }
-
 .sortingBtn {
   display: inline-block;
-  margin-left: 10px;
+  margin-left: 0px;
 }
-
 .sortingBtn input {
-  font-size: 12px;
-  position: relative;
-  bottom: 2px;
+    font-size: 12px;
+    margin-left: 10px;
+    position: relative;
+    bottom: 2px;
 }
-
 
 /* styling for the search bar in fileed.php */
 
@@ -3109,6 +3107,17 @@ only screen and (max-device-width: 768px) {
 
 @media only screen and (max-width: 650px),
 only screen and (max-device-width: 650px) {
+    #sortingBar {
+        width: 135px;
+        position: relative;
+        top: 10px;
+    }
+    #searchBar {
+        margin-left: 15px;
+    }
+    #searchinput{
+        width:170px;
+    }
   table.navheader td.access {
     margin-right: 0px;
     width: 0px;
@@ -3804,9 +3813,7 @@ li:nth-last-child(10) a:hover {
     cursor: pointer;
     margin-right: 15px;
 }
-#linkFabBtnImg {
-position: absolute;
-}
+
 
 #headerType1 {
   cursor: pointer;
