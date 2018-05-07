@@ -297,7 +297,7 @@
     </div>
     <!-- The Appearance menu. Default state is display: none; -->
     <div id="appearance" style='display: none;'>
-        <div class='LoginBox'>
+        <div class='loginBox'>
             <div class='loginBoxheader'>
                 <h3>Appearance test</h3>
                 <div class='cursorPointer' onclick='closeAppearanceDialogMenu()'>x</div>
