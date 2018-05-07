@@ -299,7 +299,7 @@
     <div id="appearance" style='display: none;'>
         <div class='LoginBox'>
             <div class='loginBoxheader'>
-                <h3>Appearance</h3>
+                <h3>Appearance test</h3>
                 <div class='cursorPointer' onclick='closeAppearanceDialogMenu()'>x</div>
             </div>
             <div class='table-wrap'>
