@@ -296,14 +296,14 @@
         </div>
     </div>
     <!-- The Appearance menu. Default state is display: none; -->
-    <div id="appearance" class='loginBoxContainer' style='display: none;'>
-        <div class='loginBox'>
+    <div id="appearance" style='display: none;'>
+        <div class='LoginBox'>
             <div class='loginBoxheader'>
                 <h3>Appearance</h3>
                 <div class='cursorPointer' onclick='closeAppearanceDialogMenu()'>x</div>
             </div>
             <div class='table-wrap'>
-                <div id="f01"></div>
+                <div id="f01" style="padding: 4px 12px 4px 12px;"></div>
             </div>
         </div>
     </div>
