@@ -1,5 +1,5 @@
 Entity name: </br>
-<input class="appearance" onkeyup="changeObjectAppearance('entityType');" id='nametextAppearance' type='text'></br>
+<input class="" onkeyup="changeObjectAppearance('entityType');" id='nametext' type='text'></br>
 Entity type: </br>
 <select onchange="changeObjectAppearance('entityType');" id='object_type'>
     <option value='Weak'>Weak</option>

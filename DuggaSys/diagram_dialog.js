@@ -80,7 +80,7 @@ function loadFormIntoElement(element, dir){
     if(file.readyState === 4){
       element.innerHTML = file.responseText;
       if(globalAppearanceValue == 0){
-        document.getElementById('nametextAppearance').value = diagram[lastSelectedObject].name;
+        document.getElementById('nametext').value = diagram[lastSelectedObject].name;
         setSelectedOption('object_type', diagram[lastSelectedObject].key_type);
         setSelectedOption('symbolColor', diagram[lastSelectedObject].symbolColor);
         setSelectedOption('font', diagram[lastSelectedObject].font);
@@ -221,7 +221,7 @@ function changeObjectAppearance(object_type){
         diagram[lastSelectedObject].strokeColor = document.getElementById('figureLineColor').value;
     } else {
         diagram[lastSelectedObject].symbolColor = document.getElementById('symbolColor').value;
-        diagram[lastSelectedObject].name = document.getElementById('nametextAppearance').value;
+        diagram[lastSelectedObject].name = document.getElementById('nametext').value;
         diagram[lastSelectedObject].fontColor = document.getElementById('fontColor').value;
         diagram[lastSelectedObject].font = document.getElementById('font').value;
         diagram[lastSelectedObject].sizeOftext = document.getElementById('TextSize').value;
