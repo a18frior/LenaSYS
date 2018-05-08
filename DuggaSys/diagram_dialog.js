@@ -80,7 +80,7 @@ function loadFormIntoElement(element, dir){
     if(file.readyState === 4){
       element.innerHTML = file.responseText;
       if(globalAppearanceValue == 0){
-        document.getElementById('nametext').value = diagram[lastSelectedObject].name;
+        document.getElementById('nametextAppearance').value = diagram[lastSelectedObject].name;
         setSelectedOption('object_type', diagram[lastSelectedObject].key_type);
         setSelectedOption('symbolColor', diagram[lastSelectedObject].symbolColor);
         setSelectedOption('font', diagram[lastSelectedObject].font);
