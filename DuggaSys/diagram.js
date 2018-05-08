@@ -728,7 +728,7 @@ function canvasSize() {
 window.addEventListener('resize', canvasSize);
 
 function updateGraphics() {
-    ctx.clearRect(sx, sy, (widthWindow / zoomValue), (heightWindow / zoomValue));
+    ctx.clearRect(sx, sy, (100*widthWindow / zoomValue), (100*heightWindow / zoomValue));
     if (moveValue == 1) {
         ctx.translate((-mouseDiffX), (-mouseDiffY));
         moveValue = 0;
