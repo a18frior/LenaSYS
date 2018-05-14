@@ -299,11 +299,11 @@
     <div id="appearance" class="loginBoxContainer" style='display: none; background-color: rgba(0,0,0,0)'>
         <div class='loginBox'>
             <div class='loginBoxheader'>
-                <h3>Appearance test</h3>
+                <h3>Appearance</h3>
                 <div class='cursorPointer' onclick='closeAppearanceDialogMenu()'>x</div>
             </div>
             <div class='table-wrap'>
-                <div id="f01" style="padding: 4px 12px 4px 12px;"></div>
+                <div id="f01"></div>
             </div>
         </div>
     </div>

@@ -884,11 +884,6 @@ input {
   border: 2px solid #ccc;
   border-radius: 4px;
   font-size: 16px;
-  margin-bottom: 5px; 
-}
-
-.appearance {
-  margin-bottom: 10px;
 }
 
 .loginBox .inputwrapper {
@@ -926,7 +921,6 @@ input {
   -webkit-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
   transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
   padding: 5px;
-  margin-bottom: 5px;
   font-size: 14px;
 }
 
@@ -3289,12 +3283,6 @@ only screen and (max-device-width: 320px) {
 
 #nametext {
   padding: 2px 0px 2px 10px;
-  width: 182px;
-}
-
-#nametextAppearance {
-  padding: 2px 0px 2px 10px;
-  width: 182px;
 }
 
 /* Is used to style a Select-box in diagram.php. */
