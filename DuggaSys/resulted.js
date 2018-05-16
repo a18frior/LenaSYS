@@ -53,6 +53,13 @@ function setup(){
   filt+="<div id='dropdowns' class='dropdown-list-container'>";
   filt+="</div>";
   filt+="</span></td>";
+
+  filt+="<td id='teach' class='navButt'><span class='dropdown-container' onmouseover='hovert();'>";
+  filt+="<img class='navButt' src='../Shared/icons/LookingGlass.svg'>";
+  filt+="<div id='dropdownt' class='dropdown-list-container'>";
+  filt+="</div>";
+  filt+="</span></td>";
+
   $("#menuHook").before(filt);
 
   // Set part of filter config
@@ -294,6 +301,13 @@ function leaves()
     resort();
   }
   magicHeading();
+}
+
+function hovert()
+{
+    $('#dropdownc').css('display','none');
+    $('#dropdowns').css('display','none');
+    $('#dropdownt').css('display','block');
 }
 
 function sorttype(t){
@@ -817,20 +831,20 @@ function rowFilter(row) {
     }
     if (!rowPending) { return false; }
   }
-  
+
 	for (colname in row) {
   	if(colname == "FnameLnameSSN") {
   		let name = "";
   		if (row[colname]["firstname"] != null) {
   			name += row[colname]["firstname"] + " ";
   		}
-  		if (row[colname]["lastname"] != null) {	
+  		if (row[colname]["lastname"] != null) {
   		 row[colname]["lastname"];
   		}
   		if (name.toUpperCase().indexOf(searchterm.toUpperCase()) != -1) return true;
-  		
+
   		if (row[colname]["ssn"] != null) {
-  			if (row[colname]["ssn"].toUpperCase().indexOf(searchterm.toUpperCase()) != -1) return true;	
+  			if (row[colname]["ssn"].toUpperCase().indexOf(searchterm.toUpperCase()) != -1) return true;
   		}
   		if (row[colname]["username"] != null) {
   			if (row[colname]["username"].toUpperCase().indexOf(searchterm.toUpperCase()) != -1) return true;
@@ -857,7 +871,7 @@ function renderSortOptions(col,status) {
 	}
 	return str;
 }
-			
+
 //--------------------------------------------------------------------------
 // compare
 // ---------------
@@ -908,7 +922,7 @@ function compare(a,b) {
 		if(b['needMarking'] == true) {
 			tempB += 10000;
 		}
-			
+
 		if(a['grade'] == 2) {
 			tempA += 1000;
 		}
