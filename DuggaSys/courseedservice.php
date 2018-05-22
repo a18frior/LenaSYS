@@ -73,33 +73,13 @@ if(checklogin()){
 			if(!$query->execute()) {
 				$error=$query->errorInfo();
 				$debug="Error updating entries".$error[2];
-			} else {
-				// Add default groups
-				$courseID = $pdo->lastInsertId();
-				$defaultGroups = array(
-					"I", "II", "III", "IV", "V", "VI", "VII", "VIII",
-					"1", "2", "3", "4", "5", "6", "7", "8",
-					"A", "B", "C", "D", "E", "F", "G", "H",
-				);
-				
-
-				foreach($defaultGroups as $group) {
-					$stmt = $pdo->prepare("INSERT INTO groups(courseID, groupName) VALUES(:courseID, :groupName)");
-					$stmt->bindParam(':courseID', $courseID);
-					$stmt->bindParam(':groupName', $group);
-
-					if (!$stmt->execute()) {
-						$error = $stmt->errorInfo();
-						$debug = "Error adding group " . $error[2];
-					}
-				}
 			}
 		}else if(strcmp($opt,"NEWVRS")===0){
 			$query = $pdo->prepare("INSERT INTO vers(cid,coursecode,vers,versname,coursename,coursenamealt) values(:cid,:coursecode,:vers,:versname,:coursename,:coursenamealt);");
 
 			$query->bindParam(':cid', $cid);
 			$query->bindParam(':coursecode', $coursecode);
-			$query->bindParam(':vers', $versid);
+			$query->bindParam(':vers', $vers);
 			$query->bindParam(':versname', $versname);
 			$query->bindParam(':coursename', $coursename);
 			$query->bindParam(':coursenamealt', $coursenamealt);
@@ -107,7 +87,28 @@ if(checklogin()){
 			if(!$query->execute()) {
 				$error=$query->errorInfo();
 				$debug="Error updating entries".$error[2];
-			}
+			}else {
+                // Add default group
+                $defaultGroups = array(
+                    "I", "II", "III", "IV", "V", "VI", "VII", "VIII",
+                    "1", "2", "3", "4", "5", "6", "7", "8",
+                    "A", "B", "C", "D", "E", "F", "G", "H",
+                );
+
+                foreach($defaultGroups as $group) {
+                    $stmt = $pdo->prepare("INSERT INTO groups(courseID, vers, groupName) VALUES(:courseID, :vers, :groupName)");
+                    $stmt->bindParam(':courseID', $cid);
+                    $stmt->bindParam(':vers', $vers);
+                    $stmt->bindParam(':groupName', $group);
+
+                    if (!$stmt->execute()) {
+                        $error = $stmt->errorInfo();
+                        $debug = "Error adding group " . $error[2];
+                    } else {
+                    	$debug = "In here";
+					}
+                }
+            }
 
 		}else if(strcmp($opt,"UPDATEVRS")===0){
 			$query = $pdo->prepare("UPDATE vers SET versname=:versname WHERE cid=:cid AND coursecode=:coursecode AND vers=:vers;");
