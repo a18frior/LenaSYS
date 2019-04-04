@@ -49,10 +49,11 @@ pdoConnect();
 
 <?php
 $noup = "COURSE";
+
 include '../Shared/navheader.php';
 ?>
 <!-- content START -->
-
+<!-- test -->
 <div id='showStored' style="display:none;position:absolute;left:190px;top:50px">
     <div id="b" style="position:fixed;height:100vh;width:150px;border-right:1px solid black;">
         <?php
@@ -176,7 +177,7 @@ include '../Shared/navheader.php';
                     }
                     closedir($handle);
                 }
-               
+
             }
             ?>
         </div>
