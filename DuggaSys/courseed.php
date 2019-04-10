@@ -3,7 +3,7 @@ session_start();
 include_once "../../coursesyspw.php";
 include_once "../Shared/sessions.php";
 pdoConnect();
-
+/*
 if (file_exists("../.git/refs/heads/master")) {
 	$versionFile = fopen("../.git/refs/heads/master", "r");
 	$version = fgets($versionFile);
