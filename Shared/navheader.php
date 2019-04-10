@@ -1,6 +1,6 @@
     <header>
 		<?php
-		/*	echo "<table class='navheader'><tr>";
+			echo "<table class='navheader'><tr>";
 
 			include_once "../Shared/basic.php";
 
@@ -19,7 +19,7 @@
 			// this file navheader file. The switch case uses ternary operators to
 			// determine the href attribute value. (if(this) ? dothis : elsethis)
 			//---------------------------------------------------------------------
-		//	echo "<td class='navButt' id='back' title='Back'>";
+			echo "<td class='navButt' id='back'>";
       if($noup=='COURSE'){
 					echo "<a class='navButt' href='../DuggaSys/courseed.php'>";
 					echo "<img src='../Shared/icons/Up.svg'></a></td>";
