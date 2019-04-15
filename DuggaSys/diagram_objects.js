@@ -986,6 +986,7 @@ function Symbol(kind) {
                 ctx.fillText(this.cardinality[0].value, valX, valY);
                 ctx.fillText(this.cardinality[0].valueUML, valX2, valY2);
             }
+
             else if(this.cardinality[0].isCorrectSide){
                 this.moveCardinality(x1, y1, x2, y2, "CorrectSide");
                 ctx.fillText(this.cardinality[0].value, this.cardinality[0].x, this.cardinality[0].y);
@@ -1008,11 +1009,53 @@ function Symbol(kind) {
             //Draw a white line in the middle to simulate space (2 line illusion);
             ctx.lineWidth = this.properties['lineWidth'];
             ctx.strokeStyle = "#fff";
+            
+            for(let i = 0; i < diagram.length; i++){
+                if (diagram[i] != this) {
+                    dtlx = diagram[i].corners().tl.x;
+                    dtly = diagram[i].corners().tl.y;
+                    dbrx = diagram[i].corners().br.x;
+                    dbry = diagram[i].corners().br.y;
+                    
+                    dtrx = diagram[i].corners().tr.x;
+                    dtry = diagram[i].corners().tr.y;
+                    dblx = diagram[i].corners().bl.x;
+                    dbly = diagram[i].corners().bl.y;
+                    
+                    // TODO: figure out why the object is not changed to a weak entity.
+                //    console.log (x1 + "x1, " + y1 + "y1, " + x2 + "x2, " + y2 + "y2");
+                //    console.log(dtlx + "dtlx, " + dtly + "dtly, " + dbrx + "dbrx, " + dbry, "dbry");
+                    // checks if the object is a rectangle
+                    if (!diagram[i].isRelation && !diagram[i].isOval && diagram[i].properties['key_type'] != 'weak') {
+                        console.log("Rectangle");
+                        console.log(diagram[i].properties['key_type']);
+                    }
+                    if (!diagram[i].isRelation && !diagram[i].isOval && (diagram[i].properties['key_type'] != 'weak')) {
+                        console.log("rect hej");
+                        if ((x1 || x2) == dblx) {
+                            console.log("||||||||||||||||weak||||||||||||||||");
+                            console.log(diagram[i].properties['key_type']);
+                            diagram[i].properties['key_type'] = 'weak';
+                            console.log(diagram[i].properties['key_type']);
+                        }
+                        
+                        if (x1 || x2 == dblx && ((y1 > dtly && y1 < dbly))) {
+                            console.log("- - - -middlepoint found");
+                        }
+                        
+                        console.log("+ + + +rect: " + dblx + "dblx : " + x1 + "x1, " + x2 + "x2");
+
+                    }                 
+                }
+            } 
         }
         else if (this.properties['key_type'] == "Derived") {
             ctx.lineWidth = this.properties['lineWidth'] * 2;
             ctx.setLineDash([5, 4]);
         }
+
+        
+        
 
         ctx.beginPath();
         ctx.moveTo(x1, y1);
@@ -1102,6 +1145,7 @@ function Symbol(kind) {
     }
 
     this.drawRelation = function(x1, y1, x2, y2){
+        var isRelation = true;
         var midx = points[this.centerPoint].x;
         var midy = points[this.centerPoint].y;
         ctx.beginPath();
@@ -1425,6 +1469,7 @@ function Symbol(kind) {
 }
 
 this.drawOval = function (x1, y1, x2, y2) {
+    var isOval = true;
     var middleX = x1 + ((x2 - x1) * 0.5);
     var middleY = y1 + ((y2 - y1) * 0.5);
     ctx.beginPath();
