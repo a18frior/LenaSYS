@@ -272,7 +272,7 @@ Testing Link:
 							<td id="templat1" class="tmpl"><input id="templateno" type="hidden" value="0" />
 								<img class='templatethumbicon wiggle' onclick='changetemplate("1");' src='../Shared/icons/template1_butt.svg' />
 							</td>
-							<td id="templat2" class="tmpl"><img class='templatethumbicon wiggle' onclick='changetemplate("2");' src='../Shared/icons/template2_butt.svg' /></td>
+							<td id="templat2" class="tmpl"><img class='templatethumbicon wiggle' onclick='changetemplate("2"); tbl("2");' src='../Shared/icons/template2_butt.svg' /></td>
 							<td id="templat3" class="tmpl"><img class='templatethumbicon wiggle' onclick='changetemplate("3");' src='../Shared/icons/template3_butt.svg' /></td>
 							<td id="templat4" class="tmpl"><img class='templatethumbicon wiggle' onclick='changetemplate("4");' src='../Shared/icons/template4_butt.svg' /></td>
 							<td id="templat5" class="tmpl"><img class='templatethumbicon wiggle' onclick='changetemplate("5");' src='../Shared/icons/template5_butt.svg' /></td>
@@ -282,19 +282,8 @@ Testing Link:
 							<td id="templat9" class="tmpl"><img class='templatethumbicon wiggle' onclick='changetemplate("9");' src='../Shared/icons/template9_butt.svg' /></td>
 						</tr>
 					</table>
-					<table width="100%">
-						<tr>
-							<td>Kind: </td>
-							<td>
-								<select>
-								  <option value="1">1</option>
-								  <option value="2">2</option>
-								  <option value="3">3</option>
-								  <option value="4">4</option>
-								</select>
-							</td>
-						</tr>
-					</table>
+					<div id="tableview">
+					</div>
 					<table width="100%">
 						<tr>
 							<td align='right'><input class='submit-button' type='button' value='Save' onclick='updateTemplate();' /></td>
