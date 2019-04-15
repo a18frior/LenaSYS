@@ -285,6 +285,14 @@ Testing Link:
 					<table width="100%">
 						<tr>
 							<td>Kind: </td>
+							<td>
+								<select>
+								  <option value="1">1</option>
+								  <option value="2">2</option>
+								  <option value="3">3</option>
+								  <option value="4">4</option>
+								</select>
+							</td>
 						</tr>
 					</table>
 					<table width="100%">
