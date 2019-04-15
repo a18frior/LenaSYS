@@ -1759,9 +1759,9 @@ function tbl(numberofboxes) {
   <td>
   <label>Kind:</label>
   <select onchange="changeDirectory(this);">
-    <option value="Code">Code</option>
-    <option value="Document">Document</option>
-    <option value="Preview">Preview</option>
+    <option value="CODE">Code</option>
+    <option value="DOCUMENT">Document</option>
+    <option value="IFRAME">Preview</option>
   </select>
   </td>
   <td>
