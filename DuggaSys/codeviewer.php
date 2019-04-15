@@ -280,7 +280,9 @@ Testing Link:
 							<td id="templat7" class="tmpl"><img class='templatethumbicon wiggle' onclick='changetemplate("7");' src='../Shared/icons/template7_butt.svg' /></td>
 							<td id="templat8" class="tmpl"><img class='templatethumbicon wiggle' onclick='changetemplate("8");' src='../Shared/icons/template8_butt.svg' /></td>
 							<td id="templat9" class="tmpl"><img class='templatethumbicon wiggle' onclick='changetemplate("9");' src='../Shared/icons/template9_butt.svg' /></td>
-							<td id="templat10" class="tmpl"><img class='templatethumbicon wiggle' onclick='changetemplate("9");' src='../Shared/icons/template9_butt.svg' /></td>
+							<td id="templat10" class="tmpl"><img class='templatethumbicon wiggle' onclick='changetemplate("10");' src='../Shared/icons/template10_butt.svg' /></td>
+							<td id="templat11" class="tmpl"><img class='templatethumbicon wiggle' onclick='changetemplate("11");' src='../Shared/icons/template11_butt.svg' /></td>
+							<td id="templat12" class="tmpl"><img class='templatethumbicon wiggle' onclick='changetemplate("12");' src='../Shared/icons/template12_butt.svg' /></td>
 						</tr>		
 					</table>
 					<table width="100%">
