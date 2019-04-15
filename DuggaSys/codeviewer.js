@@ -1756,14 +1756,20 @@ function tbl(numberofboxes) {
 
   tblstr+=`
   <tr>
+  <td>
+  <label>Kind:</label>
   <select>
     <option value="Code">Code</option>
     <option value="Text">Text</option>
   </select>
+  </td>
+  <td>
+  <label>File:</label>
   <select>
     <option value="Example1">Example1</option>
     <option value="Example2">Example2</option>
   </select>
+  </td>
   `;
 
   document.getElementById("tableview").innerHTML=tblstr;
