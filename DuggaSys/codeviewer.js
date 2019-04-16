@@ -492,6 +492,7 @@ function displayEditContent(boxid)
 
 function changeDirectory(kind)
 {
+  console.log(this);
 	var dir;
 	var str="";
 
