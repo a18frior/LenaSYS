@@ -1759,7 +1759,7 @@ function tbl(numberofboxes) {
   <tr>
   <td>
   <label>Kind:</label>
-  <select onchange=document.getElementById('boxcontent');>
+  <select onchange="changeDirectory(kind);">
     <option value="CODE">Code</option>
     <option value="DOCUMENT">Document</option>
     <option value="IFRAME">Preview</option>
