@@ -978,9 +978,15 @@ window.addEventListener('resize', canvasSize);
 
 // used to redraw each object on the screen
 function updateGraphics() {
+    ctx.fillStyle = "black";
+    ctx.fillRect(0,0, 10, 10);
+
+    /*
     ctx.clearRect(sx, sy, (widthWindow / zoomValue), (heightWindow / zoomValue));
     if (moveValue == 1) {
         ctx.translate((-mouseDiffX), (-mouseDiffY));
+        ctx.fillStyle = "black";
+        ctx.fillRect(0,0, 10, 10);
         moveValue = 0;
     }
     diagram.updateQuadrants();
@@ -989,6 +995,7 @@ function updateGraphics() {
     diagram.draw();
     points.drawPoints();
     drawVirtualA4();
+    */
 }
 
 function getConnectedLines(object) {
@@ -1186,6 +1193,7 @@ function drawGrid() {
         ctx.stroke();
         ctx.closePath();
     }
+    /*
     for (var i = 0 + quadrantY; i < quadrantY + (heightWindow / zoomValue); i++) {
         if (i % 5 == 0) ctx.strokeStyle = "rgb(208, 208, 220)"; //This is a "thick" line
         else ctx.strokeStyle = "rgb(238, 238, 250)";
@@ -1195,6 +1203,7 @@ function drawGrid() {
         ctx.stroke();
         ctx.closePath();
     }
+    */
 }
 
 // draws the whole background gridlayout
@@ -1363,7 +1372,7 @@ function reWrite() {
     document.getElementById("valuesCanvas").innerHTML = "<p><b>Zoom:</b> "
      + Math.round((zoomValue * 100)) + "%" + "   |   <b>Coordinates:</b> "
      + "X=" + canvasMouseX
-     + " & Y=" + canvasMouseY + "</p>";
+     + " & Y=" + canvasMouseY +  " | origo(" + sx + ", " + sy + ")</p>";
 }
 
 //----------------------------------------
