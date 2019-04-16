@@ -25,7 +25,7 @@ function getAllIndexes(haystack, needle) {
     while (i !== -1) {
         indexes.push(i);
         i = haystack.indexOf(needle, ++i);
-    }    
+    }
     return indexes;
 }
 
@@ -213,7 +213,7 @@ function makeoptionsItem(option,optionlist,optionstring,valuestring)
 }
 
 //----------------------------------------------------------------------------------
-// makeparams: Help function for hassle free preparation of a clickable param list 
+// makeparams: Help function for hassle free preparation of a clickable param list
 //----------------------------------------------------------------------------------
 
 function makeparams(paramarray)
@@ -1468,6 +1468,7 @@ function displayDuggaStatus(answer,grade,submitted,marked){
 //----------------------------------------------------------------------------------
 function FABDown(e)
 {
+  console.log("FABdown was run");
 		// If the fab list is visible, there should be no timeout to toggle the list
 		if ($('.fab-btn-list').is(':visible')) {
 				if ($('.fab-btn-list').is(':visible') && $('#fabBtn').is(e.target)) FABToggle();
@@ -1483,13 +1484,14 @@ function FABDown(e)
 //----------------------------------------------------------------------------------
 function FABUp(e)
 {
+  console.log("FABup was run");
 		// A quick item should be created on a "fast click" if the fab list isn't visible / Click outside the FAB list / if the target of the click isn't the container...
 		if ((e.target.id=="fabBtn") && !$('.fab-btn-list').is(':visible')) {
 				clearTimeout(pressTimer);
 				createQuickItem();
 		}else if ($('.fab-btn-list').is(':visible') && (e.target.id!="fabBtn")) {
 				FABToggle();
-		}	
+		}
 }
 
 //----------------------------------------------------------------------------------
@@ -1498,6 +1500,7 @@ function FABUp(e)
 // Toggles action bubbles when pressing the FAB button
 //----------------------------------------------------------------------------------
 function FABToggle() {
+  console.log("FABToggle was run");
 		if (!$('.fab-btn-sm').hasClass('scale-out')) {
 				$('.fab-btn-sm').toggleClass('scale-out');
 				$('.fab-btn-list').delay(100).fadeOut(0);
