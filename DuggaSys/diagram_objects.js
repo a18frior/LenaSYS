@@ -1009,9 +1009,8 @@ function Symbol(kind) {
             ctx.lineWidth = this.properties['lineWidth'];
             ctx.strokeStyle = "#fff";
             
-            for(let i = 0; i < diagram.length; i++){
+            for(let i = 0; i < diagram.length; i++) {
                 if (diagram[i] != this) {
-                    
                     dtlx = diagram[i].corners().tl.x;
                     dtly = diagram[i].corners().tl.y;
                     dbrx = diagram[i].corners().br.x;
@@ -1022,7 +1021,6 @@ function Symbol(kind) {
                     dblx = diagram[i].corners().bl.x;
                     dbly = diagram[i].corners().bl.y;
                     
-
                     // TODO: figure out why the object is not changed to a weak entity.
                     // console.log (x1 + "x1, " + y1 + "y1, " + x2 + "x2, " + y2 + "y2");
                     // console.log(dtlx + "dtlx, " + dtly + "dtly, " + dbrx + "dbrx, " + dbry, "dbry");
@@ -1033,13 +1031,20 @@ function Symbol(kind) {
                     }
                     if (!diagram[i].isRelation && !diagram[i].isOval && (diagram[i].properties['key_type'] != 'weak')) {
                         console.log("rect hej");
-                        if ((x1 || x2) == dblx) {
+                        if (x1 == dblx || x2 == dblx) {
                             console.log("||||||||||||||||weak||||||||||||||||");
                             console.log(diagram[i].properties['key_type']);
                             diagram[i].properties['key_type'] = 'weak';
+                            ctx.moveTo(x1 - 5, y1 - 5);
+                            ctx.lineTo(x2 + 5, y1 - 5);
+                            ctx.lineTo(x2 + 5, y2 + 5);
+                            ctx.lineTo(x1 - 5, y2 + 5);
+                            ctx.lineTo(x1 - 5, y1 - 5);
+                            ctx.stroke();
                             console.log(diagram[i].properties['key_type']);
+
                         }
-                        if (x1 || x2 == dblx && ((y1 > dtly && y1 < dbly))) {
+                        if (x1 == dblx || x2 == dblx && ((y1 > dtly && y1 < dbly))) {
                             console.log("- - - -middlepoint found");
                             console.log("+ + + +rect: (" + dblx + "dblx); (" + x1 + "x1), (" + x2 + "x2)");
                         }
