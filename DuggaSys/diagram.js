@@ -20,6 +20,11 @@ AJAXService("get", {}, "DIAGRAM");
 */
 
 // Global settings
+var origoOffsetX = 0;
+var origoOffsetY = 0;
+var mouseDownPosX = 0;
+var mouseDownPosY = 0;
+
 var gridSize = 16;
 var crossSize = 4.0;                // Size of point cross
 var tolerance = 8;                  // Size of tolerance area around the point
@@ -118,7 +123,7 @@ const escapeKey = 27;
 
 
 
-//this block of the code is used to handel keyboard input;
+//this block of the code is used to handle keyboard input;
 window.addEventListener("keydown", this.keyDownHandler);
 
 var ctrlIsClicked = false;
@@ -436,7 +441,6 @@ points.drawPoints = function() {
         }
     }
 }
-
 
 //--------------------------------------------------------------------
 // closestPoint - Returns the distance and index of the point closest
@@ -910,21 +914,11 @@ function drawVirtualA4(){
     ctx.restore();
 }
 
-function drawCircle(cx, cy, radius) {
-    ctx.save();
-    ctx.translate(cx, cy);
-    ctx.beginPath();
-    ctx.arc(0,0, radius, 0, Math.PI * 2);
-    ctx.closePath();
-    ctx.stroke();
-    ctx.restore();
-}
-
 function toggleVirtualA4Holes(){
     if (toggleA4Holes){
         toggleA4Holes = false;
         updateGraphics();
-    } else{
+    } else {
         toggleA4Holes = true;
         updateGraphics();
     }
@@ -978,8 +972,12 @@ window.addEventListener('resize', canvasSize);
 
 // used to redraw each object on the screen
 function updateGraphics() {
+    ctx.clearRect(0,0, canvas.width, canvas.height);
+    console.log(origoOffsetX, origoOffsetY);
+    drawGrid();
     ctx.fillStyle = "black";
-    ctx.fillRect(0,0, 10, 10);
+    ctx.fillRect(origoOffsetX, origoOffsetY, 10, 10);
+
 
     /*
     ctx.clearRect(sx, sy, (widthWindow / zoomValue), (heightWindow / zoomValue));
@@ -1193,7 +1191,7 @@ function drawGrid() {
         ctx.stroke();
         ctx.closePath();
     }
-    /*
+    
     for (var i = 0 + quadrantY; i < quadrantY + (heightWindow / zoomValue); i++) {
         if (i % 5 == 0) ctx.strokeStyle = "rgb(208, 208, 220)"; //This is a "thick" line
         else ctx.strokeStyle = "rgb(238, 238, 250)";
@@ -1203,7 +1201,7 @@ function drawGrid() {
         ctx.stroke();
         ctx.closePath();
     }
-    */
+    
 }
 
 // draws the whole background gridlayout
@@ -1872,7 +1870,7 @@ function switchToolbar(direction){
     if(toolbarState < 0){
       toolbarState = 3;
     }
-  }else if(direction == 'right'){
+  } else if(direction == 'right') {
     toolbarState++;
     if(toolbarState > 3){
       toolbarState = 0;
@@ -2091,6 +2089,20 @@ function pointDistance(point1, point2) {
 }
 
 function mousemoveevt(ev, t) {
+    console.log('Mouse down' +  md);
+    if(md == 1) {
+        canvasMouseX = (ev.clientX - canvas.offsetLeft) + origoOffsetX;
+        canvasMouseY = -(ev.clientY - canvas.offsetTop) + origoOffsetY;
+        origoOffsetX += (ev.clientX - canvas.offsetLeft) - mouseDownPosX;
+        origoOffsetY += (ev.clientY - canvas.offsetTop) - mouseDownPosY;
+        mouseDownPosX = ev.clientX - canvas.offsetLeft;
+        mouseDownPosY = ev.clientY - canvas.offsetTop;
+        reWrite();
+       
+    }
+
+    updateGraphics();
+    /*
     // Get canvasMouse coordinates for both X & Y.
     canvasMouseX = (ev.clientX - canvas.offsetLeft) * (1 / zoomValue);
     canvasMouseY = -(ev.clientY - canvas.offsetTop) * (1 / zoomValue);
@@ -2270,9 +2282,14 @@ function mousemoveevt(ev, t) {
             }
         }
     }
+    */
 }
 
 function mousedownevt(ev) {
+    mouseDownPosX = ev.clientX - canvas.offsetLeft;
+    mouseDownPosY = ev.clientY - canvas.offsetTop;
+
+    console.log("Mouse down: " + mouseDownPosX, mouseDownPosY);
 
     if(uimode == "Moved" && md != 4){
         uimode = "normal";
@@ -2365,6 +2382,8 @@ function handleSelect() {
 }
 
 function mouseupevt(ev) {
+    console.log("Origo offset distance: " + origoOffsetX, origoOffsetY);
+
     if (uimode == "CreateFigure" && md == 4) {
         if(figureType == "Text"){
             createText(currentMouseCoordinateX, currentMouseCoordinateY);
@@ -2615,8 +2634,10 @@ function movemode(e, t) {
         buttonStyle.style.visibility = 'visible';
 		buttonStyle.className = "pressed";
         canvas.style.cursor = "all-scroll";
+        /*
         canvas.addEventListener('mousedown', getMousePos, false);
         canvas.addEventListener('mouseup', mouseupcanvas, false);
+        */
     } else {
         buttonStyle.style.visibility = 'hidden';
 		buttonStyle.className = "unpressed";
@@ -2645,7 +2666,7 @@ function getMousePos(e) {
     mousedownY = e.clientY;
     canvas.addEventListener('mousemove', mousemoveposcanvas, false);
 }
-
+/*
 function mousemoveposcanvas(e) {
     mousemoveX = e.clientX;
     mousemoveY = e.clientY;
@@ -2656,10 +2677,11 @@ function mousemoveposcanvas(e) {
     mousedownX = mousemoveX;
     mousedownY = mousemoveY;
     moveValue = 1;
-    drawGrid();
+    //drawGrid();
     updateGraphics();
     reWrite();
 }
+*/
 
 function mouseupcanvas(e) {
     canvas.removeEventListener('mousemove', mousemoveposcanvas, false);
@@ -2918,6 +2940,8 @@ function objectAppearanceMenu(form) {
         loadFormIntoElement(form, 'diagram_forms.php?form=figureType');
     }
 }
+
+
 function changeObjectAppearance(object_type){
     /*
     * USES DIALOG TO CHANGE OBJECT APPEARANCE
@@ -2977,6 +3001,8 @@ function createCardinality(){
         diagram[diagram.length-1].cardinality[0] = ({"value": "", "symbolKind": 1})
     }
 }
+
+
 function changeCardinality(isUML){
     var val = document.getElementById('cardinality').value;
     var valUML;
