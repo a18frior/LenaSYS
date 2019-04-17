@@ -32,6 +32,9 @@ function Symbol(kind) {
     this.cardinality = [
       {"value": null, "isCorrectSide": null, "symbolKind": null, "axis": null, "parentBox": null}
     ];
+    this.isOval = false;
+    this.isRelation = false;
+    this.isLine = false;
     this.minWidth;
     this.minHeight;
     this.locked = false;
@@ -948,8 +951,9 @@ function Symbol(kind) {
     this.drawEntity = function(x1, y1, x2, y2){
         ctx.fillStyle = this.properties['symbolColor'];
         ctx.beginPath();
-        const id = uuidv4();
-        console.log("id: " + id);
+      //  const id = uuidv4();
+      //  console.log("id: " + id);
+
         if (this.properties['key_type'] == "Weak") {
             ctx.moveTo(x1 - 5, y1 - 5);
             ctx.lineTo(x2 + 5, y1 - 5);
@@ -958,7 +962,7 @@ function Symbol(kind) {
             ctx.lineTo(x1 - 5, y1 - 5);
             ctx.stroke();
             ctx.lineWidth = this.properties['lineWidth'];
-
+            var relationCorners = [];
             for(let i = 0; i < diagram.length; i++) {
                 if (diagram[i] != this) {
                     dtlx = diagram[i].corners().tl.x;
@@ -971,39 +975,96 @@ function Symbol(kind) {
                     dblx = diagram[i].corners().bl.x;
                     dbly = diagram[i].corners().bl.y;
                     
-                    // TODO: figure out why the object is not changed to a weak entity.
-                    // console.log (x1 + "x1, " + y1 + "y1, " + x2 + "x2, " + y2 + "y2");
-                    // console.log(dtlx + "dtlx, " + dtly + "dtly, " + dbrx + "dbrx, " + dbry, "dbry");
-                    // checks if the object is a rectangle
-                    if (!diagram[i].isRelation && !diagram[i].isOval && diagram[i].properties['key_type'] != 'weak') {
-                        console.log("Rectangle");
-                        console.log(diagram[i].properties['key_type']);
+                    
+                    if (diagram[i].isRelation) {
+                        var relationMiddleX = ((dtrx - dtlx) / 2)+ dtlx;
+                        var relationMiddleY = ((dtly - dbly) / 2) + dtly;
+                        console.log("Relation found");
+                        relationCorners.push(relationMiddleX, relationMiddleY);
+                        console.log(relationCorners.length);
+                        console.log("rMidX: ", relationMiddleX);
+                        console.log("rMidY: ", relationMiddleY);
                     }
-                    if (!diagram[i].isRelation && !diagram[i].isOval && (diagram[i].properties['key_type'] != 'weak')) {
-                        console.log("rect hej");
-                        if (x1 == dblx || x2 == dblx) {
-                            console.log("||||||||||||||||weak||||||||||||||||");
-                            console.log(diagram[i].properties['key_type']);
-                            diagram[i].properties['key_type'] = 'weak';
-                            ctx.moveTo(x1 - 5, y1 - 5);
-                            ctx.lineTo(x2 + 5, y1 - 5);
-                            ctx.lineTo(x2 + 5, y2 + 5);
-                            ctx.lineTo(x1 - 5, y2 + 5);
-                            ctx.lineTo(x1 - 5, y1 - 5);
-                            ctx.stroke();
-                            console.log(diagram[i].properties['key_type']);
-
+                    
+                    /*
+                    if (diagram[i].isLine) {
+                        console.log(y1 + "y1, " + dbly + "dbly, " + dbry + "dbry");
+                        console.log(y2 + "y2, " + dtly + "dtly, " + dtry + "dtry");
+                    }
+                    */
+                    if (!diagram[i].isOval && !diagram[i].isRelation) {
+                        // chcking if the line is already set to forced
+                        if (diagram[i].isLine && diagram[i].properties['key_type'] != 'Forced') {
+                            console.log(dtrx + "dtrx, " + dtlx + "dtlx");
+                            console.log(x1 + "x1; " + x2 + "x2");
+                            for (let j = 0; j < relationCorners.length; j++) {
+                                    if (x1 == relationCorners[j] || x2 == relationCorners[j]) {
+                                        console.log("relation connected to line");
+                                    }
+                            }
+                            
+                            if (x1 == dtrx || x2 == dtlx && dtly < y1 && dbly > y2) {
+                                console.log("object is connected to " + this);
+                                console.log(x1 + "x1, " + dtrx + "dtrx");
+                                console.log(diagram[i].isLine);
+                                if (diagram[i].isLine) {
+                                    diagram[i].properties['key_type'] = 'Forced';
+                                }
+                            } else if (x2 == dtlx || x1 == dtrx && dtry < y1 && dbry > y2) {
+                                if (diagram[i].isLine) {
+                                    diagram[i].properties['key_type'] = 'Forced';
+                                }
+                            } else if (y2 == dtly || y2 == dtry && dtlx < x1 && dtrx > x2) {
+                                if (diagram[i].isLine) {
+                                    diagram[i].properties['key_type'] = 'Forced';
+                                }
+                            } else if (y1 == dbly || y1 == dbry && dblx < x1 && dbrx > x2) {
+                                if (diagram[i].isLine) {
+                                    diagram[i].properties['key_type'] = 'Forced';
+                                }
+                            }
                         }
-                        if (x1 == dblx || x2 == dblx && ((y1 > dtly && y1 < dbly))) {
-                            console.log("- - - -middlepoint found");
-                            console.log("+ + + +rect: (" + dblx + "dblx); (" + x1 + "x1), (" + x2 + "x2)");
-                        }
+                    }              
+                } 
+            } 
+        } else {
+                for(let i = 0; i < diagram.length; i++) {
+                    if (diagram[i] != this) {
+                        // getting each corner of the objects in the diagram array
+                        dtlx = diagram[i].corners().tl.x;
+                        dtly = diagram[i].corners().tl.y;
+                        dbrx = diagram[i].corners().br.x;
+                        dbry = diagram[i].corners().br.y;
                         
-                    }                 
+                        dtrx = diagram[i].corners().tr.x;
+                        dtry = diagram[i].corners().tr.y;
+                        dblx = diagram[i].corners().bl.x;
+                        dbly = diagram[i].corners().bl.y;
+
+                        if (!diagram[i].isOval && !diagram[i].isRelation) {
+                            if (diagram[i].isLine && diagram[i].properties['key_type'] != 'normal') {
+                                if (x1 == dtrx || x2 == dtlx && dtly < y1 && dbly > y2) {
+                                    if (diagram[i].isLine) {
+                                        diagram[i].properties['key_type'] = 'normal';
+                                    }
+                                } else if (x2 == dtlx || x1 == dtrx && dtry < y1 && dbry > y2) {
+                                    if (diagram[i].isLine) {
+                                        diagram[i].properties['key_type'] = 'normal';
+                                    }
+                                }  else if (y2 == dtly || y2 == dtry && dtlx < x1 && dtrx > x2) {
+                                    if (diagram[i].isLine) {
+                                        diagram[i].properties['key_type'] = 'normal';
+                                    }
+                                } else if (y1 == dbly || y1 == dbry && dblx < x1 && dbrx > x2) {
+                                    if (diagram[i].isLine) {
+                                        diagram[i].properties['key_type'] = 'normal';
+                                    }
+                                }
+                            }
+                        }
                 }
             }
         }
-
         ctx.moveTo(x1, y1);
         ctx.lineTo(x2, y1);
         ctx.lineTo(x2, y2);
@@ -1026,6 +1087,7 @@ function Symbol(kind) {
     }
 
     this.drawLine = function(x1, y1, x2, y2){
+        this.isLine = true;
         //Checks if there is cardinality set on this object
         if(this.cardinality[0].value != "" && this.cardinality[0].value != null){
             //Updates x and y position
@@ -1061,50 +1123,6 @@ function Symbol(kind) {
             //Draw a white line in the middle to simulate space (2 line illusion);
             ctx.lineWidth = this.properties['lineWidth'];
             ctx.strokeStyle = "#fff";
-            /*
-            for(let i = 0; i < diagram.length; i++) {
-                if (diagram[i] != this) {
-                    dtlx = diagram[i].corners().tl.x;
-                    dtly = diagram[i].corners().tl.y;
-                    dbrx = diagram[i].corners().br.x;
-                    dbry = diagram[i].corners().br.y;
-                    
-                    dtrx = diagram[i].corners().tr.x;
-                    dtry = diagram[i].corners().tr.y;
-                    dblx = diagram[i].corners().bl.x;
-                    dbly = diagram[i].corners().bl.y;
-                    
-                    // TODO: figure out why the object is not changed to a weak entity.
-                    // console.log (x1 + "x1, " + y1 + "y1, " + x2 + "x2, " + y2 + "y2");
-                    // console.log(dtlx + "dtlx, " + dtly + "dtly, " + dbrx + "dbrx, " + dbry, "dbry");
-                    // checks if the object is a rectangle
-                    if (!diagram[i].isRelation && !diagram[i].isOval && diagram[i].properties['key_type'] != 'weak') {
-                        console.log("Rectangle");
-                        console.log(diagram[i].properties['key_type']);
-                    }
-                    if (!diagram[i].isRelation && !diagram[i].isOval && (diagram[i].properties['key_type'] != 'weak')) {
-                        console.log("rect hej");
-                        if (x1 == dblx || x2 == dblx) {
-                            console.log("||||||||||||||||weak||||||||||||||||");
-                            console.log(diagram[i].properties['key_type']);
-                            diagram[i].properties['key_type'] = 'weak';
-                            ctx.moveTo(x1 - 5, y1 - 5);
-                            ctx.lineTo(x2 + 5, y1 - 5);
-                            ctx.lineTo(x2 + 5, y2 + 5);
-                            ctx.lineTo(x1 - 5, y2 + 5);
-                            ctx.lineTo(x1 - 5, y1 - 5);
-                            ctx.stroke();
-                            console.log(diagram[i].properties['key_type']);
-
-                        }
-                        if (x1 == dblx || x2 == dblx && ((y1 > dtly && y1 < dbly))) {
-                            console.log("- - - -middlepoint found");
-                            console.log("+ + + +rect: (" + dblx + "dblx); (" + x1 + "x1), (" + x2 + "x2)");
-                        }
-                        
-                    }                 
-                }
-            }*/ 
         }
         else if (this.properties['key_type'] == "Derived") {
             ctx.lineWidth = this.properties['lineWidth'] * 2;
@@ -1199,7 +1217,7 @@ function Symbol(kind) {
     }
 
     this.drawRelation = function(x1, y1, x2, y2){
-        var isRelation = true;
+        this.isRelation = true;
         var midx = points[this.centerPoint].x;
         var midy = points[this.centerPoint].y;
         ctx.beginPath();
@@ -1523,7 +1541,7 @@ function Symbol(kind) {
 }
 
 this.drawOval = function (x1, y1, x2, y2) {
-    var isOval = true;
+    this.isOval = true;
     var middleX = x1 + ((x2 - x1) * 0.5);
     var middleY = y1 + ((y2 - y1) * 0.5);
     ctx.beginPath();
