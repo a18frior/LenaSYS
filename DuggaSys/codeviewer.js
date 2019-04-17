@@ -1752,7 +1752,7 @@ function Play(event)
 //------------------------------------------------------------
 function tbl(numberofboxes) {
   var tblstr = "<table class='table'><tbody>";
-  for (var i=0; i < numberofboxes; i++)
+  for (var i=0; i < numberofboxes; i++){
 
   tblstr+=`
   <tr>
@@ -1775,6 +1775,7 @@ function tbl(numberofboxes) {
   `;
 
   document.getElementById("tableview").innerHTML=tblstr;
+  }
 }
 
 //-----------------------------------------------------------------------------
