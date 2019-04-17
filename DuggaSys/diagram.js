@@ -20,10 +20,10 @@ AJAXService("get", {}, "DIAGRAM");
 */
 
 // Global settings
-var origoOffsetX = 0;
-var origoOffsetY = 0;
-var mouseDownPosX = 0;
-var mouseDownPosY = 0;
+var origoOffsetX = 0.0;
+var origoOffsetY = 0.0;
+var mouseDownPosX = 0.0;
+var mouseDownPosY = 0.0;
 var boundingRect;                   // Canvas offset in browser
 var canvasLeftClick = 0;
 
@@ -972,16 +972,32 @@ function canvasSize() {
 // Listen if the window is the resized
 window.addEventListener('resize', canvasSize);
 
+function mod(n, m) {
+  return ((n % m) + m) % m;
+}
+
 // used to redraw each object on the screen
 function updateGraphics() {
+	/*
     ctx.translate((-mouseDiffX), (-mouseDiffY));
     mouseDiffX = 0;
     mouseDiffY = 0;
-
-    ctx.clearRect(origoOffsetX, origoOffsetY, canvas.width, canvas.height);
+	ctx.clearRect(origoOffsetX, origoOffsetY, canvas.width, canvas.height);
     drawGrid();
     ctx.fillStyle = "black";
     ctx.fillRect(0, 0, 10, 10);
+    */
+
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    drawGrid();
+    ctx.fillStyle = "black";
+    ctx.fillRect(origoOffsetX, origoOffsetY, 10, 10);
+
+
+
+
+
 
 
     /*
@@ -1184,10 +1200,8 @@ function mod(n, p) {
 function drawGrid() {
 	let modX = origoOffsetX % 5;
 	let modY = origoOffsetY % 5;
-	console.log("MOD: " + modX, modY);
 	modX = mod(origoOffsetX, 5);
 	modY = mod(origoOffsetY, 5);
-	console.log("MOD IGEN: " + modX, modY);
 
     ctx.lineWidth = 1;
 
@@ -1195,27 +1209,28 @@ function drawGrid() {
     myOffsetY = origoOffsetY % gridSize;
 
     for(let i = 0; i < canvas.width / gridSize; i++){
-        if(i % 5 == modY) {
+        
+        if(mod(myOffsetY, 80) == mod(origoOffsetY, 80)) {
             ctx.strokeStyle = "rgb(208, 208, 220)";
         }
         else {
             ctx.strokeStyle = "rgb(238, 238, 250)";
         }
         ctx.beginPath();
-        ctx.moveTo(origoOffsetX, origoOffsetY + myOffsetY);
-        ctx.lineTo(canvas.width + origoOffsetX, origoOffsetY + myOffsetY);
+        ctx.moveTo(0, myOffsetY);
+        ctx.lineTo(canvas.width, myOffsetY);
         ctx.stroke();
         ctx.closePath();
-
-        if(i % 5 == modX) {
+		
+        if(mod(myOffsetX, 80) == mod(origoOffsetX, 80)) {
             ctx.strokeStyle = "rgb(208, 208, 220)";
         }
         else {
             ctx.strokeStyle = "rgb(238, 238, 250)";
         }
         ctx.beginPath();
-        ctx.moveTo(origoOffsetX + myOffsetX, origoOffsetY);
-        ctx.lineTo(origoOffsetX + myOffsetX, canvas.height + origoOffsetY);
+        ctx.moveTo(myOffsetX, 0);
+        ctx.lineTo(myOffsetX, canvas.height);
         ctx.stroke();
         ctx.closePath();
 
@@ -1437,8 +1452,8 @@ function removeLocalStorage() {
 function reWrite() {
     document.getElementById("valuesCanvas").innerHTML = "<p><b>Zoom:</b> "
      + Math.round((zoomValue * 100)) + "%" + "   |   <b>Coordinates:</b> "
-     + "X=" + canvasMouseX
-     + " & Y=" + Math.round(canvasMouseY) +  " | topLeft(" + origoOffsetX + ", " + origoOffsetY + ")</p>";
+     + "X=" + Math.round(canvasMouseX)
+     + " & Y=" + Math.round(canvasMouseY) +  " | topLeft(" + Math.round(-origoOffsetX) + ", " + Math.round(-origoOffsetY) + ")</p>";
 }
 
 //----------------------------------------
@@ -2157,8 +2172,8 @@ function pointDistance(point1, point2) {
 }
 
 function mousemoveevt(ev, t) {
-    canvasMouseX = (ev.clientX - boundingRect.x) + origoOffsetX;
-    canvasMouseY = (ev.clientY - boundingRect.y) + origoOffsetY;
+    canvasMouseX = (ev.clientX - boundingRect.x) - origoOffsetX;
+    canvasMouseY = (ev.clientY - boundingRect.y) - origoOffsetY;
 
     if(canvasLeftClick == 1) {
         mouseDiffX = (ev.clientX - boundingRect.x) - mouseDownPosX;
