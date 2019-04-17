@@ -1758,7 +1758,7 @@ function tbl(numberofboxes) {
   <tr>
   <td>
   <label>Kind:</label>
-  <select onchange="changeDirectory(kind);">
+  <select onchange="changeDirectory(this);">
     <option value="CODE">Code</option>
     <option value="DOCUMENT">Document</option>
     <option value="IFRAME">Preview</option>
@@ -1771,6 +1771,7 @@ function tbl(numberofboxes) {
     <option value="Example2">Example2</option>
   </select>
   </td>
+  </tr>
   `;
 
   document.getElementById("tableview").innerHTML=tblstr;
