@@ -759,10 +759,10 @@ function Symbol(kind) {
         this.properties['textSize'] = this.getFontsize();
         ctx.strokeStyle = (this.targeted || this.isHovered) ? "#F82" : this.properties['strokeColor'];
 
-        var x1 = points[this.topLeft].x;
-        var y1 = points[this.topLeft].y;
-        var x2 = points[this.bottomRight].x;
-        var y2 = points[this.bottomRight].y;
+        var x1 = points[this.topLeft].x + origoOffsetX;
+        var y1 = points[this.topLeft].y + origoOffsetY;
+        var x2 = points[this.bottomRight].x + origoOffsetX;
+        var y2 = points[this.bottomRight].y + origoOffsetY;
 
         if(this.locked){
             this.drawLock();

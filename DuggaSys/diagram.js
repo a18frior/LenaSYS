@@ -1911,7 +1911,7 @@ function initToolbox(){
     var element = document.getElementById('diagram-toolbar');
     var myCanvas = document.getElementById('myCanvas');
     boundingRect = myCanvas.getBoundingClientRect();
-    element.style.top = (bound.top+"px");
+    element.style.top = (boundingRect.top+"px");
     toolbarState = (localStorage.getItem("toolbarState") != null) ? localStorage.getItem("toolbarState") : 0;
     switchToolbar();
     element.style.display = "inline-block";
@@ -2135,7 +2135,7 @@ function zoomInMode() {
     var oldZoom = zoomValue;
     zoomValue = document.getElementById("ZoomSelect").value;
     var newScale = (zoomValue/oldZoom);
-    ctx.scale(newScale,newScale);
+    //ctx.scale(newScale,newScale);
     reWrite();
     updateGraphics();
 }
