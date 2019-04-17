@@ -1176,15 +1176,26 @@ function cross(xCoordinate, yCoordinate) {
     ctx.stroke();
 }
 
+function mod(n, p) {
+    if ( n < 0 ) { n = p - Math.abs(n) % p };
+    return n % p;
+}
+
 function drawGrid() {
+	let modX = origoOffsetX % 5;
+	let modY = origoOffsetY % 5;
+	console.log("MOD: " + modX, modY);
+	modX = mod(origoOffsetX, 5);
+	modY = mod(origoOffsetY, 5);
+	console.log("MOD IGEN: " + modX, modY);
+
     ctx.lineWidth = 1;
 
     myOffsetX = origoOffsetX % gridSize;
     myOffsetY = origoOffsetY % gridSize;
-    console.log(myOffsetX, myOffsetY);
 
     for(let i = 0; i < canvas.width / gridSize; i++){
-        if(i % 5 == 0){
+        if(i % 5 == modY) {
             ctx.strokeStyle = "rgb(208, 208, 220)";
         }
         else {
@@ -1196,6 +1207,12 @@ function drawGrid() {
         ctx.stroke();
         ctx.closePath();
 
+        if(i % 5 == modX) {
+            ctx.strokeStyle = "rgb(208, 208, 220)";
+        }
+        else {
+            ctx.strokeStyle = "rgb(238, 238, 250)";
+        }
         ctx.beginPath();
         ctx.moveTo(origoOffsetX + myOffsetX, origoOffsetY);
         ctx.lineTo(origoOffsetX + myOffsetX, canvas.height + origoOffsetY);
