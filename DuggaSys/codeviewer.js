@@ -1775,7 +1775,6 @@ function tbl(numberofboxes) {
   `;
 
   document.getElementById("tableview").innerHTML=tblstr;
-  document.getElementById("tableview").innerHTML="hej";
 }
 
 //-----------------------------------------------------------------------------
