@@ -41,11 +41,11 @@
 				echo "</div>";
 				//needs to calculate if the user has access to this button before writing out
 			?>
+
 	</div>
 </div>
 	<div id='accessTable' style='width:100%; white-space: nowrap;'></div>
 	<!--- Edit Section Dialog END --->
-
 	<?php
 		include '../Shared/loginbox.php';
 	?>
@@ -72,7 +72,6 @@
       </div>
 	</div>
 	<!-- Import Users Dialog END -->
-
 	<!-- Add User Dialog START -->
 	<div id='createUser' class='loginBoxContainer' style='display:none;'>
       <div class='loginBox' style='width:464px;'>
@@ -120,7 +119,6 @@
       		</div>
       </div>
 	</div>
-
 	<!-- Add User Dialog END -->
 	<!-- Edit User Dialog START -->
 	<div id='editUsers' class='loginBoxContainer' style='display:none;'>
@@ -129,7 +127,6 @@
       			<h3>Edit Users</h3>
       			<div class='cursorPointer' onclick='closeWindows();'>x</div>
       		</div>
-
       		<div style='padding:5px;'>
       			<input type='hidden' id='uid' value='Toddler' />
       			<div class='inputwrapper'><span>UserName:</span><input class='textinput' type='text' id='usrnme' value='User Name' /></div>
@@ -145,7 +142,6 @@
       </div>
 	</div>
 	<!-- Edit User Dialog END -->
-
 	<div class="fixed-action-button" id="fabButtonAcc">
 	    <a class="btn-floating fab-btn-lg noselect" id="fabBtn">+</a>
 	    <ol class="fab-btn-list" style="margin: 0; padding: 0; display: none;" reversed>
