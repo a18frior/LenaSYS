@@ -1133,7 +1133,6 @@ function setMode(mode){ //"CreateClass" yet to be implemented in .php
 
 $(document).ready(function(){
     $("#linebutton, #attributebutton, #entitybutton, #relationbutton, #squarebutton, #drawfreebutton, #classbutton, #drawtextbutton").click(function(){
-        canvas.removeEventListener('mousedown', getMousePos, false);
         canvas.removeEventListener('mousemove', mousemoveposcanvas, false);
         canvas.removeEventListener('mouseup', mouseupcanvas, false);
         $("#moveButton").removeClass("pressed").addClass("unpressed");
@@ -2066,7 +2065,7 @@ function mousemoveevt(ev, t) {
     canvasMouseX = (ev.clientX - boundingRect.x) - origoOffsetX;
     canvasMouseY = (ev.clientY - boundingRect.y) - origoOffsetY;
 
-    if(canvasLeftClick == 1) {
+    if(canvasLeftClick == 1 && uimode == "MoveAround") {
         mouseDiffX = (ev.clientX - boundingRect.x) - mouseDownPosX;
         mouseDiffY = (ev.clientY - boundingRect.y) - mouseDownPosY;
         origoOffsetX += mouseDiffX;
@@ -2600,7 +2599,6 @@ function resize() {
 // MOVING AROUND IN THE CANVAS
 //---------------------------------------
 function movemode(e, t) {
-    uimode = "MoveAround";
 	$(".buttonsStyle").removeClass("pressed").addClass("unpressed");
     var button = document.getElementById("moveButton").className;
     var buttonStyle = document.getElementById("moveButton");
@@ -2609,8 +2607,8 @@ function movemode(e, t) {
         buttonStyle.style.visibility = 'visible';
 		buttonStyle.className = "pressed";
         canvas.style.cursor = "all-scroll";
+    	uimode = "MoveAround";
         /*
-        canvas.addEventListener('mousedown', getMousePos, false);
         canvas.addEventListener('mouseup', mouseupcanvas, false);
         */
     } else {
@@ -2621,9 +2619,6 @@ function movemode(e, t) {
         mousemoveX = 0; mousemoveY = 0;
         mouseDiffX = 0; mouseDiffY = 0;
         canvas.style.cursor = "default";
-        canvas.removeEventListener('mousedown', getMousePos, false);
-        canvas.removeEventListener('mousemove', mousemoveposcanvas, false);
-        canvas.removeEventListener('mouseup', mouseupcanvas, false);
         uimode = "normal";
     }
 }
@@ -2636,11 +2631,6 @@ function deactivateMovearound(){
     movemode();
 }
 
-function getMousePos(e) {
-    mousedownX = e.clientX;
-    mousedownY = e.clientY;
-    canvas.addEventListener('mousemove', mousemoveposcanvas, false);
-}
 /*
 function mousemoveposcanvas(e) {
     mousemoveX = e.clientX;
