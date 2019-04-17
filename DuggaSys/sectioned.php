@@ -109,16 +109,13 @@
 					</td>
 					<td class='access menuButton' style='display: inline-block;'>
 							<div class='access menuButton'>
-									<input type='button' value='Mail' class='submit-button' title='Mail' onclick='mail();'/>
+									<input type='button' value='Mail' class='submit-button' title='Send an E-mail' onclick='mail();'/>
 							</div>
 					</td>
 				</tr>
-
 			</table>
-
 		</div>
 		<!-- Static Top Menu END -->
-
 		<!-- FAB Start -->
 		<div class='fixed-action-button sectioned' id="FABStatic" style="display:none">
 				<a class='btn-floating fab-btn-lg noselect' id='fabBtn'>+</a>
