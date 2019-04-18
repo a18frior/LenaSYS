@@ -92,7 +92,6 @@ var a = [], b = [], c = [];
 var selected_objects = [];              // Is used to store multiple selected objects
 var mousedownX = 0, mousedownY = 0;     // Is used to save the exact coordinants when pressing mousedown while in the "Move Around"-mode
 var mousemoveX = 0, mousemoveY = 0;     // Is used to save the exact coordinants when moving aorund while in the "Move Around"-mode
-var mouseDiffX = 0, mouseDiffY = 0;     // Saves to diff between mousedown and mousemove to know how much to translate the diagram
 var xPos = 0;
 var yPos = 0;
 var globalAppearanceValue = 0;          // Is used to see if the button was pressed or not
@@ -978,19 +977,9 @@ function mod(n, m) {
 
 // used to redraw each object on the screen
 function updateGraphics() {
-	/*
-    ctx.translate((-mouseDiffX), (-mouseDiffY));
-    mouseDiffX = 0;
-    mouseDiffY = 0;
-	ctx.clearRect(origoOffsetX, origoOffsetY, canvas.width, canvas.height);
-    drawGrid();
-    ctx.fillStyle = "black";
-    ctx.fillRect(0, 0, 10, 10);
-    */
-
-
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     drawGrid();
+    diagram.draw();
     ctx.fillStyle = "black";
     ctx.fillRect(origoOffsetX, origoOffsetY, 10, 10);
 
@@ -1133,8 +1122,6 @@ function setMode(mode){ //"CreateClass" yet to be implemented in .php
 
 $(document).ready(function(){
     $("#linebutton, #attributebutton, #entitybutton, #relationbutton, #squarebutton, #drawfreebutton, #classbutton, #drawtextbutton").click(function(){
-        canvas.removeEventListener('mousemove', mousemoveposcanvas, false);
-        canvas.removeEventListener('mouseup', mouseupcanvas, false);
         $("#moveButton").removeClass("pressed").addClass("unpressed");
         $("#moveButton").css("visibility", "hidden");
         if ($(this).hasClass("pressed")){
@@ -2056,48 +2043,31 @@ function pointDistance(point1, point2) {
 }
 
 function mousemoveevt(ev, t) {
-    canvasMouseX = (ev.clientX - boundingRect.x) - origoOffsetX;
-    canvasMouseY = (ev.clientY - boundingRect.y) - origoOffsetY;
+    canvasMouseX = ev.clientX - boundingRect.x - origoOffsetX;
+    canvasMouseY = ev.clientY - boundingRect.y - origoOffsetY;
+    currentMouseCoordinateX = canvasMouseX;
+    currentMouseCoordinateY = canvasMouseY;
 
     if(canvasLeftClick == 1 && uimode == "MoveAround") {
-        mouseDiffX = (ev.clientX - boundingRect.x) - mouseDownPosX;
-        mouseDiffY = (ev.clientY - boundingRect.y) - mouseDownPosY;
-        origoOffsetX += mouseDiffX;
-        origoOffsetY += mouseDiffY;
-        mouseDownPosX = ev.clientX - boundingRect.x;
-        mouseDownPosY = ev.clientY - boundingRect.y;
+        origoOffsetX += (ev.clientX - boundingRect.x - origoOffsetX) - mouseDownPosX;
+        origoOffsetY += (ev.clientY - boundingRect.y - origoOffsetY) - mouseDownPosY;
+        mouseDownPosX = ev.clientX - boundingRect.x - origoOffsetX;
+        mouseDownPosY = ev.clientY - boundingRect.y - origoOffsetY;
     }
 
     reWrite();
     updateGraphics();
-    /*
-    // Get canvasMouse coordinates for both X & Y.
-    canvasMouseX = (ev.clientX - canvas.offsetLeft) * (1 / zoomValue);
-    canvasMouseY = -(ev.clientY - canvas.offsetTop) * (1 / zoomValue);
-    // Call reWrite() to update the canvasMouseX & canvasMouseY on the page.
-    reWrite();
-    xPos = ev.clientX;
-    yPos = ev.clientY;
-    oldMouseCoordinateX = currentMouseCoordinateX;
-    oldMouseCoordinateY = currentMouseCoordinateY;
-    hovobj = diagram.itemClicked();
-    if (ev.pageX || ev.pageY == 0) { // Chrome. Tracking mouse movement
-        currentMouseCoordinateX = (((ev.pageX - canvas.offsetLeft) * (1 / zoomValue)) + (sx * (1 / zoomValue)));
-        currentMouseCoordinateY = (((ev.pageY - canvas.offsetTop) * (1 / zoomValue)) + (sy * (1 / zoomValue)));
-    } else if (ev.layerX || ev.layerX == 0) { // Firefox. Tracking mouse movement
-        currentMouseCoordinateX = (((ev.layerX - canvas.offsetLeft) * (1 / zoomValue)) + (sx * (1 / zoomValue)));
-        currentMouseCoordinateY = (((ev.layerY - canvas.offsetTop) * (1 / zoomValue)) + (sy * (1 / zoomValue)));
-    } else if (ev.offsetX || ev.offsetX == 0) { // Opera. Tracking mouse movement
-        currentMouseCoordinateX = (((ev.offsetX - canvas.offsetLeft) * (1 / zoomValue)) + (sx * (1 / zoomValue)));
-        currentMouseCoordinateY = (((ev.offsetY - canvas.offsetTop) * (1 / zoomValue)) + (sy * (1 / zoomValue)));
-    }
+    
+	console.log(md);
     if (md == 0) {
         // Select a new point only if mouse is not already moving a point or selection box
         sel = diagram.closestPoint(currentMouseCoordinateX, currentMouseCoordinateY);
         // If mouse is not pressed highlight closest point
         points.clearAllSelects();
         movobj = diagram.itemClicked();
-    } else if (md == 1) {
+    }
+	
+    else if (md == 1) {
         // If mouse is pressed down and no point is close show selection box
     } else if (md == 2) {
         if(!sel.point.fake){
@@ -2135,7 +2105,10 @@ function mousemoveevt(ev, t) {
     } else {
         diagram.checkForHover(currentMouseCoordinateX, currentMouseCoordinateY);
     }
+
+
     updateGraphics();
+    
     // Draw select or create dotted box
     if (md == 4) {
         if (figureType == "Free" && uimode == "CreateFigure"){
@@ -2250,14 +2223,13 @@ function mousemoveevt(ev, t) {
             }
         }
     }
-    */
 }
 
 function mousedownevt(ev) {
     canvasLeftClick = 1;
 
-    mouseDownPosX = ev.clientX - boundingRect.x;
-    mouseDownPosY = ev.clientY - boundingRect.y;
+    mouseDownPosX = ev.clientX - boundingRect.x - origoOffsetX;
+    mouseDownPosY = ev.clientY - boundingRect.y - origoOffsetY;
 
     if(uimode == "Moved" && md != 4){
         uimode = "normal";
@@ -2265,7 +2237,6 @@ function mousedownevt(ev) {
     }
 
     if (uimode == "CreateLine") {
-
         md = 4;            // Box select or Create mode.
         startMouseCoordinateX = currentMouseCoordinateX;
         startMouseCoordinateY = currentMouseCoordinateY;
@@ -2602,16 +2573,12 @@ function movemode(e, t) {
 		buttonStyle.className = "pressed";
         canvas.style.cursor = "all-scroll";
     	uimode = "MoveAround";
-        /*
-        canvas.addEventListener('mouseup', mouseupcanvas, false);
-        */
     } else {
         buttonStyle.style.visibility = 'hidden';
 		buttonStyle.className = "unpressed";
         canvas.addEventListener('dblclick', doubleclick, false);
         mousedownX = 0; mousedownY = 0;
         mousemoveX = 0; mousemoveY = 0;
-        mouseDiffX = 0; mouseDiffY = 0;
         canvas.style.cursor = "default";
         uimode = "normal";
     }
@@ -2624,28 +2591,6 @@ function activateMovearound(){
 function deactivateMovearound(){
     movemode();
 }
-
-/*
-function mousemoveposcanvas(e) {
-    mousemoveX = e.clientX;
-    mousemoveY = e.clientY;
-    mouseDiffX = (mousedownX - mousemoveX);
-    mouseDiffY = (mousedownY - mousemoveY);
-    sx += mouseDiffX;
-    sy += mouseDiffY;
-    mousedownX = mousemoveX;
-    mousedownY = mousemoveY;
-    moveValue = 1;
-    //drawGrid();
-    updateGraphics();
-    reWrite();
-}
-*/
-
-function mouseupcanvas(e) {
-    canvas.removeEventListener('mousemove', mousemoveposcanvas, false);
-}
-
 
 //--------------------------------------------------------------------
 // Basic functionality
