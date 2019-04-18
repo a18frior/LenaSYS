@@ -1499,6 +1499,7 @@ function Path() {
     // Performs a delta-move on all points in a path
     //--------------------------------------------------------------------
     this.move = function(movex, movey) {
+        console.log("HEJ");
         for (var i = 0; i < this.segments.length; i++) {
             points[this.segments[i].pa].x += movex;
             points[this.segments[i].pa].y += movey;
@@ -1602,15 +1603,15 @@ function Path() {
 
             ctx.beginPath();
             var pseg = this.segments[0];
-            ctx.moveTo(points[pseg.pa].x, points[pseg.pa].y);
+            ctx.moveTo(pixelsToCanvas(points[pseg.pa].x).x, pixelsToCanvas(0, points[pseg.pa].y).y);
             for (var i = 0; i < this.segments.length; i++) {
                 var seg = this.segments[i];
                 // If we start over on another sub-path, we must start with a moveto
                 if (seg.pa != pseg.pb) {
-                    ctx.moveTo(points[seg.pa].x, points[seg.pa].y);
+                    ctx.moveTo(pixelsToCanvas(points[seg.pa].x).x, pixelsToCanvas(0, points[seg.pa].y).y);
                 }
                 // Draw current line
-                ctx.lineTo(points[seg.pb].x, points[seg.pb].y);
+                ctx.lineTo(pixelsToCanvas(points[seg.pb].x).x, pixelsToCanvas(0, points[seg.pb].y).y);
                 // Remember previous segment
                 pseg = seg;
             }
@@ -1636,12 +1637,12 @@ function Path() {
                 var segb = points[this.segments[i].pb];
                 if(this.targeted){
                     ctx.beginPath();
-                    ctx.arc(seg.x,seg.y,5,0,2*Math.PI,false);
+                    ctx.arc(pixelsToCanvas(seg.x).x, pixelsToCanvas(0, seg.y).y, 5,0,2*Math.PI,false);
                     ctx.fillStyle = '#F82';
                     ctx.fill();
 
                     ctx.beginPath();
-                    ctx.arc(segb.x,segb.y,5,0,2*Math.PI,false);
+                    ctx.arc(pixelsToCanvas(segb.x).x, pixelsToCanvas(0, segb.y).y, 5,0,2*Math.PI,false);
                     ctx.fillStyle = '#F82';
                     ctx.fill();
                 }
@@ -1979,7 +1980,7 @@ function figureSquare() {
         p1 = points.addPoint(currentMouseCoordinateX, currentMouseCoordinateY, false);
         isFirstPoint = false;
     } else {
-        p3 = points.addPoint(currentMouseCoordinateX, currentMouseCoordinateY, false);
+        p3 = points.addPoint(currentMouseCoordinateX, currentMouseCoordinateY , false);
         p2 = points.addPoint(points[p1].x, points[p3].y, false);
         p4 = points.addPoint(points[p3].x, points[p1].y, false);
         figurePath.addsegment(1, p1, p2);

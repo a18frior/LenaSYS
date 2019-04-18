@@ -2047,6 +2047,11 @@ function mousemoveevt(ev, t) {
     currentMouseCoordinateX = canvasMouseX;
     currentMouseCoordinateY = canvasMouseY;
 
+    let currentX = pixelsToCanvas(currentMouseCoordinateX).x;
+    let startX = pixelsToCanvas(startMouseCoordinateX).x;
+    let currentY = pixelsToCanvas(0, currentMouseCoordinateY).y;
+    let startY = pixelsToCanvas(0, startMouseCoordinateY).y;
+
     if(canvasLeftClick == 1 && uimode == "MoveAround") {
         origoOffsetX += (ev.clientX - boundingRect.x - origoOffsetX) - mouseDownPosX;
         origoOffsetY += (ev.clientY - boundingRect.y - origoOffsetY) - mouseDownPosY;
@@ -2100,23 +2105,23 @@ function mousemoveevt(ev, t) {
         }
     }
     if (md == 4 && uimode == "normal") {
-    	console.log(currentMouseCoordinateX, currentMouseCoordinateY);
-        diagram.targetItemsInsideSelectionBox(currentMouseCoordinateX, currentMouseCoordinateY, startMouseCoordinateX, startMouseCoordinateY, true);
+    	console.log(currentX, currentY);
+        diagram.targetItemsInsideSelectionBox(currentX, currentY, startX, startY, true);
     } else {
-        diagram.checkForHover(currentMouseCoordinateX, currentMouseCoordinateY);
+        diagram.checkForHover(currentX, currentY);
     }
 
 
     updateGraphics();
-    
+    console.log(uimode, md);
     // Draw select or create dotted box
     if (md == 4) {
         if (figureType == "Free" && uimode == "CreateFigure"){
             if(p2 != null && !(isFirstPoint)) {
                 ctx.setLineDash([3, 3]);
                 ctx.beginPath();
-                ctx.moveTo(startMouseCoordinateX, startMouseCoordinateY);
-                ctx.lineTo(currentMouseCoordinateX, currentMouseCoordinateY);
+                ctx.moveTo(startX, startY);
+                ctx.lineTo(currentX, currentY);
                 ctx.strokeStyle = "#000";
                 ctx.stroke();
                 ctx.setLineDash([]);
@@ -2129,11 +2134,11 @@ function mousemoveevt(ev, t) {
         }else if(uimode == "CreateFigure" && figureType == "Square"){
             ctx.setLineDash([3, 3]);
             ctx.beginPath(1);
-            ctx.moveTo(startMouseCoordinateX, startMouseCoordinateY);
-            ctx.lineTo(currentMouseCoordinateX, startMouseCoordinateY);
-            ctx.lineTo(currentMouseCoordinateX, currentMouseCoordinateY);
-            ctx.lineTo(startMouseCoordinateX, currentMouseCoordinateY);
-            ctx.lineTo(startMouseCoordinateX, startMouseCoordinateY);
+            ctx.moveTo(startX, startY);
+            ctx.lineTo(currentX, startY);
+            ctx.lineTo(currentX, currentY);
+            ctx.lineTo(startX, currentY);
+            ctx.lineTo(startX, startY);
             ctx.strokeStyle = "#d51";
             ctx.stroke();
             ctx.setLineDash([]);
@@ -2146,11 +2151,11 @@ function mousemoveevt(ev, t) {
         }else if (uimode == "CreateEREntity"){
             ctx.setLineDash([3, 3]);
             ctx.beginPath(1);
-            ctx.moveTo(startMouseCoordinateX, startMouseCoordinateY);
-            ctx.lineTo(currentMouseCoordinateX, startMouseCoordinateY);
-            ctx.lineTo(currentMouseCoordinateX, currentMouseCoordinateY);
-            ctx.lineTo(startMouseCoordinateX, currentMouseCoordinateY);
-            ctx.lineTo(startMouseCoordinateX, startMouseCoordinateY);
+            ctx.moveTo(startX, startY);
+            ctx.lineTo(currentX, startY);
+            ctx.lineTo(currentX, currentY);
+            ctx.lineTo(startX, currentY);
+            ctx.lineTo(startX, startY);
             ctx.strokeStyle = "#000";
             ctx.stroke();
             ctx.setLineDash([]);
@@ -2162,14 +2167,14 @@ function mousemoveevt(ev, t) {
             }
         } else if(uimode == "CreateERRelation"){
             ctx.setLineDash([3, 3]);
-            var midx = startMouseCoordinateX+((currentMouseCoordinateX-startMouseCoordinateX)/2);
-            var midy = startMouseCoordinateY+((currentMouseCoordinateY-startMouseCoordinateY)/2);
+            var midx = startX+((currentX-startX)/2);
+            var midy = startY+((currentY-startY)/2);
             ctx.beginPath(1);
-            ctx.moveTo(midx, startMouseCoordinateY);
-            ctx.lineTo(currentMouseCoordinateX, midy);
-            ctx.lineTo(midx, currentMouseCoordinateY);
-            ctx.lineTo(startMouseCoordinateX, midy);
-            ctx.lineTo(midx, startMouseCoordinateY);
+            ctx.moveTo(midx, startY);
+            ctx.lineTo(currentX, midy);
+            ctx.lineTo(midx, currentY);
+            ctx.lineTo(startX, midy);
+            ctx.lineTo(midx, startY);
             ctx.strokeStyle = "#000";
             ctx.stroke();
             ctx.setLineDash([]);
@@ -2181,7 +2186,7 @@ function mousemoveevt(ev, t) {
             }
         } else if(uimode == "CreateERAttr"){
             ctx.setLineDash([3, 3]);
-            drawOval(startMouseCoordinateX, startMouseCoordinateY, currentMouseCoordinateX, currentMouseCoordinateY);
+            drawOval(startX, startY, currentX, currentY);
             ctx.strokeStyle = "#000";
             ctx.stroke();
             ctx.setLineDash([]);
@@ -2194,8 +2199,8 @@ function mousemoveevt(ev, t) {
             // Path settings for preview line
             ctx.setLineDash([3, 3]);
             ctx.beginPath();
-            ctx.moveTo(startMouseCoordinateX, startMouseCoordinateY);
-            ctx.lineTo(currentMouseCoordinateX, currentMouseCoordinateY);
+            ctx.moveTo(startX, startY);
+            ctx.lineTo(currentX, currentY);
             ctx.strokeStyle = "#000";
             ctx.stroke();
             ctx.setLineDash([]);
@@ -2206,16 +2211,16 @@ function mousemoveevt(ev, t) {
             }
         } else {
             ctx.setLineDash([3, 3]);
-            ctx.beginPath(1);
-            ctx.moveTo(startMouseCoordinateX, startMouseCoordinateY);
-            ctx.lineTo(currentMouseCoordinateX, startMouseCoordinateY);
-            ctx.lineTo(currentMouseCoordinateX, currentMouseCoordinateY);
-            ctx.lineTo(startMouseCoordinateX, currentMouseCoordinateY);
-            ctx.lineTo(startMouseCoordinateX, startMouseCoordinateY);
+            ctx.beginPath();
+            ctx.moveTo(startX, startY);
+            ctx.lineTo(currentX, startY);
+            ctx.lineTo(currentX, currentY);
+            ctx.lineTo(startX, currentY);
+            ctx.lineTo(startX, startY);
             ctx.strokeStyle = "#000";
             ctx.stroke();
             ctx.setLineDash([]);
-            ctx.closePath(1);
+            ctx.closePath();
             if (ghostingCrosses == true) {
                 crossStrokeStyle1 = "rgba(255, 102, 68, 0.0)";
                 crossStrokeStyle2 = "rgba(255, 102, 68, 0.0)";
@@ -2223,6 +2228,14 @@ function mousemoveevt(ev, t) {
             }
         }
     }
+}
+
+
+function pixelsToCanvas(pixelX, pixelY){
+	return {
+		x: pixelX + origoOffsetX,
+		y: pixelY + origoOffsetY
+	}
 }
 
 function mousedownevt(ev) {
@@ -2321,7 +2334,12 @@ function handleSelect() {
 }
 
 function mouseupevt(ev) {
-    canvasLeftClick = 0;
+    let currentX = pixelsToCanvas(currentMouseCoordinateX).x;
+    let startX = pixelsToCanvas(startMouseCoordinateX).x;
+    let currentY = pixelsToCanvas(0, currentMouseCoordinateY).y;
+    let startY = pixelsToCanvas(0, startMouseCoordinateY).y;
+
+   	canvasLeftClick = 0;
 
     if (uimode == "CreateFigure" && md == 4) {
         if(figureType == "Text"){
