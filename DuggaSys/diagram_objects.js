@@ -7,11 +7,11 @@
 //--------------------------------------------------------------------
 // Symbol - stores a diagram symbol
 //--------------------------------------------------------------------
-function Symbol(kind) {
+function Symbol(symbolkind) {
     this.kind = 2;                  // Diagram object kind is always 2 for symbols
     this.name = "New Class";        // New Class default name in new class
     this.targeted = false;
-    this.symbolkind = kind;         // Symbol kind (1 UML diagram symbol 2 ER Attribute 3 ER Entity 4 Lines 5 ER Relation)
+    this.symbolkind = symbolkind;   // Symbol kind (1 UML diagram symbol 2 ER Attribute 3 ER Entity 4 Lines 5 ER Relation)
     this.operations = [];           // Operations array
     this.attributes = [];           // Attributes array
     this.textLines = [];            // Free text array
@@ -1980,7 +1980,7 @@ function figureSquare() {
         p1 = points.addPoint(currentMouseCoordinateX, currentMouseCoordinateY, false);
         isFirstPoint = false;
     } else {
-        p3 = points.addPoint(currentMouseCoordinateX, currentMouseCoordinateY , false);
+        p3 = points.addPoint(currentMouseCoordinateX, currentMouseCoordinateY, false);
         p2 = points.addPoint(points[p1].x, points[p3].y, false);
         p4 = points.addPoint(points[p3].x, points[p1].y, false);
         figurePath.addsegment(1, p1, p2);

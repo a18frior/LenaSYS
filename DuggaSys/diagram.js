@@ -2062,7 +2062,6 @@ function mousemoveevt(ev, t) {
     reWrite();
     updateGraphics();
     
-	console.log(md);
     if (md == 0) {
         // Select a new point only if mouse is not already moving a point or selection box
         sel = diagram.closestPoint(currentMouseCoordinateX, currentMouseCoordinateY);
@@ -2113,9 +2112,8 @@ function mousemoveevt(ev, t) {
 
 
     updateGraphics();
-    console.log(uimode, md);
     // Draw select or create dotted box
-    if (md == 4) {
+    if (md == 4 && uimode != "MoveAround") {
         if (figureType == "Free" && uimode == "CreateFigure"){
             if(p2 != null && !(isFirstPoint)) {
                 ctx.setLineDash([3, 3]);
@@ -2334,11 +2332,6 @@ function handleSelect() {
 }
 
 function mouseupevt(ev) {
-    let currentX = pixelsToCanvas(currentMouseCoordinateX).x;
-    let startX = pixelsToCanvas(startMouseCoordinateX).x;
-    let currentY = pixelsToCanvas(0, currentMouseCoordinateY).y;
-    let startY = pixelsToCanvas(0, startMouseCoordinateY).y;
-
    	canvasLeftClick = 0;
 
     if (uimode == "CreateFigure" && md == 4) {
