@@ -90,10 +90,7 @@ var classTemplate = {
 };
 var a = [], b = [], c = [];
 var selected_objects = [];              // Is used to store multiple selected objects
-var mousedownX = 0, mousedownY = 0;     // Is used to save the exact coordinants when pressing mousedown while in the "Move Around"-mode
-var mousemoveX = 0, mousemoveY = 0;     // Is used to save the exact coordinants when moving aorund while in the "Move Around"-mode
-var xPos = 0;
-var yPos = 0;
+
 var globalAppearanceValue = 0;          // Is used to see if the button was pressed or not
 var diagramNumber = 0;                  // Is used for localStorage so that undo and redo works.
 var diagramNumberHistory = 0;           // Is used for undo and redo
@@ -979,7 +976,9 @@ function mod(n, m) {
 function updateGraphics() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     drawGrid();
+    diagram.sortConnectors();
     diagram.draw();
+    points.drawPoints();
     ctx.fillStyle = "black";
     ctx.fillRect(origoOffsetX, origoOffsetY, 10, 10);
 
@@ -2101,6 +2100,7 @@ function mousemoveevt(ev, t) {
         }
     }
     if (md == 4 && uimode == "normal") {
+    	console.log(currentMouseCoordinateX, currentMouseCoordinateY);
         diagram.targetItemsInsideSelectionBox(currentMouseCoordinateX, currentMouseCoordinateY, startMouseCoordinateX, startMouseCoordinateY, true);
     } else {
         diagram.checkForHover(currentMouseCoordinateX, currentMouseCoordinateY);
@@ -2498,16 +2498,10 @@ function mouseupevt(ev) {
 }
 
 function doubleclick(ev) {
-    var posistionX = (sx + xPos);
-    var posistionY = (sy + yPos);
-
-    var posX = currentMouseCoordinateX;
-    var posY = currentMouseCoordinateY;
-
     if (lastSelectedObject != -1 && diagram[lastSelectedObject].targeted == true) {
         openAppearanceDialogMenu();
     } else {
-        createText(posX, posY);
+        createText(currentMouseCoordinateX, currentMouseCoordinateY);
     }
 }
 
@@ -2577,8 +2571,6 @@ function movemode(e, t) {
         buttonStyle.style.visibility = 'hidden';
 		buttonStyle.className = "unpressed";
         canvas.addEventListener('dblclick', doubleclick, false);
-        mousedownX = 0; mousedownY = 0;
-        mousemoveX = 0; mousemoveY = 0;
         canvas.style.cursor = "default";
         uimode = "normal";
     }
