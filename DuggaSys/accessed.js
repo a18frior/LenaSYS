@@ -375,7 +375,7 @@ function returnedAccess(data) {
 			firstname:"First name",
 			lastname:"Last name",
 			class:"Class",
-			modified:"Added",
+			modified:"Changed",
 			examiner:"Examiner",
 			vers:"Version",
 			access:"Access",
