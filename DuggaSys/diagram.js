@@ -1197,31 +1197,13 @@ function mod(n, p) {
 }
 
 function drawGrid() {
-	let modX = origoOffsetX % 5;
-	let modY = origoOffsetY % 5;
-	modX = mod(origoOffsetX, 5);
-	modY = mod(origoOffsetY, 5);
-
     ctx.lineWidth = 1;
 
     myOffsetX = origoOffsetX % gridSize;
     myOffsetY = origoOffsetY % gridSize;
 
     for(let i = 0; i < canvas.width / gridSize; i++){
-        
-        if(mod(myOffsetY, 80) == mod(origoOffsetY, 80)) {
-            ctx.strokeStyle = "rgb(208, 208, 220)";
-        }
-        else {
-            ctx.strokeStyle = "rgb(238, 238, 250)";
-        }
-        ctx.beginPath();
-        ctx.moveTo(0, myOffsetY);
-        ctx.lineTo(canvas.width, myOffsetY);
-        ctx.stroke();
-        ctx.closePath();
-		
-        if(mod(myOffsetX, 80) == mod(origoOffsetX, 80)) {
+        if(mod(myOffsetX, gridSize * 5) == mod(origoOffsetX, gridSize * 5)) {
             ctx.strokeStyle = "rgb(208, 208, 220)";
         }
         else {
@@ -1230,6 +1212,18 @@ function drawGrid() {
         ctx.beginPath();
         ctx.moveTo(myOffsetX, 0);
         ctx.lineTo(myOffsetX, canvas.height);
+        ctx.stroke();
+        ctx.closePath();
+
+        if(mod(myOffsetY, gridSize * 5) == mod(origoOffsetY, gridSize * 5)) {
+            ctx.strokeStyle = "rgb(208, 208, 220)";
+        }
+        else {
+            ctx.strokeStyle = "rgb(238, 238, 250)";
+        }
+        ctx.beginPath();
+        ctx.moveTo(0, myOffsetY);
+        ctx.lineTo(canvas.width, myOffsetY);
         ctx.stroke();
         ctx.closePath();
 
