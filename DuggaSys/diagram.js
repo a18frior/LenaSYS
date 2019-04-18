@@ -37,8 +37,6 @@ var currentMouseCoordinateX = 0;
 var currentMouseCoordinateY = 0;
 var startMouseCoordinateX = 0;
 var startMouseCoordinateY = 0;
-var oldMouseCoordinateX = 0;
-var oldMouseCoordinateY = 0;
 var canvasMouseX = 0;               // Variable for the mouse coordinate X in the canvas on the diagram page.
 var canvasMouseY = 0;               // Variable for the mouse coordinate Y in the canvas on the diagram page.
 var zoomValue = 1.00;
@@ -2098,16 +2096,17 @@ function mousemoveevt(ev, t) {
                         currentMouseCoordinateY = Math.round(currentMouseCoordinateY / gridSize) * gridSize;
                     }
 
-                    diagram[i].move(currentMouseCoordinateX - oldMouseCoordinateX, currentMouseCoordinateY - oldMouseCoordinateY);
+                    diagram[i].move(currentMouseCoordinateX - startMouseCoordinateX, currentMouseCoordinateY - startMouseCoordinateY);
+                    startMouseCoordinateX = currentMouseCoordinateX;
+                    startMouseCoordinateY = currentMouseCoordinateY;
                 }
             }
         }
     }
     if (md == 4 && uimode == "normal") {
-    	console.log(currentX, currentY);
-        diagram.targetItemsInsideSelectionBox(currentX, currentY, startX, startY, true);
+        diagram.targetItemsInsideSelectionBox(currentMouseCoordinateX, currentMouseCoordinateY, startMouseCoordinateX, startMouseCoordinateY, true);
     } else {
-        diagram.checkForHover(currentX, currentY);
+        diagram.checkForHover(currentMouseCoordinateX, currentMouseCoordinateY);
     }
 
 

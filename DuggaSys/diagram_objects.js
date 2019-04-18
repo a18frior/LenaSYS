@@ -581,6 +581,7 @@ function Symbol(symbolkind) {
     // Updates all points referenced by symbol
     //--------------------------------------------------------------------
     this.move = function (movex, movey) {
+        console.log("MOVEX: " + movex, movey);
         if(this.locked) return;
         if(this.symbolkind != 4){
             points[this.topLeft].x += movex;
