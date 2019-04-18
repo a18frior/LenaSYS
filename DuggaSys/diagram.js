@@ -2412,7 +2412,7 @@ function mouseupevt(ev) {
     // Code for creating symbols when mouse is released
     // Symbol (1 UML diagram symbol 2 ER Attribute 3 ER Entity 4 Lines 5 ER Relation)
     if (uimode == "CreateClass" && md == 4) {
-        classB = new Symbol(1); // UML
+        var classB = new Symbol(1); // UML
         classB.name = "New" + diagram.length;
         classB.operations.push({text:"- makemore()"});
         classB.attributes.push({text:"+ height:Integer"});
@@ -2440,16 +2440,16 @@ function mouseupevt(ev) {
         diagram[lastSelectedObject].targeted = true;
         selected_objects.push(diagram[lastSelectedObject]);
     } else if (uimode == "CreateEREntity" && md == 4) {
-        erEnityA = new Symbol(3); // ER entity
-        erEnityA.name = "Entity" + diagram.length;
-        erEnityA.topLeft = p1;
-        erEnityA.bottomRight = p2;
-        erEnityA.centerPoint = p3;
-        erEnityA.arity = [];
-        erEnityA.object_type = "";
-        erEnityA.fontColor = "#000";
-        erEnityA.font = "Arial";
-        diagram.push(erEnityA);
+        erEntityA = new Symbol(3); // ER entity
+        erEntityA.name = "Entity" + diagram.length;
+        erEntityA.topLeft = p1;
+        erEntityA.bottomRight = p2;
+        erEntityA.centerPoint = p3;
+        erEntityA.arity = [];
+        erEntityA.object_type = "";
+        erEntityA.fontColor = "#000";
+        erEntityA.font = "Arial";
+        diagram.push(erEntityA);
         //selecting the newly created enitity and open the dialogmenu.
         lastSelectedObject = diagram.length -1;
         diagram[lastSelectedObject].targeted = true;

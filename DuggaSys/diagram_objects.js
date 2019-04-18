@@ -838,7 +838,7 @@ function Symbol(symbolkind) {
     //---------------------------------------------------------
     this.drawUML = function(x1, y1, x2, y2)
     {
-        var midy = points[this.middleDivider].y;
+        var midy = pixelsToCanvas(0, points[this.middleDivider].y).y;
         ctx.font = "bold " + parseInt(this.properties['textSize']) + "px Arial";
 
         // Clear Class Box
