@@ -783,7 +783,8 @@ function initializeCanvas() {
     setInterval(function() {Save()}, 10000);
     widthWindow = (window.innerWidth - 20);
     heightWindow = (window.innerHeight - 80);
-    document.getElementById("canvasDiv").innerHTML = "<canvas id='myCanvas' style='border:1px solid #000000;' width='" + (widthWindow * zoomValue) + "' height='" + (heightWindow * zoomValue) + "' onmousemove='mousemoveevt(event,this);' onmousedown='mousedownevt(event);' onmouseup='mouseupevt(event);'></canvas>";
+    document.getElementById("canvasDiv").innerHTML = "<canvas id='myCanvas' style='border:1px solid #000000;' width='" + (widthWindow * zoomValue) + "' height='" + (heightWindow * zoomValue) + 
+    						"' onmousemove='mousemoveevt(event,this);' onmousedown='mousedownevt(event);' onmouseup='mouseupevt(event);'></canvas>";
     document.getElementById("valuesCanvas").innerHTML = "<p><b>Zoom:</b> " + Math.round((zoomValue * 100)) + "%   |   <b>Coordinates:</b> X=" + sx + " & Y=" + sy + "</p>";
     canvas = document.getElementById("myCanvas");
     if (canvas.getContext) {
@@ -2045,6 +2046,7 @@ function mousemoveevt(ev, t) {
     currentMouseCoordinateX = canvasMouseX;
     currentMouseCoordinateY = canvasMouseY;
 
+
     let currentX = pixelsToCanvas(currentMouseCoordinateX).x;
     let startX = pixelsToCanvas(startMouseCoordinateX).x;
     let currentY = pixelsToCanvas(0, currentMouseCoordinateY).y;
@@ -2240,6 +2242,10 @@ function mousedownevt(ev) {
 
     mouseDownPosX = ev.clientX - boundingRect.x - origoOffsetX;
     mouseDownPosY = ev.clientY - boundingRect.y - origoOffsetY;
+    currentMouseCoordinateX = mouseDownPosX;
+    currentMouseCoordinateY = mouseDownPosY;
+    startMouseCoordinateX = currentMouseCoordinateX;
+    startMouseCoordinateY = currentMouseCoordinateY;
 
     if(uimode == "Moved" && md != 4){
         uimode = "normal";
@@ -2248,8 +2254,6 @@ function mousedownevt(ev) {
 
     if (uimode == "CreateLine") {
         md = 4;            // Box select or Create mode.
-        startMouseCoordinateX = currentMouseCoordinateX;
-        startMouseCoordinateY = currentMouseCoordinateY;
         //If you start on canvas or not
         if (hovobj == -1) {
             md = 0;
