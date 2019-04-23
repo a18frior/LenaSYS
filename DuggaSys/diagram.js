@@ -586,7 +586,7 @@ diagram.targetItemsInsideSelectionBox = function (ex, ey, sx, sy, hover) {
         ey = sy;
         sy = tempEndY;
     }
-    for (var i = 0; i < this.length; i++) {
+        for (var i = 0; i < this.length; i++) {
         if (this[i].kind == 1) {
             var tempPoints = [];
             for (var j = 0; j < this[i].segments.length; j++) {
@@ -683,9 +683,16 @@ diagram.checkForHover = function(posX, posY) {
         else if (a.symbolkind != 4 && b.symbolkind == 4) return 1;
         else return 0;
     });
+
     if (hoveredObjects.length && hoveredObjects[hoveredObjects.length - 1].kind != 1) {
         //We only want to set it to true when md is not in selectionbox mode
         hoveredObjects[hoveredObjects.length - 1].isHovered = md != 4 || uimode != "normal";
+    }
+
+    if (hovobj != -1) {
+        canvas.style.cursor = "all-scroll";
+    } else {
+        canvas.style.cursor = "default";
     }
     return hoveredObjects[hoveredObjects.length - 1];
 }
@@ -2439,6 +2446,7 @@ function mousemoveevt(ev, t) {
             }
         }
     }
+    hovobj = -1;
 }
 
 function mousedownevt(ev) {
