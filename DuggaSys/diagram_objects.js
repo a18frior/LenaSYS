@@ -221,6 +221,7 @@ function Symbol(kind) {
     // adjust: Moves midpoint or other fixed point to geometric center of object again
     //         Restricts resizing for classes
     //--------------------------------------------------------------------
+    //TODO2
     this.adjust = function () {
         var x1 = points[this.topLeft].x;
         var y1 = points[this.topLeft].y;
@@ -228,6 +229,9 @@ function Symbol(kind) {
         var y2 = points[this.bottomRight].y;
         var hw = (points[this.bottomRight].x - x1) * 0.5;
         var hh = (points[this.bottomRight].y - y1) * 0.5;
+
+        var 
+
         if (this.symbolkind == 2 || this.symbolkind == 3) {
             if(points[this.bottomRight].x - points[this.topLeft].x < entityTemplate.width) {
                 points[this.bottomRight].x = points[this.topLeft].x + entityTemplate.width;
@@ -919,8 +923,6 @@ function Symbol(kind) {
                 ctx.fill();
             }
         }
-
-
     }
 
     //---------------------------------------------------------
@@ -947,6 +949,7 @@ function Symbol(kind) {
         ctx.moveTo(x1, y1 + (this.properties['textSize'] * 1.5));
         ctx.lineTo(x2, y1 + (this.properties['textSize'] * 1.5));
         // Middie Divider
+        // TODO1:
         ctx.moveTo(x1, midy);
         ctx.lineTo(x2, midy);
         ctx.stroke();
