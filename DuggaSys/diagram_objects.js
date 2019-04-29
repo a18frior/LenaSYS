@@ -221,7 +221,7 @@ function Symbol(kind) {
     // adjust: Moves midpoint or other fixed point to geometric center of object again
     //         Restricts resizing for classes
     //--------------------------------------------------------------------
-    //TODO2
+    // TODO2
     this.adjust = function () {
         var x1 = points[this.topLeft].x;
         var y1 = points[this.topLeft].y;
