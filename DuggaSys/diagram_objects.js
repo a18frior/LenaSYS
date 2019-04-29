@@ -2419,6 +2419,23 @@ function toggleFirstPoint(){
 // figureSquare: Draws a square between p1 and p2.
 //--------------------------------------------------------------------
 function figureSquare() {
+        /*
+        ctx.moveTo(x1, y1);
+        ctx.lineTo(x2, y1);
+        ctx.lineTo(x2, y2);
+        ctx.lineTo(x1, y2);
+        ctx.lineTo(x1, y1);
+        ctx.closePath();
+        this.makeShadow();
+        ctx.clip();
+        ctx.stroke();
+        */
+    // Store the position for the first mouse click.
+    // Show indicator box from first mouse click to last mouse click
+    // Store the position for the second mouse click.
+    // Draw the square based on the first and second mouse click.
+
+    // if click + hold and drag is used. The second position will be where the mouse is released.
     if (isFirstPoint) {
         p1 = points.addPoint(currentMouseCoordinateX, currentMouseCoordinateY, false);
         toggleFirstPoint();
