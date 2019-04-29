@@ -230,7 +230,7 @@ function Symbol(kind) {
         var hw = (points[this.bottomRight].x - x1) * 0.5;
         var hh = (points[this.bottomRight].y - y1) * 0.5;
 
-        var 
+        var midy = points[this.middleDivider].y;
 
         if (this.symbolkind == 2 || this.symbolkind == 3) {
             if(points[this.bottomRight].x - points[this.topLeft].x < entityTemplate.width) {
@@ -853,6 +853,7 @@ function Symbol(kind) {
         var y1 = pixelsToCanvas(0, points[this.topLeft].y).y;
         var x2 = pixelsToCanvas(points[this.bottomRight].x).x;
         var y2 = pixelsToCanvas(0, points[this.bottomRight].y).y;
+        var midy = pixelsToCanvas(0, points[this.middleDivider].y).y;
 
         if(this.locked) {
             this.drawLock();
@@ -870,7 +871,7 @@ function Symbol(kind) {
 
         // 1 = UML
         if(this.symbolkind == 1) {
-            this.drawUML(x1, y1, x2, y2);
+            this.drawUML(x1, y1, x2, y2, midy);
         }
         // 2 = ER attribute
         else if(this.symbolkind == 2) {
@@ -928,9 +929,9 @@ function Symbol(kind) {
     //---------------------------------------------------------
     // Functions used to draw objects
     //---------------------------------------------------------
-    this.drawUML = function(x1, y1, x2, y2)
+    this.drawUML = function(x1, y1, x2, y2, midy)
     {
-        var midy = pixelsToCanvas(0, points[this.middleDivider].y).y;
+        
         ctx.font = "bold " + parseInt(this.properties['textSize']) + "px Arial";
 
         // Clear Class Box
