@@ -899,22 +899,22 @@ function Symbol(kind) {
         //Highlighting points when targeted, makes it easier to resize
         if(this.targeted && this.symbolkind != 6) {
             ctx.beginPath();
-            ctx.arc(x1,y1,5,0,2*Math.PI,false);
+            ctx.arc(x1,y1,5 * diagram.getZoomValue(),0,2*Math.PI,false);
             ctx.fillStyle = '#F82';
             ctx.fill();
 
             ctx.beginPath();
-            ctx.arc(x2,y2,5,0,2*Math.PI,false);
+            ctx.arc(x2,y2,5 * diagram.getZoomValue(),0,2*Math.PI,false);
             ctx.fillStyle = '#F82';
             ctx.fill();
             if(this.symbolkind != 4 && this.symbolkind != 7) {
                 ctx.beginPath();
-                ctx.arc(x1,y2,5,0,2*Math.PI,false);
+                ctx.arc(x1,y2,5 * diagram.getZoomValue(),0,2*Math.PI,false);
                 ctx.fillStyle = '#F82';
                 ctx.fill();
 
                 ctx.beginPath();
-                ctx.arc(x2,y1,5,0,2*Math.PI,false);
+                ctx.arc(x2,y1,5 * diagram.getZoomValue(),0,2*Math.PI,false);
                 ctx.fillStyle = '#F82';
                 ctx.fill();
             }
@@ -1813,7 +1813,8 @@ function Symbol(kind) {
 
         return {
             x: pixelsToCanvas(x2 + offset).x, 
-            y: pixelsToCanvas(0, (y2 - (y2-y1)/2)).y};
+            y: pixelsToCanvas(0, (y2 - (y2-y1)/2)).y
+        };
     }
 
     this.drawLock = function() {
@@ -1826,11 +1827,11 @@ function Symbol(kind) {
         //Draws the upper part of the lock
         ctx.beginPath();
         //A slight x offset to get the correct position   
-        ctx.arc(position.x + 5, position.y, 4, 1 * Math.PI, 2 * Math.PI);
+        ctx.arc(position.x + (5 * diagram.getZoomValue()), position.y, 4 * diagram.getZoomValue(), 1 * Math.PI, 2 * Math.PI);
         ctx.stroke();
         ctx.closePath();
         //Draws the lock body
-        ctx.fillRect(position.x, position.y, 10, 10);
+        ctx.fillRect(position.x, position.y, 10 * diagram.getZoomValue(), 10 * diagram.getZoomValue());
 
         ctx.restore();
     }
