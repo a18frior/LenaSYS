@@ -1162,7 +1162,7 @@ input {
 }
 
 .loginboxTr {
-  background-color: inherit !important;
+  background-color: inherit;
 }
 
 #loginBoxTitle {
