@@ -1435,7 +1435,7 @@ input {
   cursor: default !important;
 }
 
-#hotkey-space {
+.drop-down-text-non-clickable #hotkey-space {
   position: absolute  ;
   font-size: 11px ;
   color: #3d3d3d  ;
