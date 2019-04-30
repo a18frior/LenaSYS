@@ -1436,32 +1436,32 @@ input {
 }
 
 #hotkey-space {
-  position: absolute !important ;
-  font-size: 11px !important;
-  color: #3d3d3d !important ;
+  position: absolute  ;
+  font-size: 11px ;
+  color: #3d3d3d  ;
   right: 6px;
   top: 10px;
 }
 
-#hotkey-ctrl {
-  position: absolute !important ;
-  font-size: 11px !important ;
-  color: #3d3d3d !important ;
+.drop-down-text-non-clickable #hotkey-ctrl {
+  position: absolute  ;
+  font-size: 11px  ;
+  color: #3d3d3d ;
   right: 6px;
   top: 55px;
 }
 
-#hotkey-undo {
+.drop-down-item #hotkey-undo {
   position: absolute  ;
   font-size: 11px ;
   color: #3d3d3d;
   right: 6px ;
   top: 10px;
 }
-#hotkey-redo {
-  position: absolute !important;
-  font-size: 11px !important;
-  color: #3d3d3d !important;
+.drop-down-item #hotkey-redo {
+  position: absolute ;
+  font-size: 11px ;
+  color: #3d3d3d;
   right: 6px ;
   top: 45px;
 }
