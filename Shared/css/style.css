@@ -1452,9 +1452,9 @@ input {
 }
 
 #hotkey-undo {
-  position: absolute !important ;
-  font-size: 11px !important ;
-  color: #3d3d3d !important;
+  position: absolute  ;
+  font-size: 11px ;
+  color: #3d3d3d;
   right: 6px ;
   top: 10px;
 }
