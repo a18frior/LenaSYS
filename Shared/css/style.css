@@ -3259,11 +3259,13 @@ ul.hamburgerList button.menuButton {
 /* --------------================################================-------------- *
   *                        FILEED TABLE STYLING                         *
 * --------------================################================-------------- */
+/*
 #fileLink_tbl{
     width: 80%;
     margin: auto !important;
     min-width: 1050px;
 }
+*/
 #sortingDiv{
     height: 30px;
     /*width: 80%;*/
@@ -3308,7 +3310,7 @@ only screen and (max-device-width: 1085px) {
         /*min-width: 375px;*/
     }
     #fileLink_tbl{
-        margin: 0 !important;
+        margin: 0 ;
         width: 100%;
         min-width: 0px;
     }
