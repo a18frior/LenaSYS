@@ -1941,8 +1941,8 @@ input.large-button {
   border: none;
 }
 
-.list--nomargin {
-  margin: 0 !important;
+#fileLink .list--nomargin {
+  margin: 0 ;
 }
 
 .last {
@@ -2074,7 +2074,7 @@ span.arrow {
   box-shadow: 1px 1px 1px 1px rgba(0, 0, 0, 0.2);
 }
 
-.list#testTable input {
+.list #testTable input {
   border-width: 1px !important;
   border-style: inset !important;
   border-radius: 0px;
