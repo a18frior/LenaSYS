@@ -2980,7 +2980,7 @@ table {
   height: 20px;
 }
 
-#searchbutton {
+#searchBar, #searchbutton {
   position: relative;
   width: 26px;
   height: 25px;
@@ -2988,7 +2988,7 @@ table {
   border-radius: 0;
   border-bottom-right-radius: 5px;
   border-top-right-radius: 5px;
-  box-shadow: none !important;
+  box-shadow: none;
   margin-bottom: 5px;
   margin-right: 2px;
 }
