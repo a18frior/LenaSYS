@@ -1907,6 +1907,7 @@ input.large-button {
   border-bottom: 2px solid #dbd0d8;
 }
 
+
 .innertable td {
   color: #000;
   line-height: 28px;
@@ -1927,14 +1928,14 @@ input.large-button {
   font-weight: bold;
   padding: 5px;
 }
-
+/*
 .innertable {
   background: #fff;
   box-shadow: 2px 3px 2px #a09098 inset;
   border-top: 2px solid #dbd0d8;
   border-bottom: 2px solid #dbd0d8;
 }
-
+*/
 .innertable td {
   color: #000;
   line-height: 28px;
