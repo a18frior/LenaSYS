@@ -1711,9 +1711,9 @@ div.submit-button:disabled {
   border-radius: 0px;
 }
 
-.toolboxButtons {
-  width: 35px !important;
-  height: 25px !important;
+#contentDiagram .toolboxButtons {
+  width: 35px ;
+  height: 25px ;
 }
 
 #linebutton {
