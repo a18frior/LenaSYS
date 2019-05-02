@@ -434,8 +434,8 @@ p {
   color: #000;
 }
 
-.hi {
-  background-color: #dad8db !important;
+#Sectionlisti .hi {
+  background-color: #dad8db;
 }
 
 .lo {
