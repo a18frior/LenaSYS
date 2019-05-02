@@ -1754,7 +1754,7 @@ div.submit-button:disabled {
   text-align: right;
 }
 
-input.large-button {
+#submitButtonTable input.large-button {
   width: 160px;
   height: 48px;
   line-height: 48px;
