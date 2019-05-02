@@ -1214,7 +1214,7 @@ function updateGraphics() {
     diagram.updateQuadrants();
     drawGrid();
     drawOrigoLine();
-    if(!developerModeActive) {
+    if(!developerModeInactive) {
         drawOrigo();
     }
     diagram.sortConnectors();
@@ -1527,9 +1527,9 @@ consloe.log = function(gobBluth) {
 // this function show and hides developer options.
 //------------------------------------------------------------------------------
 
-var developerModeActive = false; // used to repressent a switch for whenever the developerMode is enabled or not.
+var developerModeInactive = false; // used to repressent a switch for whenever the developerMode is enabled or not.
 function developerMode() {
-    if(developerModeActive) {
+    if(developerModeInactive) {
         console.log('developermode: ON'); // Shows that the developer have the developermode active.
         crossStrokeStyle1 = "#f64";
         crossFillStyle = "#d51";
@@ -1543,7 +1543,7 @@ function developerMode() {
         setCheckbox($(".drop-down-option:contains('ER')"), crossER);                    // Turn off crossER.
         setCheckbox($(".drop-down-option:contains('UML')"), crossUML);                  // Turn off crossUML.
         setCheckbox($(".drop-down-option:contains('Display All Tools')"), !crossDEV);   // Turn on crossDEV.
-        developerModeActive = false;
+        developerModeInactive = false;
     } else {
         crossStrokeStyle1 = "rgba(255, 102, 68, 0.0)";
         crossFillStyle = "rgba(255, 102, 68, 0.0)";
@@ -1555,11 +1555,11 @@ function developerMode() {
         setCheckbox($(".drop-down-option:contains('UML')"), crossUML);                  // Turn off crossUML.
         setCheckbox($(".drop-down-option:contains('Display All Tools')"), crossDEV);    // Turn off crossDEV.
         setCheckbox($(".drop-down-option:contains('ER')"), !crossER);                   // Turn on crossER.
-        developerModeActive = true;
+        developerModeInactive = true;
     }
     reWrite();
     updateGraphics();
-    setCheckbox($(".drop-down-option:contains('Developer mode')"), !developerModeActive);
+    setCheckbox($(".drop-down-option:contains('Developer mode')"), !developerModeInactive);
 }
 
 //------------------------------------------------------------------------------
@@ -1599,7 +1599,7 @@ function switchToolbarUML() {
 //------------------------------------------------------------------------------
 var crossDEV = false;
 function switchToolbarDev() {
-    if(developerModeActive){
+    if(developerModeInactive){
         return;
       }
     toolbarState = 3;                                                               // Change the toolbar to DEV.
@@ -1736,7 +1736,7 @@ function decimalPrecision(value, precision){
 //----------------------------------------------------------------------
 
 function reWrite() {
-    if(!developerModeActive) {
+    if(!developerModeInactive) {
         //We are now in developer mode
         document.getElementById("zoomV").innerHTML = "<p><b>Zoom:</b> "
          + Math.round((zoomValue * 100)) + "%" + " </p>";
@@ -2350,7 +2350,7 @@ function switchToolbar(direction) {
     if(toolbarState = 1) {
       toolbarState = 2;
     }
-  }else if(direction == 'right') {
+  } else if(direction == 'right') {
     toolbarState++;
     if(toolbarState = 2) {
       toolbarState = 1;
@@ -2359,72 +2359,6 @@ function switchToolbar(direction) {
 
   document.getElementById('toolbarTypeText').innerHTML = "ER";
   localStorage.setItem("toolbarState", toolbarState);
-  //hides irrelevant buttons, and shows relevant buttons
-  if(toolbarState == toolbarER) {
-    $(".toolbar-drawer").hide();
-    $("#drawerTools").show();
-    $("#drawerCreate").show();
-    $("#drawerUndo").show();
-    $(".tlabel").hide();
-    $("#labelCreate").show();
-    $("#labelTools").show();
-    $("#labelUndo").show();
-    $(".buttonsStyle").hide();
-    $("#linebutton").show();
-    $("#attributebutton").show();
-    $("#entitybutton").show();
-    $("#relationbutton").show();
-    $("#drawerDraw").show();
-    $("#labelDraw").show();
-    $("#squarebutton").show();
-    $("#drawfreebutton").show();
-  }
-  else if( toolbarState == toolbarUML) {
-    $(".toolbar-drawer").hide();
-    $("#drawerTools").show();
-    $("#drawerCreate").show();
-    $("#drawerDraw").show();
-    $("#drawerUndo").show();
-    $(".tlabel").hide();
-    $("#labelCreate").show();
-    $("#labelTools").show();
-    $("#labelUndo").show();
-    $(".buttonsStyle").hide();
-    $("#linebutton").show();
-    $("#classbutton").show();
-    $("#linebutton").hide();
-    $("#umllinebutton").show();
-  } else if(toolbarState == toolbarFree) {
-    $(".toolbar-drawer").hide();
-    $("#drawerDraw").show();
-    $("#labelDraw").show();
-    $("#squarebutton").show();
-    $("#drawfreebutton").show();
-  }
-  else if(toolbarState == toolbarDeveloperMode) {
-    $(".toolbar-drawer").show();
-    $("#drawerTools").show();
-    $("#drawerCreate").show();
-    $("#drawerUndo").show();
-    $(".tlabel").show();
-    $("#labelCreate").show();
-    $("#labelTools").show();
-    $("#labelUndo").show();
-    $(".buttonsStyle").show();
-    $("#linebutton").show();
-    $("#attributebutton").show();
-    $("#entitybutton").show();
-    $("#relationbutton").show();
-    $("#drawerDraw").show();
-    $("#labelDraw").show();
-    $("#squarebutton").show();
-    $("#drawfreebutton").show();
-  }
- /* else { // shows all alternatives in the toolbar
-    $(".toolbar-drawer").show();
-    $(".label").show();
-    $(".buttonsStyle").show();
-  }*/
 
   document.getElementById('toolbar-switcher').value = toolbarState;
 }
@@ -2593,7 +2527,7 @@ function mousemoveevt(ev, t) {
                     ctx.strokeStyle = "#000";
                     ctx.stroke();
                     ctx.setLineDash([]);
-                    if (developerModeActive == true) {
+                    if (developerModeInactive == true) {
                         crossStrokeStyle1 = "rgba(255, 102, 68, 0.0)";
                         crossStrokeStyle2 = "rgba(255, 102, 68, 0.0)";
                         crossFillStyle = "rgba(255, 102, 68, 0.0)";
@@ -2611,7 +2545,7 @@ function mousemoveevt(ev, t) {
                 ctx.stroke();
                 ctx.setLineDash([]);
                 ctx.closePath();
-                if (developerModeActive == true) {
+                if (developerModeInactive == true) {
                     crossStrokeStyle1 = "rgba(255, 102, 68, 0.0)";
                     crossStrokeStyle2 = "rgba(255, 102, 68, 0.0)";
                     crossFillStyle = "rgba(255, 102, 68, 0.0)";
@@ -2628,7 +2562,7 @@ function mousemoveevt(ev, t) {
                 ctx.stroke();
                 ctx.setLineDash([]);
                 ctx.closePath();
-                if (developerModeActive == true) {
+                if (developerModeInactive == true) {
                     crossStrokeStyle1 = "rgba(255, 102, 68, 0.0)";
                     crossStrokeStyle2 = "rgba(255, 102, 68, 0.0)";
                     crossFillStyle = "rgba(255, 102, 68, 0.0)";
@@ -2647,7 +2581,7 @@ function mousemoveevt(ev, t) {
                 ctx.stroke();
                 ctx.setLineDash([]);
                 ctx.closePath();
-                if (developerModeActive == true) {
+                if (developerModeInactive == true) {
                     crossStrokeStyle1 = "rgba(255, 102, 68, 0.0)";
                     crossStrokeStyle2 = "rgba(255, 102, 68, 0.0)";
                     crossFillStyle = "rgba(255, 102, 68, 0.0)";
@@ -2658,7 +2592,7 @@ function mousemoveevt(ev, t) {
                 ctx.strokeStyle = "#000";
                 ctx.stroke();
                 ctx.setLineDash([]);
-                if (developerModeActive == true) {
+                if (developerModeInactive == true) {
                     crossStrokeStyle1 = "rgba(255, 102, 68, 0.0)";
                     crossStrokeStyle2 = "rgba(255, 102, 68, 0.0)";
                     crossFillStyle = "rgba(255, 102, 68, 0.0)";
@@ -2672,7 +2606,7 @@ function mousemoveevt(ev, t) {
                 ctx.strokeStyle = "#000";
                 ctx.stroke();
                 ctx.setLineDash([]);
-                if (developerModeActive == true) {
+                if (developerModeInactive == true) {
                     crossStrokeStyle1 = "rgba(255, 102, 68, 0.0)";
                     crossStrokeStyle2 = "rgba(255, 102, 68, 0.0)";
                     crossFillStyle = "rgba(255, 102, 68, 0.0)";
@@ -2686,7 +2620,7 @@ function mousemoveevt(ev, t) {
                 ctx.strokeStyle = "#000";
                 ctx.stroke();
                 ctx.setLineDash([]);
-                if (developerModeActive == true) {
+                if (developerModeInactive == true) {
                     crossStrokeStyle1 = "rgba(255, 102, 68, 0.0)";
                     crossStrokeStyle2 = "rgba(255, 102, 68, 0.0)";
                     crossFillStyle = "rgba(255, 102, 68, 0.0)";
@@ -2703,7 +2637,7 @@ function mousemoveevt(ev, t) {
                 ctx.stroke();
                 ctx.setLineDash([]);
                 ctx.closePath();
-                if (developerModeActive == true) {
+                if (developerModeInactive == true) {
                     crossStrokeStyle1 = "rgba(255, 102, 68, 0.0)";
                     crossStrokeStyle2 = "rgba(255, 102, 68, 0.0)";
                     crossFillStyle = "rgba(255, 102, 68, 0.0)";
