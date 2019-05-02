@@ -1904,7 +1904,7 @@ div.submit-button:disabled {
   color: #000;
   line-height: 28px;
   border: none;
-  text-align: left !important;
+  text-align: left;
 }
 
 .list td {
