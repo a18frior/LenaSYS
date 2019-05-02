@@ -438,8 +438,8 @@ p {
   background-color: #dad8db;
 }
 
-.lo {
-  background-color: #eae8eb !important;
+#Sectionlisti .lo {
+  background-color: #eae8eb;
 }
 
 .LightBox {
