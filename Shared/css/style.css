@@ -2428,8 +2428,8 @@ span.arrow {
   border-radius: 0;
 }
 
-.fileed-submit-button {
-  margin:15px 0 18px 0 !important;
+#uploadbuttonname .fileed-submit-button {
+  margin:15px 0 18px 0;
 }
 
 #feedbackTable table {
