@@ -1430,9 +1430,9 @@ input {
   cursor: default !important;
 }
 
-.drop-down-item-disabled {
+#a4-holes-item .drop-down-item-disabled {
   opacity: 0.5;
-  cursor: default !important;
+  cursor: default ;
 }
 
 .drop-down-text-non-clickable #hotkey-space {
