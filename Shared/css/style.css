@@ -2057,8 +2057,8 @@ div.submit-button:disabled {
 }
 
 #testinnertable tr {
-  border-bottom: none !important;
-  background-color: white !important;
+  border-bottom: none ;
+  background-color: white ;
 }
 
 span.arrow {
@@ -2068,8 +2068,8 @@ span.arrow {
 }
 
 .list #testTable input {
-  border-width: 1px !important;
-  border-style: inset !important;
+  border-width: 1px ;
+  border-style: inset ;
   border-radius: 0px;
   font-size: 14px;
   height: 17px;
@@ -2114,7 +2114,7 @@ span.arrow {
 .feedback-list {
   table-layout: fixed;
   width: 100%;
-  margin-top: 2px !important;
+  margin-top: 2px ;
 }
 
 .feedback-list th,
