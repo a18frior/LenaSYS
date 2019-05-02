@@ -1754,10 +1754,10 @@ div.submit-button:disabled {
   text-align: right;
 }
 
-#submitButtonTable input .large-button {
-  width: 160px ;
-  height: 48px ;
-  line-height: 48px;
+input .large-button {
+  width: 160px !important;
+  height: 48px !important;
+  line-height: 48px !important;
 }
 
 /* Tooltip */
