@@ -1755,9 +1755,9 @@ div.submit-button:disabled {
 }
 
 input .large-button {
-  width: 160px !important;
-  height: 48px !important;
-  line-height: 48px !important;
+  width: 160px;
+  height: 48px;
+  line-height: 48px;
 }
 
 /* Tooltip */
