@@ -2418,7 +2418,7 @@ function toggleFirstPoint(){
 //--------------------------------------------------------------------
 // figureSquare: Draws a square between p1 and p2.
 //--------------------------------------------------------------------
-function figureSquare() {
+function figureSquare() {  
         /*
         ctx.moveTo(x1, y1);
         ctx.lineTo(x2, y1);
@@ -2431,27 +2431,91 @@ function figureSquare() {
         ctx.stroke();
         */
     // Store the position for the first mouse click.
-    // Show indicator box from first mouse click to last mouse click
+    // Show indicator box from first mouse click to last mouse click.
     // Store the position for the second mouse click.
     // Draw the square based on the first and second mouse click.
 
     // if click + hold and drag is used. The second position will be where the mouse is released.
-    if (isFirstPoint) {
-        p1 = points.addPoint(currentMouseCoordinateX, currentMouseCoordinateY, false);
-        toggleFirstPoint();
-    } else {
-        p3 = points.addPoint(currentMouseCoordinateX, currentMouseCoordinateY, false);
-        p2 = points.addPoint(points[p1].x, points[p3].y, false);
-        p4 = points.addPoint(points[p3].x, points[p1].y, false);
-        figurePath.addsegment(1, p1, p2);
-        figurePath.addsegment(1, p2, p3);
-        figurePath.addsegment(1, p3, p4);
-        figurePath.addsegment(1, p4, p1);
-        diagram.push(figurePath);
-        selected_objects.push(figurePath);
-        lastSelectedObject = diagram.length - 1;
-        cleanUp();
-    }
+
+    var enabled = false;
+
+    var mX;
+    var mY;
+    document.addEventListener("mousedown", function(e)
+    {   
+        enabled = false;
+        if (e.button == 0) {
+            if (typeof InitPageX == 'undefined' && typeof InitPageY == 'undefined') {
+                InitPageX = e.pageX;
+                InitPageY = e.pageY;
+            }
+
+            mX = currentMouseCoordinateX;
+            mY = currentMouseCoordinateY;
+        }
+    }, 
+    false
+    );
+
+
+
+    document.addEventListener("mousemove", function(e) 
+    {
+        // deltas are used to determine the range of which the mouse is allowed to move when pressed.
+        deltaX = 20;
+        deltaY = 20;
+        if (typeof InitPageX !== 'undefined' && typeof InitPageY !== 'undefined') {
+            // The movement needs to be larger than the deltas
+            diffX = e.pageX - InitPageX;
+            diffY = e.pageY - InitPageY;
+            if (    
+                (diffX > deltaX) || (diffX < -deltaX)    
+                || 
+                (diffY > deltaY) || (diffY < -deltaY)   
+            ) {
+                enabled = true;
+                console.log(enabled);
+            }
+            else {
+                enabled = false;
+                console.log(enabled);
+            } 
+        }  
+    },
+    false
+);
+
+    document.addEventListener("mouseup", function(e)
+    {
+
+        console.log(isFirstPoint);
+        if (enabled) {
+            if (isFirstPoint) {
+                    p1 = points.addPoint(mX, mY, false);
+                    startPosition = p1;
+                    toggleFirstPoint();
+                }
+            if (p1 != 'undefined') {
+                p3 = points.addPoint(currentMouseCoordinateX, currentMouseCoordinateY, false);
+                p2 = points.addPoint(points[p1].x, points[p3].y, false);
+                p4 = points.addPoint(points[p3].x, points[p1].y, false);
+                md = 0;
+                figurePath.addsegment(1, p1, p2);
+                figurePath.addsegment(1, p2, p3);
+                figurePath.addsegment(1, p3, p4);
+                figurePath.addsegment(1, p4, p1);
+                diagram.push(figurePath);
+                selected_objects.push(figurePath);
+                lastSelectedObject = diagram.length - 1;
+                cleanUp();
+            }
+            enabled = false;
+        }
+    }, 
+    false
+    );
+    delete InitPageX;
+    delete InitPageY;
 }
 
 //--------------------------------------------------------------------
@@ -2463,6 +2527,7 @@ function cleanUp() {
     isFirstPoint = true;
     numberOfPointsInFigure = 0;
     p2 = null;
+    inFigureSquare = false;
 }
 
 function openInitialDialog() {
