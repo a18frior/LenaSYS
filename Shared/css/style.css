@@ -274,11 +274,6 @@ p {
 }
 
 
-.deleted {
-  text-decoration: line-through !important;
-  opacity: 0.3 !important;
-}
-
 #Sectionlist {
   margin: 0px auto;
   background-color: #fff;
