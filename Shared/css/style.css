@@ -3891,7 +3891,7 @@ only screen and (max-device-width: 320px) {
 /* FAB scaling transition */
 
 .scale-transition {
-  transition: transform 0.3s cubic-bezier(0.53, 0.01, 0.36, 1.63) !important;
+  transition: transform 0.3s cubic-bezier(0.53, 0.01, 0.36, 1.63) ;
 }
 
 .scale-transition.scale-out {
