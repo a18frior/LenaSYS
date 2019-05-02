@@ -3399,12 +3399,12 @@ only screen and (max-device-width: 768px) {
     }
 
     #fileLink_tbl_mh[style]{
-        display: none !important;
+        display: none ;
     }
 
     #fileLink_body tr[style]{
-        border: 1px solid #ccc !important;
-        display: block !important;
+        border: 1px solid #ccc ;
+        display: block ;
     }
 
   #fileLink_tblhead{
@@ -3412,12 +3412,12 @@ only screen and (max-device-width: 768px) {
   }
 
   #fileLink_tbl_mh[style]{
-    display: none !important;
+    display: none ;
   }
 
   #fileLink_body tr[style]{
-    border: 1px solid #ccc !important;
-    display: block !important;
+    border: 1px solid #ccc ;
+    display: block ;
   }
 
   #fileLink_tblhead{
@@ -3425,12 +3425,12 @@ only screen and (max-device-width: 768px) {
   }
 
   #fileLink_tbl_mh[style]{
-    display: none !important;
+    display: none ;
   }
 
   #fileLink_body tr[style]{
-    border: 1px solid #ccc !important;
-    display: block !important;
+    border: 1px solid #ccc ;
+    display: block ;
   }
 
   #fileLink_body>tr>td{
