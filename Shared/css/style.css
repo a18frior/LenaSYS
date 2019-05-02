@@ -2712,7 +2712,7 @@ span.arrow {
 
 .checknarrow {
   max-width: 180px ;
-  min-width: 180px ;
+  min-width: 100px ;
 }
 
 .grading-hidden {
