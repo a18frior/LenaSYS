@@ -459,5 +459,6 @@ function createQuickItem()
 }
 
 function encodeHTML(text) {
+	// Not a great solution
   return String(text).replace(/Å/g, '&Aring;').replace(/Ä/g, '&Auml;').replace(/Ö/g, '&Ouml;').replace(/å/g, '&aring;').replace(/ä/g, '&auml;').replace(/ö/g, '&ouml;');
 }
