@@ -2437,6 +2437,10 @@ function figureSquare() {
 
     // if click + hold and drag is used. The second position will be where the mouse is released.
 
+    //
+    //      CHECK IN DIAGRAM.JS IF IMPLEMENTATION CAN BE MADE IN MOUSEUP/DOWNEVT FUNCTIONS.
+    //
+
     var enabled = false;
 
     var mX;
