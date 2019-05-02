@@ -1416,7 +1416,7 @@ input {
 }
 
 .drop-down-text>a {
-  font-size: 14px !important;
+  font-size: 14px ;
   color: rgb(0, 0, 0);
   text-decoration: none;
   display: inline-block;
@@ -1427,7 +1427,7 @@ input {
 
 .drop-down-text:hover {
   background-color: rgb(240, 240, 240);
-  cursor: default !important;
+  cursor: default ;
 }
 
 #a4-holes-item.drop-down-item-disabled {
