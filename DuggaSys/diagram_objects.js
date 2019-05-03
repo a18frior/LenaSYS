@@ -516,8 +516,8 @@ function Symbol(kindOfSymbol) {
     }
 
     this.linehover = function (mx, my) {
-        var tolerance = 5;
-        var c = this.corners();
+        let tolerance = 8 * diagram.getZoomValue;
+        let c = this.corners();
         c.tl.y -= tolerance;
         c.tr.y -= tolerance;
         c.tl.x -= tolerance;
@@ -2135,28 +2135,11 @@ function Path() {
     // isClicked: Returns true if coordinate xk, yk falls inside the bounding box of the symbol
     //--------------------------------------------------------------------
     this.isClicked = function(xCoordinate, yCoordinate) {
-        var intersections = 0;
-        if (xCoordinate > this.minX && xCoordinate < this.maxX && yCoordinate > this.minY && yCoordinate < this.maxY) {
-            for (var j = 0; j < this.segments.length; j++) {
-                var pointA = points[this.segments[j].pa];
-                var pointB = points[this.segments[j].pb];
-                if ((pointA.x <= xCoordinate && pointB.x >= xCoordinate) || (pointA.x >= xCoordinate && pointB.x <= xCoordinate)) {
-                    var deltaX = pointB.x - pointA.x;
-                    var deltaY = pointB.y - pointA.y;
-                    var k = deltaY / deltaX;
-                    if (pointB.x < pointA.x) {
-                        var tempPoint = pointA;
-                        pointA = pointB;
-                        pointB = pointA;
-                    }
-                    var x = xCoordinate - pointA.x;
-                    var y = (k * x) + pointA.y;
-                    if (y < yCoordinate) {
-                        intersections++;
-                    }
-                }
+        for(let i = 0; i < this.segments.length; i++){
+            if(checkForLineOverlap(points[this.segments[i].pa].x, points[this.segments[i].pa].y,
+                                   points[this.segments[i].pb].x, points[this.segments[i].pb].y)){
+                return true;
             }
-            return intersections % 2;
         }
         return false;
     }
@@ -2501,4 +2484,31 @@ function cleanUp() {
     isFirstPoint = true;
     numberOfPointsInFigure = 0;
     p2 = null;
+}
+
+function checkForLineOverlap(x1, y1, x2, y2){
+    let tolerance = 8 * diagram.getZoomValue();
+
+    let minX = Math.min(x1, x2);
+    let maxX = Math.max(x1, x2);
+    let minY = Math.min(y1, y2);
+    let maxY = Math.max(y1, y2);
+
+    // Check if in coordinates box
+    if(currentMouseCoordinateX >= minX && currentMouseCoordinateX <= maxX 
+    && currentMouseCoordinateY >= minY && currentMouseCoordinateY <= maxY){
+        let xDistance = x1 - x2;
+        let yDistance = y1 - y2;
+        let offsetX = currentMouseCoordinateX - x1;
+        let offsetY = currentMouseCoordinateX - y1;
+        let angleX = xDistance / yDistance;     // For each y, x increases with this amount
+        let angleY = yDistance / xDistance;     // For each x, y increases with this amount
+
+        let lineY = angleY * offsetX + y1;
+        
+        if(currentMouseCoordinateY >= lineY - tolerance && currentMouseCoordinateY <= lineY + tolerance){
+            return true;
+        }
+    }
+    return false;
 }
