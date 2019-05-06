@@ -115,8 +115,6 @@ function toggleHamburger() {
 
 function selectItem(lid, entryname, kind, evisible, elink, moment, gradesys, highscoremode, comments, grptype, deadline) {
 
-console.log(deadline);
-
   nameSet = false;
   if (entryname == "undefined") entryname = "New Header";
   if (kind == "undefined") kind = 0;
@@ -141,7 +139,7 @@ console.log(deadline);
   $("#tabs").html(makeoptions(gradesys, ["0 tabs", "1 tabs", "2 tabs", "3 tabs", "end", "1 tab + end", "2 tabs + end"], [0, 1, 2, 3, 4, 5, 6]));
   $("#highscoremode").html(makeoptions(highscoremode, ["None", "Time Based", "Click Based"], [0, 1, 2]));
 
-  $("#setDeadlineValue").html(Date(deadline));
+  $("#setDeadlineValue").html(Date('2019-03-01'));
 
   var groups = [];
   for (var key in retdata['groups']) {
