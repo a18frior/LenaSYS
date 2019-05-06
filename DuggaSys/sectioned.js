@@ -141,7 +141,7 @@ function selectItem(lid, entryname, kind, evisible, elink, moment, gradesys, hig
   $("#tabs").html(makeoptions(gradesys, ["0 tabs", "1 tabs", "2 tabs", "3 tabs", "end", "1 tab + end", "2 tabs + end"], [0, 1, 2, 3, 4, 5, 6]));
   $("#highscoremode").html(makeoptions(highscoremode, ["None", "Time Based", "Click Based"], [0, 1, 2]));
 
-  $("#setDeadlineValue").html(Date(deadline));
+  $("#setDeadlineValue").html(deadline);
 
   var groups = [];
   for (var key in retdata['groups']) {
@@ -916,7 +916,7 @@ function returnedSection(data) {
           str += " onclick='selectItem(" + makeparams([item['lid'], item['entryname'], item['kind'], item['visible'], item['link'], momentexists, item['gradesys'], item['highscoremode'], item['comments'], item['grptype'], item['deadline']]) + ");' />";
           str += "</td>";
         }
-        
+
         // trashcan
         if (data['writeaccess']) {
           str += "<td style='width:32px;' class='" + makeTextArray(itemKind, ["header", "section", "code", "test", "moment", "link", "group", "message"]) + " " + hideState + "'>";
