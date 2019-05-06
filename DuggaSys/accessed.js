@@ -281,7 +281,7 @@ function updateCellCallback(rowno, colno, column, tableid) {
 		changeProperty(obj.uid, column, obj[column])
 		return JSON.stringify(obj);
 	}
-	myTable.reRender();
+	reRender();
 }
 
 //----------------------------------------------------------------
