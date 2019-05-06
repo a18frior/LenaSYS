@@ -115,6 +115,8 @@ function toggleHamburger() {
 
 function selectItem(lid, entryname, kind, evisible, elink, moment, gradesys, highscoremode, comments, grptype, deadline) {
 
+console.log(deadline);
+
   nameSet = false;
   if (entryname == "undefined") entryname = "New Header";
   if (kind == "undefined") kind = 0;
