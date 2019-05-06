@@ -829,6 +829,9 @@ function returnedSection(data) {
             comment: item['comments'],
             deadline: item['deadline']
           };
+
+          console.log(param['deadline']);
+
           str += "<div class='ellipsis nowrap'><span>" + makeanchor("showDugga.php", hideState, "cursor:pointer;margin-left:8px;", item['entryname'], false, param) + "</span></div>";
         } else if (itemKind == 5) {
           // Link
