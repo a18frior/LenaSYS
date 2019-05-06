@@ -142,7 +142,7 @@ function selectItem(lid, entryname, kind, evisible, elink, moment, gradesys, hig
   $("#highscoremode").html(makeoptions(highscoremode, ["None", "Time Based", "Click Based"], [0, 1, 2]));
 
 
-  $("#setDeadlineValue").html(makeoptions(deadline));
+  $("#setDeadlineValue").html(makeoptions(deadline, ["None", "Times i want to kill myself"]));
 
 //  $("#setDeadlineValue").html(deadline);
 
