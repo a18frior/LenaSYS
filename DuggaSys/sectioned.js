@@ -915,6 +915,8 @@ function returnedSection(data) {
           str += "</td>";
         }
 
+        console.log(item);
+
         // trashcan
         if (data['writeaccess']) {
           str += "<td style='width:32px;' class='" + makeTextArray(itemKind, ["header", "section", "code", "test", "moment", "link", "group", "message"]) + " " + hideState + "'>";
