@@ -115,11 +115,10 @@ function toggleHamburger() {
 
 function selectItem(lid, entryname, kind, evisible, elink, moment, gradesys, highscoremode, comments, grptype, deadline) {
 
-  console.log(deadline);
-  var tarro=["00","01","02","03","04","05","06","07","08","09","10","11","12","13","14","15","16","17","18","19","20","21","22","23"];
-  var tarrv=[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23];
-  var marro=["00","05","10","15","20","25","30","35","40","45","50","55"];
-  var marrv=[0,5,10,15,20,25,30,35,40,45,50,55];
+  var hourArrOptions=["00","01","02","03","04","05","06","07","08","09","10","11","12","13","14","15","16","17","18","19","20","21","22","23"];
+  var hourArrValue=[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23];
+  var minuteArrOptions=["00","05","10","15","20","25","30","35","40","45","50","55"];
+  var minuteArrValue=[0,5,10,15,20,25,30,35,40,45,50,55];
 
   nameSet = false;
   if (entryname == "undefined") entryname = "New Header";
@@ -145,8 +144,8 @@ function selectItem(lid, entryname, kind, evisible, elink, moment, gradesys, hig
   $("#tabs").html(makeoptions(gradesys, ["0 tabs", "1 tabs", "2 tabs", "3 tabs", "end", "1 tab + end", "2 tabs + end"], [0, 1, 2, 3, 4, 5, 6]));
   $("#highscoremode").html(makeoptions(highscoremode, ["None", "Time Based", "Click Based"], [0, 1, 2]));
 
-  $("#deadlinet").html(makeoptions(deadline.toString().substr(11,2),tarro,tarrv));
-  $("#deadlinem").html(makeoptions(deadline.toString().substr(14,2),marro,marrv));
+  $("#deadlinehours").html(makeoptions(deadline.toString().substr(11,2),hourArrOptions,hourArrValue));
+  $("#deadlineminutes").html(makeoptions(deadline.toString().substr(14,2),minuteArrOptions,minuteArrValue));
   $("#setDeadlineValue").val(deadline.toString().substr(0,10));
   //$("#setDeadlineValue").html(deadline);
 
