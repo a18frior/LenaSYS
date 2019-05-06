@@ -115,6 +115,8 @@ function toggleHamburger() {
 
 function selectItem(lid, entryname, kind, evisible, elink, moment, gradesys, highscoremode, comments, grptype, deadline) {
 
+  console.log(deadline);
+
   nameSet = false;
   if (entryname == "undefined") entryname = "New Header";
   if (kind == "undefined") kind = 0;
@@ -914,9 +916,7 @@ function returnedSection(data) {
           str += " onclick='selectItem(" + makeparams([item['lid'], item['entryname'], item['kind'], item['visible'], item['link'], momentexists, item['gradesys'], item['highscoremode'], item['comments'], item['grptype'], item['deadline']]) + ");' />";
           str += "</td>";
         }
-
-        console.log(item);
-
+        
         // trashcan
         if (data['writeaccess']) {
           str += "<td style='width:32px;' class='" + makeTextArray(itemKind, ["header", "section", "code", "test", "moment", "link", "group", "message"]) + " " + hideState + "'>";
