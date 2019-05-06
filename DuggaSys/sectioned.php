@@ -229,7 +229,8 @@
 					<div id='inputwrapper-link' class='inputwrapper'><span>Link:</span><select id='link' ></select></div>
 					<div id='inputwrapper-gradesystem' class='inputwrapper'><span>Grade system:</span><select id='gradesys' ></select></div>
 
-					<div id='inputwrapper-deadline' class='inputwrapper'><span>Set Deadline:</span> <input class type='date' id='setDeadlineValue'></input></div>
+					<div class='flexwrapper'><span>Set Deadline:</span><span><input class type='date' id='setDeadlineValue' value='' style='width:125px;font-family:"arial narrow";' /><select style='width:55px;' id='deadlinet'></select><select style='width:55px;' id='deadlinem'></select></span></div>
+					<!-- <div id='inputwrapper-deadline' class='inputwrapper'><span>Set Deadline:</span> <input class type='date' id='setDeadlineValue'></input></div> -->
 
 					<div id='inputwrapper-tabs' class='inputwrapper'><span>Tabs:</span><select id='tabs' ></select></div>
 					<div id='inputwrapper-highscore' class='inputwrapper'><span>High score:</span><select id='highscoremode' ></select></div>
