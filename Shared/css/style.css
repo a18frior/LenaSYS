@@ -4977,4 +4977,13 @@ textarea#filecont{
   border: 2px solid var(--color-primary);
 }
 
-
+@media screen and (max-width: 480px) {
+  .list {
+    width: auto !important;
+    table-layout: fixed !important;
+  }
+  .titles {
+    left: 0 !important;
+    position: fixed !important;
+  }
+}
