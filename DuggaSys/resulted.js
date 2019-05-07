@@ -635,7 +635,7 @@ function returnedResults(data) {
 		teacher = data.teachers;
 		courseteachers = data.courseteachers;
 		teachernames = data.teachernames;
-		console.log(teachernames);
+		console.log(teachernames.teacher);
 
 		// let teacherList = "";
 		// for (let i = 0; i < teacher.length; i++) {
