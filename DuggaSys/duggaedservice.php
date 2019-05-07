@@ -61,9 +61,8 @@ if(checklogin() && (hasAccess($userid, $cid, 'w') || isSuperUser($userid))){
         $query->bindParam(':uid', $userid);
         $query->bindParam(':coursevers', $coursevers);
     }else{
-        $query = $pdo->prepare("UPDATE quiz SET qname=:qname,autograde=:autograde,gradesystem=:gradesys,quizFile=:template,qstart=:qstart,deadline=:deadline,qrelease=:release,jsondeadline=:jsondeadline WHERE id=:qid AND cid=:cid;");
+        $query = $pdo->prepare("UPDATE quiz SET qname=:qname,autograde=:autograde,gradesystem=:gradesys,quizFile=:template,qstart=:qstart,deadline=:deadline,qrelease=:release,jsondeadline=:jsondeadline WHERE id=:qid;");
         $query->bindParam(':qid', $qid);
-				$query->bindParam(':cid', $cid);
     }
     $query->bindParam(':qname', $name);
     $query->bindParam(':autograde', $autograde);
