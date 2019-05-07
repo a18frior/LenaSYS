@@ -259,15 +259,15 @@ if($gradesys=="UNK") $gradesys=0;
 
 							$link=$pdo->lastInsertId();
 
-							// Testing a new query to update the deadline of a quiz (dugga)
-							$updateDeadlineQuery = $pdo->prepare("UPDATE quiz SET deadline=:deadline WHERE id=:quizid")
-							$updateDeadlineQuery->bindParam(':deadline', $deadline);
-							$updateDeadlineQuery->bindParam(':quizid', $quizid);
-
-							if(!$updateDeadlineQuery->execute()){
-								$error=$updateDeadlineQuery->errorInfo();
-								$debug="ERROR UPDATING THE DEADLINE!".$error[2];
-							}
+							// // Testing a new query to update the deadline of a quiz (dugga)
+							// $updateDeadlineQuery = $pdo->prepare("UPDATE quiz SET deadline=:deadline WHERE id=:quizid")
+							// $updateDeadlineQuery->bindParam(':deadline', $deadline);
+							// $updateDeadlineQuery->bindParam(':quizid', $quizid);
+							//
+							// if(!$updateDeadlineQuery->execute()){
+							// 	$error=$updateDeadlineQuery->errorInfo();
+							// 	$debug="ERROR UPDATING THE DEADLINE!".$error[2];
+							// }
 
 
 					}
