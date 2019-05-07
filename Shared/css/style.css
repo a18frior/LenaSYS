@@ -1986,6 +1986,10 @@ input.large-button {
   padding: 5px;
 }
 
+.list tr {
+  height: 48px;
+}
+
 .innertable {
   background: var(--color-background);
   box-shadow: 2px 3px 2px #a09098 inset;
@@ -4975,15 +4979,4 @@ textarea#filecont{
   background: var(--color-primary);
   color: #fff;
   border: 2px solid var(--color-primary);
-}
-
-@media screen and (max-width: 480px) {
-  .list {
-    width: auto !important;
-    table-layout: fixed !important;
-  }
-  .titles {
-    left: 0 !important;
-    position: fixed !important;
-  }
 }
