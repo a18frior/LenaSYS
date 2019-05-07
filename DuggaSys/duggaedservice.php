@@ -61,8 +61,9 @@ if(checklogin() && (hasAccess($userid, $cid, 'w') || isSuperUser($userid))){
         $query->bindParam(':uid', $userid);
         $query->bindParam(':coursevers', $coursevers);
     }else{
-        $query = $pdo->prepare("UPDATE quiz SET qname=:qname,autograde=:autograde,gradesystem=:gradesys,quizFile=:template,qstart=:qstart,deadline=:deadline,qrelease=:release,jsondeadline=:jsondeadline WHERE id=:qid;");
+        $query = $pdo->prepare("UPDATE quiz SET qname=:qname,autograde=:autograde,gradesystem=:gradesys,quizFile=:template,qstart=:qstart,deadline=:deadline,qrelease=:release,jsondeadline=:jsondeadline WHERE id=:qid AND cid=:cid;");
         $query->bindParam(':qid', $qid);
+				$query->bindParam(':cid', $cid);
     }
     $query->bindParam(':qname', $name);
     $query->bindParam(':autograde', $autograde);
@@ -73,7 +74,7 @@ if(checklogin() && (hasAccess($userid, $cid, 'w') || isSuperUser($userid))){
     if (strrpos("UNK",$deadline)!==false) $deadline = null;
     if (strrpos("UNK",$qstart)!==false) $qstart = null;
     if (strrpos("UNK",$release)!==false) $release = null;
-    
+
     $query->bindParam(':release', $release);
     $query->bindParam(':deadline', $deadline);
     $query->bindParam(':qstart', $qstart);
@@ -85,7 +86,7 @@ if(checklogin() && (hasAccess($userid, $cid, 'w') || isSuperUser($userid))){
 	}else if(strcmp($opt,"DELDU")===0){
         $query = $pdo->prepare("DELETE FROM quiz WHERE id=:qid");
 		$query->bindParam(':qid', $qid);
-		
+
 		if(!$query->execute()) {
 			if($query->errorInfo()[0] == 23000) {
 				$debug = "The item could not be deleted because of a foreign key constraint.";
@@ -93,7 +94,7 @@ if(checklogin() && (hasAccess($userid, $cid, 'w') || isSuperUser($userid))){
 				$debug = "The item could not be deleted.";
 			}
 		}
-		
+
     }else if(strcmp($opt,"ADDVARI")===0){
 		$querystring="INSERT INTO variant(quizID,creator,disabled,param,variantanswer) VALUES (:qid,:uid,:disabled,:param,:variantanswer)";
 		$stmt = $pdo->prepare($querystring);
