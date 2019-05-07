@@ -44,6 +44,9 @@ $enddate=getOP('enddate');
 $showgrps=getOP('showgrp');
 $grptype=getOP('grptype');
 
+$deadline=getOP('deadline');
+$quizid=getOP('quizid');
+
 $grpmembershp="UNK";
 $unmarked = 0;
 $groups=array();
@@ -255,6 +258,18 @@ if($gradesys=="UNK") $gradesys=0;
 							}
 
 							$link=$pdo->lastInsertId();
+
+							// Testing a new query to update the deadline of a quiz (dugga)
+							$updateDeadlineQuery = $pdo->prepare("UPDATE quiz SET deadline=:deadline WHERE id=:quizid")
+							$updateDeadlineQuery->bindParam(':deadline', $deadline);
+							$updateDeadlineQuery->bindParam(':quizid', $quizid);
+
+							if(!$updateDeadlineQuery->execute()){
+								$error=$updateDeadlineQuery->errorInfo();
+								$debug="ERROR UPDATING THE DEADLINE!".$error[2];
+							}
+
+
 					}
 
 					$query = $pdo->prepare("UPDATE listentries set highscoremode=:highscoremode, moment=:moment,entryname=:entryname,kind=:kind,link=:link,visible=:visible,gradesystem=:gradesys,comments=:comments,groupKind=:groupkind WHERE lid=:lid;");
