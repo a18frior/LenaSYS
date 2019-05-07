@@ -668,7 +668,7 @@ if(checklogin() && (hasAccess($userid, $cid, 'w') || isSuperUser($userid))) {
 $teachernames = array();
 if(checklogin() && (hasAccess($userid, $cid, 'w') || isSuperUser($userid))) {
 	$query = $pdo->prepare("
-    SELECT teacher
+    SELECT *
     FROM user_course;
   ");
 	$query->bindParam(':cid', $cid);
@@ -676,6 +676,7 @@ if(checklogin() && (hasAccess($userid, $cid, 'w') || isSuperUser($userid))) {
 		$error=$query->errorInfo();
 		$debug="Error reading user entries\n".$error[2];
 	}
+	print_r($query);
 	foreach($query->fetchAll(PDO::FETCH_ASSOC) as $row){
 			$teacher = array(
 				'teacher' => $row['teacher'],
