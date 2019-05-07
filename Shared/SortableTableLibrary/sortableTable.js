@@ -744,18 +744,6 @@ function newCompare(firstCell, secoundCell) {
 				firstCellTemp = Object.values(firstCell.firstname)[0];
 				secoundCellTemp = Object.values(secoundCell.firstname)[0];
 			}
-			if(col == "Firstname") {
-				//Convert to json object
-				if (JSON.stringify(firstCell.firstname) || JSON.stringify(secoundCell.firstname)) {
-					firstCellTemp = firstCell.firstname;
-					secoundCellTemp = secoundCell.firstname;
-				} else {
-					firstCell = JSON.parse(firstCell.firstname);
-					secoundCell = JSON.parse(secoundCell.firstname);
-					//Get the first letter from the value.
-					firstCellTemp = Object.values(firstCell.firstname)[0];
-					secoundCellTemp = Object.values(secoundCell.firstname)[0];
-				}
 		} else if (col == "Lname"){
 			if (JSON.stringify(firstCell.lastname) || JSON.stringify(secoundCell.lastname)) {
 				firstCellTemp = firstCell.lastname;
