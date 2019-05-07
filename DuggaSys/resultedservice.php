@@ -676,7 +676,6 @@ if(checklogin() && (hasAccess($userid, $cid, 'w') || isSuperUser($userid))) {
 		$error=$query->errorInfo();
 		$debug="Error reading user entries\n".$error[2];
 	}
-	print_r($query);
 	foreach($query->fetchAll(PDO::FETCH_ASSOC) as $row){
 			$teacher = array(
 				'teacher' => $row['teacher'],
