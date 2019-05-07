@@ -66,15 +66,14 @@ function setup() {
 
 	$("#sort").after(filt);
 
-
 	/*  Add filter menu   */
   document.getElementById("sort").style.display = "table-cell";
   document.getElementById("select").style.display = "table-cell";
 
   // Remove all children, at the time of writing there is only 1 and its unwanted.
-  while(document.getElementById("dropdownc").hasChildNodes()){
+/*  while(document.getElementById("dropdownc").hasChildNodes()){
     document.getElementById("dropdownc").removeChild(document.getElementById("dropdownc").firstChild);
-  }
+  }*/
 
   var customFilterDiv = document.createElement("div");
   customFilterDiv.id = "customfilter";
