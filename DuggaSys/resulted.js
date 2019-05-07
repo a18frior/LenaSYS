@@ -635,11 +635,11 @@ function returnedResults(data) {
 		teacher = data.teachers;
 		courseteachers = data.courseteachers;
 
-		let teacherList = "";
-		for (let i = 0; i < teacher.length; i++) {
-			tchr = teacher[i];
-			teacherList += "<option value='" + tchr.firstname + " " + tchr.lastname + "'>" + tchr.firstname + " " + tchr.lastname + "</option>";
-		}
+		// let teacherList = "";
+		// for (let i = 0; i < teacher.length; i++) {
+		// 	tchr = teacher[i];
+		// 	teacherList += "<option value='" + tchr.firstname + " " + tchr.lastname + "'>" + tchr.firstname + " " + tchr.lastname + "</option>";
+		// }
 
 		let ladmoments = "";
 		for (let i = 0; i < moments.length; i++) {
@@ -648,7 +648,7 @@ function returnedResults(data) {
 				ladmoments += "<option value='" + dugga.entryname + "'>" + dugga.entryname + "</option>";
 			}
 		}
-		document.getElementById("teacher").innerHTML = teacherList;
+		// document.getElementById("teacher").innerHTML = teacherList;
 		document.getElementById("ladselect").innerHTML = ladmoments;
 		document.getElementById("laddate").valueAsDate = new Date();
 
