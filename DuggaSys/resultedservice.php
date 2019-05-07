@@ -648,7 +648,7 @@ if(isset($_SERVER["REQUEST_TIME_FLOAT"])){
 $teachers=array();
 if(checklogin() && (hasAccess($userid, $cid, 'w') || isSuperUser($userid))) {
 	$query = $pdo->prepare("
-    SELECT examiner, uid
+    SELECT teacher, uid
     FROM user_course;
   ");
 	$query->bindParam(':cid', $cid);
@@ -668,7 +668,7 @@ if(checklogin() && (hasAccess($userid, $cid, 'w') || isSuperUser($userid))) {
 $courseteachers=array();
 if(checklogin() && (hasAccess($userid, $cid, 'w') || isSuperUser($userid))) {
 	$query = $pdo->prepare("
-    SELECT DISTINCT examiner
+    SELECT DISTINCT teacher
     FROM user_course where cid=$cid;
   ");
 	$query->bindParam(':cid', $cid);
