@@ -369,7 +369,11 @@ function updateItem() {
 }
 
 function updateDeadline(){
-  AJAXService("UPDATEDEADLINE", prepareItem(), "SECTION");
+
+  var deadline = $("#setDeadlineValue").val()+" "+$("#deadlinehours").val()+":"+$("#deadlineminutes").val();
+  var link = $("#link").val();
+
+  AJAXService("UPDATEDEADLINE", {deadline:deadline, link:link}, "SECTION");
 
   $("#sectionConfirmBox").css("display", "none");
   $("#editSection").css("display", "none");
