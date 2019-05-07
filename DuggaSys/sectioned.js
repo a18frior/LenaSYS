@@ -363,8 +363,7 @@ function deleteItem(item_lid = null) {
 function updateItem() {
   var deadline = $("#setDeadlineValue").val()+" "+$("#deadlinehours").val()+":"+$("#deadlineminutes").val();
 
-  console.log(deadline);
-
+  AJAXService("SAVDUGGA", {deadline:deadline}, "DUGGA");
   AJAXService("UPDATE", prepareItem(), "SECTION");
 
   $("#sectionConfirmBox").css("display", "none");
