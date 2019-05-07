@@ -146,7 +146,7 @@ function selectItem(lid, entryname, kind, evisible, elink, moment, gradesys, hig
 
   $("#deadlinehours").html(makeoptions(deadline.toString().substr(11,2),hourArrOptions,hourArrValue));
   $("#deadlineminutes").html(makeoptions(deadline.toString().substr(14,2),minuteArrOptions,minuteArrValue));
-  $("#setDeadlineValue").val(deadline.toString().substr(0,10));
+  $("#setDeadlineValue").val(deadline.substr(0,10));
 
   var groups = [];
   for (var key in retdata['groups']) {
