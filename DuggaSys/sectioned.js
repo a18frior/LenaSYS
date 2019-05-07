@@ -343,6 +343,7 @@ function prepareItem() {
   param.deadline = $("#setDeadlineValue").val()+" "+$("#deadlinehours").val()+":"+$("#deadlineminutes").val();
 
   console.log(retdata['duggor'][0]);
+  console.log(param.link);
 
   return param;
 }
