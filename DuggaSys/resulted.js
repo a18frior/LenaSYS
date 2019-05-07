@@ -38,7 +38,7 @@ function setup() {
 	/*    Add filter menu   */
 	// --Commented out this code because of similar solution below due to possible duplicate issue on github--
   var filt = "";
-	filt += "<td id='select' class='navButt'><span class='dropdown-container' onmouseover='hoverc();'>";
+	/*filt += "<td id='select' class='navButt'><span class='dropdown-container' onmouseover='hoverc();'>";
 	filt += "<img class='navButt' src='../Shared/icons/tratt_white.svg'>";
 	filt += "<div id='dropdownc' class='dropdown-list-container' style='z-index: 1'>";
 	filt += "<div id='columnfilter'></div>"
@@ -49,7 +49,7 @@ function setup() {
 	filt += "<img class='navButt' src='../Shared/icons/sort_white.svg'>";
 	filt += "<div id='dropdowns' class='dropdown-list-container' style='z-index: 1'>";
 	filt += "</div>";
-	filt += "</span></td>";
+	filt += "</span></td>";*/
 
   // Add search bar to nav
   filt += `<td id='searchBar' class='navButt'>`;
@@ -65,7 +65,7 @@ function setup() {
   filt += `</div><span>?</span></td>`;
 
 	$("#menuHook").before(filt);
-  
+
 
 	/*  Add filter menu   */
   document.getElementById("sort").style.display = "table-cell";
@@ -489,7 +489,7 @@ function clickResult(cid, vers, moment, qfile, firstname, lastname, uid, submitt
 	menu += "</div>";
 	menu += "<table>";
 	menu += "<tr><td>";
-	
+
 	if ((foundgrade === null && submitted === null)) {
 		menu += makeSelect(parseInt(gradeSystem), querystring['cid'], querystring['coursevers'], parseInt(lid), parseInt(uid), null, "I", parseInt(qvariant), parseInt(qid));
 	} else if (foundgrade == -1) {
