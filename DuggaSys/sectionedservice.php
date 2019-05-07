@@ -306,9 +306,9 @@ if($gradesys=="UNK") $gradesys=0;
 				// 	// 	$error=$deadlinequery->errorInfo();
 				// 	// 	$debug="ERROR THE DEADLINE QUERY FAILED".$error[2];
 				// 	// }
-				// 
+				//
 				// }
-				else if(strcmp($opt,"UPDATEVRS")===0) {
+			}else if(strcmp($opt,"UPDATEVRS")===0) {
 						$query = $pdo->prepare("UPDATE vers SET versname=:versname,startdate=:startdate,enddate=:enddate WHERE cid=:cid AND coursecode=:coursecode AND vers=:vers;");
 						$query->bindParam(':cid', $courseid);
 						$query->bindParam(':coursecode', $coursecode);
