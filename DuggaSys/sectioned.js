@@ -366,7 +366,13 @@ function updateItem() {
 
   $("#sectionConfirmBox").css("display", "none");
   $("#editSection").css("display", "none");
+}
 
+function updateDeadline(){
+  AJAXService("UPDATEDEADLINE", prepareItem(), "SECTION");
+
+  $("#sectionConfirmBox").css("display", "none");
+  $("#editSection").css("display", "none");
 }
 
 //----------------------------------------------------------------------------------

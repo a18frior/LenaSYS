@@ -285,16 +285,6 @@ if($gradesys=="UNK") $gradesys=0;
 						$debug="Error updating entries".$error[2];
 					}
 
-					// Testing a new query to update the deadline of a quiz (dugga)
-					$updateDeadlineQuery = $pdo->prepare("UPDATE quiz SET deadline=:deadline WHERE id=:link")
-					$updateDeadlineQuery->bindParam(':deadline', $deadline);
-					$updateDeadlineQuery->bindParam(':link', $link);
-
-					if(!$updateDeadlineQuery->execute()){
-						$error=$updateDeadlineQuery->errorInfo();
-						$debug="ERROR UPDATING THE DEADLINE!".$error[2];
-					}
-
 					// insert into list forthe specific course
 					if($kind == 4){
 						$query2 = $pdo->prepare("INSERT INTO list(listnr,listeriesid,responsible,course) values('23415',:lid,'Christina Sjogren',:cid);");
@@ -307,7 +297,17 @@ if($gradesys=="UNK") $gradesys=0;
 							$debug="Error updating entries".$error[2];
 						}
 					}
-				} else if(strcmp($opt,"UPDATEVRS")===0) {
+				}else if(strcmp($opt,"updateDeadline")===0){
+					$deadlinequery = $pdo->prepare("UPDATE quiz SET deadline=:deadline WHERE id=:link");
+					$deadlinequery->bindParam(':deadline',$deadline);
+					$deadlinequery->bindParam(':link',$link)
+					
+					if(!$deadlinequery->execute()){
+						$error=$deadlinequery->errorInfo();
+						$debug="ERROR THE DEADLINE QUERY FAILED".$error[2];
+					}
+
+				}else if(strcmp($opt,"UPDATEVRS")===0) {
 						$query = $pdo->prepare("UPDATE vers SET versname=:versname,startdate=:startdate,enddate=:enddate WHERE cid=:cid AND coursecode=:coursecode AND vers=:vers;");
 						$query->bindParam(':cid', $courseid);
 						$query->bindParam(':coursecode', $coursecode);
