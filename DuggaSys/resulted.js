@@ -634,7 +634,7 @@ function returnedResults(data) {
 		results = data.results;
 		teacher = data.teachers;
 		courseteachers = data.courseteachers;
-		console.log(moments);
+		console.log(courseteachers);
 
 		// let teacherList = "";
 		// for (let i = 0; i < teacher.length; i++) {
