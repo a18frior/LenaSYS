@@ -732,7 +732,7 @@ function newCompare(firstCell, secoundCell) {
 			col = sortableTable.currentTable.getNameColumn();
 		}
 		// now check for matching columns with the potentially replaced name
-		if(col == "Fname") {
+		if(col == "Fname"||"Firstname") {
 			//Convert to json object
 			if (JSON.stringify(firstCell.firstname) || JSON.stringify(secoundCell.firstname)) {
 				firstCellTemp = firstCell.firstname;
