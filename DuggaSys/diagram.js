@@ -1369,17 +1369,10 @@ function eraseSelectedObject() {
 function setMode(mode) { //"CreateClass" yet to be implemented in .php
     canvas.style.cursor = "default";
     uimode = mode;
-    if(mode == 'Square' || mode == 'Free' || mode == 'Text') {
-      uimode = "CreateFigure";
-      if(figureType == "Free") {
-          cancelFreeDraw();
-      }
-      figureType = mode;
-    }
 }
 
 $(document).ready(function() {
-    $("#objectbutton, #linebutton, #attributebutton, #entitybutton, #relationbutton, #squarebutton, #drawfreebutton, #classbutton, #drawtextbutton, #umllinebutton").click(function() {
+    $("#objectbutton, #freedrawbutton, #linebutton, #attributebutton, #entitybutton, #relationbutton, #squarebutton, #drawfreebutton, #classbutton, #drawtextbutton, #umllinebutton").click(function() {
         $("#moveButton").removeClass("pressed").addClass("unpressed");
         $("#moveButton").css("visibility", "hidden");
         if ($(this).hasClass("pressed")) {
@@ -2332,6 +2325,7 @@ function switchToolbar(direction) {
     $("#labelUndo").show();
     $(".buttonsStyle").hide();
     $("#objectbutton").show();
+    $("#freedrawbutton").show();
     $("#linebutton").show();
     $("#attributebutton").show();
     $("#entitybutton").show();
@@ -2455,9 +2449,31 @@ function pointDistance(point1, point2) {
 //---------------------------------------------------
 
 function mousemoveevt(ev, t) {
+    console.log("firstpoint: " + isFirstPoint)
+
     // Get canvasMouse coordinates for both X & Y.
     currentMouseCoordinateX = canvasToPixels(ev.clientX - boundingRect.left).x;
     currentMouseCoordinateY = canvasToPixels(0, ev.clientY - boundingRect.top).y;
+
+    if (md == mouseState.boxSelectOrCreateMode && uimode != "MoveAround") {
+        if (uimode == "CreateObject") {
+            if(!(isFirstPoint)) {
+                console.log("isDrawing")
+                ctx.setLineDash([3, 3]);
+                ctx.beginPath();
+                ctx.moveTo(pixelsToCanvas(startMouseCoordinateX).x, pixelsToCanvas(0, startMouseCoordinateY).y);
+                ctx.lineTo(pixelsToCanvas(currentMouseCoordinateX).x, pixelsToCanvas(0, currentMouseCoordinateY).y);
+                ctx.strokeStyle = "#000";
+                ctx.stroke();
+                ctx.setLineDash([]);
+                if (!developerModeActive) {
+                    crossStrokeStyle1 = "rgba(255, 102, 68, 1.0)";
+                    crossStrokeStyle2 = "rgba(255, 102, 68, 1.0)";
+                    crossFillStyle = "rgba(255, 102, 68, 1.0)";
+                }
+            }
+        }
+    }
 
     if(canvasLeftClick || canvasRightClick) {
         // deltas are used to determine the range of which the mouse is allowed to move when pressed.
@@ -2467,11 +2483,8 @@ function mousemoveevt(ev, t) {
             // The movement needs to be larger than the deltas in order to enter the MoveAround mode.
             diffX = ev.pageX - InitPageX;
             diffY = ev.pageY - InitPageY;
-            if (
-                (diffX > deltaX) || (diffX < -deltaX)
-                ||
-                (diffY > deltaY) || (diffY < -deltaY)
-            ) {
+            if ((diffX > deltaX) || (diffX < -deltaX)
+                || (diffY > deltaY) || (diffY < -deltaY)) {
                 dragDistanceReached = true;
 
                 if(canvasRightClick){
@@ -2480,9 +2493,12 @@ function mousemoveevt(ev, t) {
                         activateMovearound();
                     }                    
                 }
-                updateGraphics();
-            } else {
-                dragDistanceReached = false;
+            }
+
+            // Used to cancel free draw
+            if(canvasRightClick && !isFirstPoint){
+                dragDistanceReached = true;
+                cancelObjectFreeDraw();
             }
         }
 
@@ -2496,26 +2512,14 @@ function mousemoveevt(ev, t) {
         }
     }
 
-    if(canvasRightClick){
-        if (md == mouseState.boxSelectOrCreateMode && uimode != "MoveAround") {
-            if (uimode == "CreateObject") {
-                if(p2 != null && !(isFirstPoint)) {
-                    console.log("isDrawing")
-                    ctx.setLineDash([3, 3]);
-                    ctx.beginPath();
-                    ctx.moveTo(pixelsToCanvas(startMouseCoordinateX).x, pixelsToCanvas(0, startMouseCoordinateY).y);
-                    ctx.lineTo(pixelsToCanvas(currentMouseCoordinateX).x, pixelsToCanvas(0, currentMouseCoordinateY).y);
-                    ctx.strokeStyle = "#000";
-                    ctx.stroke();
-                    ctx.setLineDash([]);
-                    if (!developerModeActive) {
-                        crossStrokeStyle1 = "rgba(255, 102, 68, 1.0)";
-                        crossStrokeStyle2 = "rgba(255, 102, 68, 1.0)";
-                        crossFillStyle = "rgba(255, 102, 68, 1.0)";
-                    }
-                }
-            }
-        }
+    // Left click logic
+    if(canvasLeftClick){
+        
+    }
+
+    // Right click logic
+    else if(canvasRightClick){
+        
     }
 
     reWrite();
@@ -2737,10 +2741,9 @@ function mousedownevt(ev) {
 
     // Left mouse click logic
     if (ev.button == leftMouseClick) {
-        if(uimode == "CreateObject"){
-            
+        if(uimode == "ObjectFreeDraw" || uimode == "CreateObject"){
             md = mouseState.boxSelectOrCreateMode; // Box select or Create mode.
-            createObject();
+            createPolygon();
         }
 
 
@@ -2854,8 +2857,8 @@ function mouseupevt(ev) {
     // Left mouse click logic
     if(ev.button == leftMouseClick){
         if(uimode == "CreateObject"){
-            if(dragDistanceReached){
-                createObject();
+            if(dragDistanceReached && !isFirstPoint){
+                createPolygon();
             }
         }
 
@@ -2871,6 +2874,7 @@ function mouseupevt(ev) {
         if (uimode == "MoveAround" && !spacebarKeyPressed) {
             deactivateMovearound();
         }
+
         // Reset right mouse click state
         canvasRightClick = false;
         globalRightClick = false;

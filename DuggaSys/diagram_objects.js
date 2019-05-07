@@ -2437,15 +2437,20 @@ function createFigure() {
     }
 }
 
-function createObject() {
-    startMouseCoordinateX = currentMouseCoordinateX;
-    startMouseCoordinateY = currentMouseCoordinateY;
-    objectFreeDraw();
+function createPolygon() {
+    if(uimode == "ObjectFreeDraw"){
+        objectFreeDraw();
+    }
+    else if(uimode == "CreateObject"){
+        objectDraw();
+    }
 }
 
+// function drawPolygon(Array av punkter, fillstate, strokestate) {
+//     //Loopa över punkter och ritar ut strecken i mellan
+// }
 
-function objectFreeDraw(){
-    console.log("Create object")
+function objectDraw(){
     p1 = null;
     if (isFirstPoint) {
         p2 = points.addPoint(currentMouseCoordinateX, currentMouseCoordinateY, false);
@@ -2459,7 +2464,31 @@ function objectFreeDraw(){
         } else {
             p2 = points.addPoint(currentMouseCoordinateX, currentMouseCoordinateY, false);
         }
+        isFirstPoint = true;
     }
+}
+
+function objectFreeDraw(){
+    p1 = null;
+    if (isFirstPoint) {
+        var pointsArray = [];
+
+        p2 = points.addPoint(currentMouseCoordinateX, currentMouseCoordinateY, false);
+        startPosition = p2;
+        isFirstPoint = false;
+    } else {
+        // Read and set the values for p1 and p2
+        p1 = p2;
+        if (activePoint != null) {
+            p2 = activePoint;
+        } else {
+            p2 = points.addPoint(currentMouseCoordinateX, currentMouseCoordinateY, false);
+        }
+    }
+}
+
+function cancelObjectFreeDraw(){
+    isFirstPoint = true;
 }
 
 //--------------------------------------------------------------------
