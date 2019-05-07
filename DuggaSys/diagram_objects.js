@@ -2437,6 +2437,31 @@ function createFigure() {
     }
 }
 
+function createObject() {
+    startMouseCoordinateX = currentMouseCoordinateX;
+    startMouseCoordinateY = currentMouseCoordinateY;
+    objectFreeDraw();
+}
+
+
+function objectFreeDraw(){
+    console.log("Create object")
+    p1 = null;
+    if (isFirstPoint) {
+        p2 = points.addPoint(currentMouseCoordinateX, currentMouseCoordinateY, false);
+        startPosition = p2;
+        isFirstPoint = false;
+    } else {
+        // Read and set the values for p1 and p2
+        p1 = p2;
+        if (activePoint != null) {
+            p2 = activePoint;
+        } else {
+            p2 = points.addPoint(currentMouseCoordinateX, currentMouseCoordinateY, false);
+        }
+    }
+}
+
 //--------------------------------------------------------------------
 // figureFreeDraw: Free draw, the user have to click for every point to draw on the canvas.
 //--------------------------------------------------------------------

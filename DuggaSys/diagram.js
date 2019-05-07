@@ -70,9 +70,10 @@ var startMouseCoordinateY = 0;      // Y coordinate for mouse to get diff from c
 var origoOffsetX = 0.0;             // Canvas x topleft offset from origo
 var origoOffsetY = 0.0;             // Canvas y topleft offset from origo
 var boundingRect;                   // Canvas offset in browser
-var canvasLeftClick = 0;            // Canvas left click state
-var canvasRightClick = 0;            // Canvas right click state
-var globalMouseState = 0;           // Global left click state (not only for canvas)
+var canvasLeftClick = false;        // Canvas left click state
+var canvasRightClick = false;       // Canvas right click state
+var globalLeftClick = false;        // Global left click state (not only for canvas)
+var globalRightClick = false;       // Global left click state (not only for canvas)
 var zoomValue = 1.00;
 var md = mouseState.empty;          // Mouse state, Mode to determine action on canvas
 var hovobj = -1;
@@ -162,79 +163,17 @@ const num1 = 97;
 const num2 = 98;
 
 // Mouse clicks
+const leftMouseClick = 0;
+const scrollClick = 1;
 const rightMouseClick = 2;
 
 // This bool is used so the contextmenu will be hidden on mouse drag, and shown on right mouse click.
-var rightClick = false;
-
-// Used to set the coordinates where a right click was made.
-document.addEventListener("mousedown", function(e)
-    {
-        if (e.button == rightMouseClick) {
-            canvasRightClick = 1;
-            if (typeof InitPageX == 'undefined' && typeof InitPageY == 'undefined') {
-                InitPageX = e.pageX;
-                InitPageY = e.pageY;
-                rightClick = true;
-            }
-        }
-    },
-    false
-);
-
-// Makes sure that we don't enter MoveAround by simply pressing the right mouse button. Need to click and drag to enter MoveAround
-window.addEventListener("mousemove", function(e)
-    {
-        // deltas are used to determine the range of which the mouse is allowed to move when pressed.
-        deltaX = 2;
-        deltaY = 2;
-        if (typeof InitPageX !== 'undefined' && typeof InitPageY !== 'undefined') {
-            // The movement needs to be larger than the deltas in order to enter the MoveAround mode.
-            diffX = e.pageX - InitPageX;
-            diffY = e.pageY - InitPageY;
-            if (
-                (diffX > deltaX) || (diffX < -deltaX)
-                ||
-                (diffY > deltaY) || (diffY < -deltaY)
-            ) {
-                rightClick = false;
-                // Entering MoveAround mode
-                if (uimode != "MoveAround") {
-                    activateMovearound();
-                }
-                updateGraphics();
-            }
-            else {
-                // If click event is needed, it goes in here.
-                rightClick = true;
-            }
-        }
-    },
-    false
-);
-
-// Deactivate MoveAround by releasing the mouse
-window.addEventListener("mouseup", function(e)
-    {
-        if (e.button == rightMouseClick) {
-            canvasRightClick = 0;
-        }
-
-        delete InitPageX;
-        delete InitPageY;
-        // Making sure the MoveAround was not initialized by the spacebar.
-        if (uimode == "MoveAround" && !spacebarKeyPressed) {
-            deactivateMovearound();
-            updateGraphics();
-        }
-    },
-    false
-);
+var dragDistanceReached = false;
 
 // Hides the context menu. Needed in order to be able to right click and drag to move the camera.
 window.addEventListener('contextmenu', function (e)
     {
-        if (rightClick != true) {
+        if (dragDistanceReached == true) {
             e.preventDefault();
         }
     },
@@ -522,7 +461,7 @@ function cancelFreeDraw() {
         cleanUp();
         md = mouseState.empty;      //Prevents the dashed line box, when drawing a square, to appear immediately
         updateGraphics();
-      }
+    }
 }
 
 //----------------------------------------------------------------------
@@ -2520,21 +2459,47 @@ function mousemoveevt(ev, t) {
     currentMouseCoordinateX = canvasToPixels(ev.clientX - boundingRect.left).x;
     currentMouseCoordinateY = canvasToPixels(0, ev.clientY - boundingRect.top).y;
 
-    if(canvasLeftClick == 1 && uimode == "MoveAround") {
-        // Drag canvas
-        origoOffsetX += (currentMouseCoordinateX - startMouseCoordinateX) * zoomValue;
-        origoOffsetY += (currentMouseCoordinateY - startMouseCoordinateY) * zoomValue;
-        startMouseCoordinateX = canvasToPixels(ev.clientX - boundingRect.left).x;
-        startMouseCoordinateY = canvasToPixels(0, ev.clientY - boundingRect.top).y;
+    if(canvasLeftClick || canvasRightClick) {
+        // deltas are used to determine the range of which the mouse is allowed to move when pressed.
+        deltaX = 8;
+        deltaY = 8;
+        if (typeof InitPageX !== 'undefined' && typeof InitPageY !== 'undefined') {
+            // The movement needs to be larger than the deltas in order to enter the MoveAround mode.
+            diffX = ev.pageX - InitPageX;
+            diffY = ev.pageY - InitPageY;
+            if (
+                (diffX > deltaX) || (diffX < -deltaX)
+                ||
+                (diffY > deltaY) || (diffY < -deltaY)
+            ) {
+                dragDistanceReached = true;
+
+                if(canvasRightClick){
+                    // Entering MoveAround mode
+                    if (uimode != "MoveAround") {
+                        activateMovearound();
+                    }                    
+                }
+                updateGraphics();
+            } else {
+                dragDistanceReached = false;
+            }
+        }
+
+
+        if(uimode == "MoveAround"){
+            // Drag canvas
+            origoOffsetX += (currentMouseCoordinateX - startMouseCoordinateX) * zoomValue;
+            origoOffsetY += (currentMouseCoordinateY - startMouseCoordinateY) * zoomValue;
+            startMouseCoordinateX = canvasToPixels(ev.clientX - boundingRect.left).x;
+            startMouseCoordinateY = canvasToPixels(0, ev.clientY - boundingRect.top).y;            
+        }
     }
 
-    if(canvasRightClick == 0){
+    if(canvasRightClick){
         if (md == mouseState.boxSelectOrCreateMode && uimode != "MoveAround") {
             if (uimode == "CreateObject") {
-                if(isFirstPoint){
-                    
-                }
-                else if(p2 != null && !(isFirstPoint)) {
+                if(p2 != null && !(isFirstPoint)) {
                     console.log("isDrawing")
                     ctx.setLineDash([3, 3]);
                     ctx.beginPath();
@@ -2544,9 +2509,9 @@ function mousemoveevt(ev, t) {
                     ctx.stroke();
                     ctx.setLineDash([]);
                     if (!developerModeActive) {
-                        crossStrokeStyle1 = "rgba(255, 102, 68, 0.0)";
-                        crossStrokeStyle2 = "rgba(255, 102, 68, 0.0)";
-                        crossFillStyle = "rgba(255, 102, 68, 0.0)";
+                        crossStrokeStyle1 = "rgba(255, 102, 68, 1.0)";
+                        crossStrokeStyle2 = "rgba(255, 102, 68, 1.0)";
+                        crossFillStyle = "rgba(255, 102, 68, 1.0)";
                     }
                 }
             }
@@ -2556,7 +2521,7 @@ function mousemoveevt(ev, t) {
     reWrite();
     updateGraphics();
 
-    // if(canvasRightClick == 0){
+    // if(canvasRightClick){
     //     if (md == mouseState.empty) {
     //         // Select a new point only if mouse is not already moving a point or selection box
     //         sel = diagram.closestPoint(currentMouseCoordinateX, currentMouseCoordinateY);
@@ -2748,30 +2713,57 @@ function mousemoveevt(ev, t) {
     // }
 }
 
+function deselectAllObjects(){
+    for (var i = 0; i < selected_objects.length; i++) {
+        selected_objects[i].targeted = false;
+    }
+    lastSelectedObject = -1;
+    selected_objects = [];
+}
+
 //----------------------------------------------------------
 // Is called when left mouse button is clicked on the canvas
 //----------------------------------------------------------
 
 function mousedownevt(ev) {
-    canvasLeftClick = 1;
     currentMouseCoordinateX = canvasToPixels(ev.clientX - boundingRect.left).x;
     currentMouseCoordinateY = canvasToPixels(0, ev.clientY - boundingRect.top).y;
     startMouseCoordinateX = currentMouseCoordinateX;
     startMouseCoordinateY = currentMouseCoordinateY;
 
-    if(uimode == "CreateObject"){
-        md = mouseState.boxSelectOrCreateMode; // Box select or Create mode.
-        startMouseCoordinateX = currentMouseCoordinateX;
-        startMouseCoordinateY = currentMouseCoordinateY;
-
-        if(uimode != "MoveAround" && !ctrlIsClicked) {
-            for (var i = 0; i < selected_objects.length; i++) {
-                selected_objects[i].targeted = false;
-            }
-            lastSelectedObject = -1;
-            selected_objects = [];
-        }        
+    if(uimode != "MoveAround" && !ctrlIsClicked) {
+        deselectAllObjects();
     }
+
+    // Left mouse click logic
+    if (ev.button == leftMouseClick) {
+        if(uimode == "CreateObject"){
+            
+            md = mouseState.boxSelectOrCreateMode; // Box select or Create mode.
+            createObject();
+        }
+
+
+        canvasLeftClick = true;
+        if (typeof InitPageX == 'undefined' && typeof InitPageY == 'undefined') {
+            InitPageX = ev.pageX;
+            InitPageY = ev.pageY;
+        }
+    } 
+
+    // Right mouse click logic
+    else if (ev.button == rightMouseClick) {
+        canvasRightClick = true;
+
+        if (typeof InitPageX == 'undefined' && typeof InitPageY == 'undefined') {
+            InitPageX = ev.pageX;
+            InitPageY = ev.pageY;
+        }
+    }
+
+    dragDistanceReached = false;    
+
+    
 
     // if(uimode == "Moved" && md != mouseState.boxSelectOrCreateMode) {
     //     uimode = "normal";
@@ -2859,313 +2851,348 @@ function handleSelect() {
 }
 
 function mouseupevt(ev) {
-    canvasLeftClick = 0;
-    hovobj = diagram.indexOf(diagram.checkForHover(currentMouseCoordinateX, currentMouseCoordinateY));
-
-    //for checking the position of errelation before resize() overwrites values
-    var p1BeforeResize;
-    var p2BeforeResize;
-
-    if (uimode == "CreateFigure" && md == mouseState.boxSelectOrCreateMode) {
-        if(figureType == "Text") {
-            createText(currentMouseCoordinateX, currentMouseCoordinateY);
-        }
-        createFigure();
-        if(figureType == "Free") return;
-    }
-    // Code for creating a new class
-    if (md == mouseState.boxSelectOrCreateMode && (uimode == "CreateClass" || uimode == "CreateERAttr" || uimode == "CreateEREntity" || uimode == "CreateERRelation")) {
-        p1BeforeResize = {x:startMouseCoordinateX, y:startMouseCoordinateY};
-        p2BeforeResize = {x:currentMouseCoordinateX, y:currentMouseCoordinateY};
-
-        resize();
-
-        // Add required points
-        p1 = points.addPoint(startMouseCoordinateX, startMouseCoordinateY, false);
-        p2 = points.addPoint(currentMouseCoordinateX, currentMouseCoordinateY, false);
-        p3 = points.addPoint((startMouseCoordinateX + currentMouseCoordinateX) * 0.5, (startMouseCoordinateY + currentMouseCoordinateY) * 0.5, false);
-    }
-    var saveState = md == mouseState.boxSelectOrCreateMode && uimode != "normal";
-    if(movobj > -1) {
-        if(diagram[movobj].symbolkind != symbolKind.line && uimode == "Moved") saveState = true;
-    }
-    if (uimode == "CreateLine" && md == mouseState.boxSelectOrCreateMode) {
-        saveState = false;
-        //Check if you release on canvas or try to draw a line from entity to entity
-         if (hovobj == -1 || diagram[lineStartObj].symbolkind == symbolKind.erEntity && diagram[hovobj].symbolkind == symbolKind.erEntity) {
-            md = mouseState.empty;
-         }else {
-            //Get which kind of symbol mouseupevt execute on
-            symbolEndKind = diagram[hovobj].symbolkind;
-
-            sel = diagram.closestPoint(currentMouseCoordinateX, currentMouseCoordinateY);
-            //Check if you not start on a line and not end on a line or so that a line isn't connected to a text object, 
-            // if then, set point1 and point2
-            //okToMakeLine is a flag for this
-            var okToMakeLine = true;
-            if(symbolStartKind != symbolKind.line && symbolEndKind != symbolKind.line && 
-                symbolStartKind != symbolKind.text && symbolEndKind != symbolKind.text) {
-                var createNewPoint = false;
-                if (diagram[lineStartObj].symbolkind == symbolKind.erAttribute) {
-                    p1 = diagram[lineStartObj].centerPoint;
-                } else {
-                    createNewPoint = true;
-                }
-                //Code for making sure enitities not connect to the same attribute multiple times
-                if(symbolEndKind == symbolKind.erEntity && symbolStartKind == symbolKind.erAttribute) {
-                    if(diagram[hovobj].connectorCountFromSymbol(diagram[lineStartObj]) > 0) {
-                        okToMakeLine= false;
-                    }
-                } else if(symbolEndKind == symbolKind.erAttribute && symbolStartKind == symbolKind.erEntity) {
-                    if(diagram[lineStartObj].connectorCountFromSymbol(diagram[hovobj]) > 0) {
-                        okToMakeLine= false;
-                    }
-                } else if(symbolEndKind == symbolKind.erEntity && symbolStartKind == symbolKind.erRelation) {
-                    if(diagram[hovobj].connectorCountFromSymbol(diagram[lineStartObj]) >= 2) okToMakeLine = false;
-                } else if(symbolEndKind == symbolKind.erRelation && symbolStartKind == symbolKind.erEntity) {
-                    if(diagram[lineStartObj].connectorCountFromSymbol(diagram[hovobj]) >= 2) okToMakeLine = false;
-                } else if(symbolEndKind == symbolKind.erRelation && symbolStartKind == symbolKind.erRelation) {
-                    okToMakeLine = false;
-                } else if((symbolEndKind == symbolKind.uml && symbolStartKind != symbolKind.uml) || (symbolEndKind != symbolKind.uml && symbolStartKind == symbolKind.uml)) {
-                    okToMakeLine = false;
-                }
-                if(diagram[lineStartObj] == diagram[hovobj]) okToMakeLine = false;
-
-                // Can't draw line between two ER attributes if one of them is not composite
-                if(symbolStartKind == symbolKind.erAttribute && symbolEndKind == symbolKind.erAttribute) {
-                    if(diagram[hovobj].properties.key_type === "Composite" || diagram[lineStartObj].properties.key_type === "Composite") {
-                       okToMakeLine = true;
-                    } else {
-                        okToMakeLine = false;
-                        // Add error dialog
-                        $("#errorMessageDialog").css("display", "flex");
-                        var toolbarTypeText = document.getElementById('toolbarTypeText').innerHTML;
-                        document.getElementById("errorMessage").innerHTML = "Error! None of the objects are Composite";
-                    }
-                }
-
-                if(okToMakeLine) {
-                    saveState = true;
-                    if(createNewPoint) p1 = points.addPoint(currentMouseCoordinateX, currentMouseCoordinateY, false);
-                    if (diagram[hovobj].symbolkind == symbolKind.erAttribute) {
-                        p2 = diagram[hovobj].centerPoint;
-                    } else {
-                        p2 = points.addPoint(currentMouseCoordinateX, currentMouseCoordinateY, false);
-                    }
-                    diagram[lineStartObj].connectorTop.push({from:p1, to:p2});
-                    diagram[hovobj].connectorTop.push({from:p2, to:p1});
-                }
+    // Left mouse click logic
+    if(ev.button == leftMouseClick){
+        if(uimode == "CreateObject"){
+            if(dragDistanceReached){
+                createObject();
             }
         }
-    }
-    if (uimode == "CreateUMLLine" && md == mouseState.boxSelectOrCreateMode) {
-        saveState = false;
-        //Check if you release on canvas or try to draw a line from entity to entity
-         if (hovobj == -1 || diagram[lineStartObj].symbolkind == symbolKind.erEntity && diagram[hovobj].symbolkind == symbolKind.erEntity) {
-            md = mouseState.empty;
-         }else {
-              //Get which kind of symbol mouseupevt execute on
-             symbolEndKind = diagram[hovobj].symbolkind;
 
-             sel = diagram.closestPoint(currentMouseCoordinateX, currentMouseCoordinateY);
-            //Check if you not start on a line and not end on a line or so that a line isn't connected to a text object, 
-            // if then, set point1 and point2
-            //okToMakeLine is a flag for this
-            var okToMakeLine = true;
-            if(symbolStartKind != symbolKind.umlLine && symbolEndKind != symbolKind.umlLine && 
-                symbolStartKind != symbolKind.text && symbolEndKind != symbolKind.text) {
-                var createNewPoint = false;
-                if (diagram[lineStartObj].symbolkind == symbolKind.erAttribute) {
-                    p1 = diagram[lineStartObj].centerPoint;
-                } else {
-                    createNewPoint = true;
-                }
 
-                //Code for making sure enitities not connect to the same attribute multiple times
-                if(symbolEndKind == symbolKind.erEntity && symbolStartKind == symbolKind.erAttribute) {
-                    if(diagram[hovobj].connectorCountFromSymbol(diagram[lineStartObj]) > 0) {
-                        okToMakeLine= false;
-                    }
-                } else if(symbolEndKind == symbolKind.erAttribute && symbolStartKind == symbolKind.erEntity) {
-                    if(diagram[lineStartObj].connectorCountFromSymbol(diagram[hovobj]) > 0) {
-                        okToMakeLine= false;
-                    }
-                } else if(symbolEndKind == symbolKind.erEntity && symbolStartKind == symbolKind.erRelation) {
-                    if(diagram[hovobj].connectorCountFromSymbol(diagram[lineStartObj]) >= 2) okToMakeLine = false;
-                } else if(symbolEndKind == symbolKind.erRelation && symbolStartKind == symbolKind.erEntity) {
-                    if(diagram[lineStartObj].connectorCountFromSymbol(diagram[hovobj]) >= 2) okToMakeLine = false;
-                } else if(symbolEndKind == symbolKind.erRelation && symbolStartKind == symbolKind.erRelation) {
-                    okToMakeLine = false;
-                } else if((symbolEndKind == symbolKind.uml && symbolStartKind != symbolKind.uml) || (symbolEndKind != symbolKind.uml && symbolStartKind == symbolKind.uml)) {
-                    okToMakeLine = false;
-                }
-                if(diagram[lineStartObj] == diagram[hovobj]) okToMakeLine = false;
-                if(okToMakeLine) {
-                    saveState = true;
-                    if(createNewPoint) p1 = points.addPoint(currentMouseCoordinateX, currentMouseCoordinateY, false);
-                    if (diagram[hovobj].symbolkind == symbolKind.erAttribute) {
-                        p2 = diagram[hovobj].centerPoint;
-                    } else {
-                        p2 = points.addPoint(currentMouseCoordinateX, currentMouseCoordinateY, false);
-                    }
-                    diagram[lineStartObj].connectorTop.push({from:p1, to:p2});
-                    diagram[hovobj].connectorTop.push({from:p2, to:p1});
-                }
-            }
+        // Reset left mouse click state
+        canvasLeftClick = false;
+        globalLeftClick = false;
+    } 
+
+    // Right mouse click logic
+    else if (ev.button == rightMouseClick) {
+        // Making sure the MoveAround was not initialized by the spacebar.
+        if (uimode == "MoveAround" && !spacebarKeyPressed) {
+            deactivateMovearound();
         }
+        // Reset right mouse click state
+        canvasRightClick = false;
+        globalRightClick = false;
     }
 
-    // Code for creating symbols when mouse is released
-    // Symbol (1 UML diagram symbol 2 ER Attribute 3 ER Entity 4 Lines 5 ER Relation 6 Text 7 UML Lines)
-    //----------------------------------------------------------------------
+    // Reset variables for dragging distance
+    delete InitPageX;
+    delete InitPageY;
 
-    var diagramObject;
 
-    if (uimode == "CreateClass" && md == mouseState.boxSelectOrCreateMode) {
-        var classB = new Symbol(symbolKind.uml); // UML
-        classB.name = "New" + diagram.length;
-        classB.operations.push({text:"- makemore()"});
-        classB.attributes.push({text:"+ height:Integer"});
-        classB.topLeft = p1;
-        classB.bottomRight = p2;
-        classB.middleDivider = p3;
-        classB.centerPoint = p3;
-        diagram.push(classB);
-        lastSelectedObject = diagram.length -1;
-        diagram[lastSelectedObject].targeted = true;
-        selected_objects.push(diagram[lastSelectedObject]);
-        diagramObject = diagram[lastSelectedObject];
-    } else if (uimode == "CreateERAttr" && md == mouseState.boxSelectOrCreateMode) {
-        erAttributeA = new Symbol(symbolKind.erAttribute); // ER attributes
-        erAttributeA.name = "Attr" + diagram.length;
-        erAttributeA.topLeft = p1;
-        erAttributeA.bottomRight = p2;
-        erAttributeA.centerPoint = p3;
-        erAttributeA.object_type = "";
-        erAttributeA.fontColor = "#000";
-        erAttributeA.font = "Arial";
-        diagram.push(erAttributeA);
-        //selecting the newly created attribute and open the dialogmenu.
-        lastSelectedObject = diagram.length -1;
-        diagram[lastSelectedObject].targeted = true;
-        selected_objects.push(diagram[lastSelectedObject]);
-        diagramObject = diagram[lastSelectedObject];
-    } else if (uimode == "CreateEREntity" && md == mouseState.boxSelectOrCreateMode) {
-        erEnityA = new Symbol(symbolKind.erEntity); // ER entity
-        erEnityA.name = "Entity" + diagram.length;
-        erEnityA.topLeft = p1;
-        erEnityA.bottomRight = p2;
-        erEnityA.centerPoint = p3;
-        erEnityA.arity = [];
-        erEnityA.object_type = "";
-        erEnityA.fontColor = "#000";
-        erEnityA.font = "Arial";
-        diagram.push(erEnityA);
-        //selecting the newly created enitity and open the dialogmenu.
-        lastSelectedObject = diagram.length -1;
-        diagram[lastSelectedObject].targeted = true;
-        selected_objects.push(diagram[lastSelectedObject]);
-        diagramObject = diagram[lastSelectedObject];
-    } else if (uimode == "CreateLine" && md == mouseState.boxSelectOrCreateMode) {
-        //Code for making a line, if start and end object are different, except attributes and if no object is text
-        if((symbolStartKind != symbolEndKind || (symbolStartKind == symbolKind.erAttribute && symbolEndKind == symbolKind.erAttribute)
-        || symbolStartKind == symbolKind.uml && symbolEndKind == symbolKind.uml) && (symbolStartKind != symbolKind.line && symbolEndKind != symbolKind.line)
-        && (symbolStartKind != symbolKind.text && symbolEndKind != symbolKind.text) && okToMakeLine) {
-            erLineA = new Symbol(symbolKind.line); // Lines
-            erLineA.name = "Line" + diagram.length
-            erLineA.topLeft = p1;
-            erLineA.object_type = "";
-            erLineA.bottomRight = p2;
-            erLineA.centerPoint = p3;
-            diagram.push(erLineA);
-            //selecting the newly created enitity and open the dialogmenu.
-            lastSelectedObject = diagram.length -1;
-            diagram[lastSelectedObject].targeted = true;
-            selected_objects.push(diagram[lastSelectedObject]);
-            //resets the mode so that next click can move or select an object instead of drawing another line
-            //only happens when a line has been created between 2 objects
-            if ($("#linebutton").hasClass("pressed")){
-                $("#linebutton.buttonsStyle").removeClass("pressed").addClass("unpressed");
-            }
-            uimode = "normal";
 
-            createCardinality();
-            updateGraphics();
-        }
-    } else if (uimode == "CreateERRelation" && md == mouseState.boxSelectOrCreateMode) {
-        erRelationA = new Symbol(symbolKind.erRelation); // ER Relation
-        erRelationA.name = "Relation" + diagram.length;
-        erRelationA.topLeft = p1;
-        erRelationA.bottomRight = p2;
-        erRelationA.centerPoint = p3;
-        diagram.push(erRelationA);
-        //selecting the newly created relation and open the dialog menu.
-        lastSelectedObject = diagram.length -1;
-        diagram[lastSelectedObject].targeted = true;
-        selected_objects.push(diagram[lastSelectedObject]);
-        diagramObject = diagram[lastSelectedObject];
-    } else if (md == mouseState.boxSelectOrCreateMode && uimode == "normal") {
-        diagram.targetItemsInsideSelectionBox(currentMouseCoordinateX, currentMouseCoordinateY, startMouseCoordinateX, startMouseCoordinateY);
-    }
-    else if(uimode != "Moved" && !ctrlIsClicked && md != mouseState.boxSelectOrCreateMode) {
-        //Unselects every object.
-        for(var i = 0; i < diagram.length; i++) {
-            diagram[i].targeted = false;
-        }
-        //Sets the clicked object as targeted
-        selected_objects = [];
-        if (lastSelectedObject >= 0) {
-            selected_objects.push(diagram[lastSelectedObject]);
-            //You have to target an object when you start to draw
-            if(md != mouseState.empty) diagram[lastSelectedObject].targeted = true;
-        }
-    } else if (uimode == "CreateUMLLine" && md == mouseState.boxSelectOrCreateMode) {
-        //Code for making a line, if start and end object are different, except attributes and if no object is text
-        if((symbolStartKind != symbolEndKind || (symbolStartKind == symbolKind.erAttribute && symbolEndKind == symbolKind.erAttribute)
-        || symbolStartKind == symbolKind.uml && symbolEndKind == symbolKind.uml) && (symbolStartKind != symbolKind.umlLine && symbolEndKind != symbolKind.umlLine)
-        && (symbolStartKind != symbolKind.text && symbolEndKind != symbolKind.text) && okToMakeLine) {
-            umlLineA = new Symbol(symbolKind.umlLine); //UML Lines
-            umlLineA.name = "Line" + diagram.length
-            umlLineA.topLeft = p1;
-            umlLineA.object_type = "";
-            umlLineA.bottomRight = p2;
-            umlLineA.centerPoint = p3;
-            diagram.push(umlLineA);
-            //selecting the newly created enitity and open the dialogmenu.
-            lastSelectedObject = diagram.length -1;
-            diagram[lastSelectedObject].targeted = true;
-            selected_objects.push(diagram[lastSelectedObject]);
-            //resets the mode so that next click can move or select an object instead of drawing another line
-            //only happens when a line has been created between 2 objects
-            if ($("#umllinebutton").hasClass("pressed")){
-                $("#umllinebutton.buttonsStyle").removeClass("pressed").addClass("unpressed");
-            }
-            uimode = "normal";
 
-            createCardinality();
-            updateGraphics();
-        }
-    }
-    //when symbol is er relation then don't assign variables since it's already done earlier when creating points
-    if (diagramObject && diagramObject.symbolkind != symbolKind.erRelation) {
-        p1BeforeResize.x = points[diagramObject.topLeft].x;
-        p1BeforeResize.y = points[diagramObject.topLeft].y;
-        p2BeforeResize.x = points[diagramObject.bottomRight].x;
-        p2BeforeResize.y = points[diagramObject.bottomRight].y;
-    }
 
-    //If the object is created by just clicking and not dragging then set variable so that points 
-    //are moved to mouse position inside the adjust function 
-    if (diagramObject && p1BeforeResize.x == p2BeforeResize.x && p1BeforeResize.y == p2BeforeResize.y) {
-        diagramObject.pointsAtSamePosition = true;
-    }
 
-    hashFunction();
-    updateGraphics();
-    diagram.updateLineRelations();
-    // Clear mouse state
-    md = mouseState.empty;
-    if(saveState) SaveState();
+
+
+    // hovobj = diagram.indexOf(diagram.checkForHover(currentMouseCoordinateX, currentMouseCoordinateY));
+
+    // //for checking the position of errelation before resize() overwrites values
+    // var p1BeforeResize;
+    // var p2BeforeResize;
+
+    // if (uimode == "CreateFigure" && md == mouseState.boxSelectOrCreateMode) {
+    //     if(figureType == "Text") {
+    //         createText(currentMouseCoordinateX, currentMouseCoordinateY);
+    //     }
+    //     createFigure();
+    //     if(figureType == "Free") return;
+    // }
+    // // Code for creating a new class
+    // if (md == mouseState.boxSelectOrCreateMode && (uimode == "CreateClass" || uimode == "CreateERAttr" || uimode == "CreateEREntity" || uimode == "CreateERRelation")) {
+    //     p1BeforeResize = {x:startMouseCoordinateX, y:startMouseCoordinateY};
+    //     p2BeforeResize = {x:currentMouseCoordinateX, y:currentMouseCoordinateY};
+
+    //     resize();
+
+    //     // Add required points
+    //     p1 = points.addPoint(startMouseCoordinateX, startMouseCoordinateY, false);
+    //     p2 = points.addPoint(currentMouseCoordinateX, currentMouseCoordinateY, false);
+    //     p3 = points.addPoint((startMouseCoordinateX + currentMouseCoordinateX) * 0.5, (startMouseCoordinateY + currentMouseCoordinateY) * 0.5, false);
+    // }
+    // var saveState = md == mouseState.boxSelectOrCreateMode && uimode != "normal";
+    // if(movobj > -1) {
+    //     if(diagram[movobj].symbolkind != symbolKind.line && uimode == "Moved") saveState = true;
+    // }
+    // if (uimode == "CreateLine" && md == mouseState.boxSelectOrCreateMode) {
+    //     saveState = false;
+    //     //Check if you release on canvas or try to draw a line from entity to entity
+    //      if (hovobj == -1 || diagram[lineStartObj].symbolkind == symbolKind.erEntity && diagram[hovobj].symbolkind == symbolKind.erEntity) {
+    //         md = mouseState.empty;
+    //      }else {
+    //         //Get which kind of symbol mouseupevt execute on
+    //         symbolEndKind = diagram[hovobj].symbolkind;
+
+    //         sel = diagram.closestPoint(currentMouseCoordinateX, currentMouseCoordinateY);
+    //         //Check if you not start on a line and not end on a line or so that a line isn't connected to a text object, 
+    //         // if then, set point1 and point2
+    //         //okToMakeLine is a flag for this
+    //         var okToMakeLine = true;
+    //         if(symbolStartKind != symbolKind.line && symbolEndKind != symbolKind.line && 
+    //             symbolStartKind != symbolKind.text && symbolEndKind != symbolKind.text) {
+    //             var createNewPoint = false;
+    //             if (diagram[lineStartObj].symbolkind == symbolKind.erAttribute) {
+    //                 p1 = diagram[lineStartObj].centerPoint;
+    //             } else {
+    //                 createNewPoint = true;
+    //             }
+    //             //Code for making sure enitities not connect to the same attribute multiple times
+    //             if(symbolEndKind == symbolKind.erEntity && symbolStartKind == symbolKind.erAttribute) {
+    //                 if(diagram[hovobj].connectorCountFromSymbol(diagram[lineStartObj]) > 0) {
+    //                     okToMakeLine= false;
+    //                 }
+    //             } else if(symbolEndKind == symbolKind.erAttribute && symbolStartKind == symbolKind.erEntity) {
+    //                 if(diagram[lineStartObj].connectorCountFromSymbol(diagram[hovobj]) > 0) {
+    //                     okToMakeLine= false;
+    //                 }
+    //             } else if(symbolEndKind == symbolKind.erEntity && symbolStartKind == symbolKind.erRelation) {
+    //                 if(diagram[hovobj].connectorCountFromSymbol(diagram[lineStartObj]) >= 2) okToMakeLine = false;
+    //             } else if(symbolEndKind == symbolKind.erRelation && symbolStartKind == symbolKind.erEntity) {
+    //                 if(diagram[lineStartObj].connectorCountFromSymbol(diagram[hovobj]) >= 2) okToMakeLine = false;
+    //             } else if(symbolEndKind == symbolKind.erRelation && symbolStartKind == symbolKind.erRelation) {
+    //                 okToMakeLine = false;
+    //             } else if((symbolEndKind == symbolKind.uml && symbolStartKind != symbolKind.uml) || (symbolEndKind != symbolKind.uml && symbolStartKind == symbolKind.uml)) {
+    //                 okToMakeLine = false;
+    //             }
+    //             if(diagram[lineStartObj] == diagram[hovobj]) okToMakeLine = false;
+
+    //             // Can't draw line between two ER attributes if one of them is not composite
+    //             if(symbolStartKind == symbolKind.erAttribute && symbolEndKind == symbolKind.erAttribute) {
+    //                 if(diagram[hovobj].properties.key_type === "Composite" || diagram[lineStartObj].properties.key_type === "Composite") {
+    //                    okToMakeLine = true;
+    //                 } else {
+    //                     okToMakeLine = false;
+    //                     // Add error dialog
+    //                     $("#errorMessageDialog").css("display", "flex");
+    //                     var toolbarTypeText = document.getElementById('toolbarTypeText').innerHTML;
+    //                     document.getElementById("errorMessage").innerHTML = "Error! None of the objects are Composite";
+    //                 }
+    //             }
+
+    //             if(okToMakeLine) {
+    //                 saveState = true;
+    //                 if(createNewPoint) p1 = points.addPoint(currentMouseCoordinateX, currentMouseCoordinateY, false);
+    //                 if (diagram[hovobj].symbolkind == symbolKind.erAttribute) {
+    //                     p2 = diagram[hovobj].centerPoint;
+    //                 } else {
+    //                     p2 = points.addPoint(currentMouseCoordinateX, currentMouseCoordinateY, false);
+    //                 }
+    //                 diagram[lineStartObj].connectorTop.push({from:p1, to:p2});
+    //                 diagram[hovobj].connectorTop.push({from:p2, to:p1});
+    //             }
+    //         }
+    //     }
+    // }
+    // if (uimode == "CreateUMLLine" && md == mouseState.boxSelectOrCreateMode) {
+    //     saveState = false;
+    //     //Check if you release on canvas or try to draw a line from entity to entity
+    //      if (hovobj == -1 || diagram[lineStartObj].symbolkind == symbolKind.erEntity && diagram[hovobj].symbolkind == symbolKind.erEntity) {
+    //         md = mouseState.empty;
+    //      }else {
+    //           //Get which kind of symbol mouseupevt execute on
+    //          symbolEndKind = diagram[hovobj].symbolkind;
+
+    //          sel = diagram.closestPoint(currentMouseCoordinateX, currentMouseCoordinateY);
+    //         //Check if you not start on a line and not end on a line or so that a line isn't connected to a text object, 
+    //         // if then, set point1 and point2
+    //         //okToMakeLine is a flag for this
+    //         var okToMakeLine = true;
+    //         if(symbolStartKind != symbolKind.umlLine && symbolEndKind != symbolKind.umlLine && 
+    //             symbolStartKind != symbolKind.text && symbolEndKind != symbolKind.text) {
+    //             var createNewPoint = false;
+    //             if (diagram[lineStartObj].symbolkind == symbolKind.erAttribute) {
+    //                 p1 = diagram[lineStartObj].centerPoint;
+    //             } else {
+    //                 createNewPoint = true;
+    //             }
+
+    //             //Code for making sure enitities not connect to the same attribute multiple times
+    //             if(symbolEndKind == symbolKind.erEntity && symbolStartKind == symbolKind.erAttribute) {
+    //                 if(diagram[hovobj].connectorCountFromSymbol(diagram[lineStartObj]) > 0) {
+    //                     okToMakeLine= false;
+    //                 }
+    //             } else if(symbolEndKind == symbolKind.erAttribute && symbolStartKind == symbolKind.erEntity) {
+    //                 if(diagram[lineStartObj].connectorCountFromSymbol(diagram[hovobj]) > 0) {
+    //                     okToMakeLine= false;
+    //                 }
+    //             } else if(symbolEndKind == symbolKind.erEntity && symbolStartKind == symbolKind.erRelation) {
+    //                 if(diagram[hovobj].connectorCountFromSymbol(diagram[lineStartObj]) >= 2) okToMakeLine = false;
+    //             } else if(symbolEndKind == symbolKind.erRelation && symbolStartKind == symbolKind.erEntity) {
+    //                 if(diagram[lineStartObj].connectorCountFromSymbol(diagram[hovobj]) >= 2) okToMakeLine = false;
+    //             } else if(symbolEndKind == symbolKind.erRelation && symbolStartKind == symbolKind.erRelation) {
+    //                 okToMakeLine = false;
+    //             } else if((symbolEndKind == symbolKind.uml && symbolStartKind != symbolKind.uml) || (symbolEndKind != symbolKind.uml && symbolStartKind == symbolKind.uml)) {
+    //                 okToMakeLine = false;
+    //             }
+    //             if(diagram[lineStartObj] == diagram[hovobj]) okToMakeLine = false;
+    //             if(okToMakeLine) {
+    //                 saveState = true;
+    //                 if(createNewPoint) p1 = points.addPoint(currentMouseCoordinateX, currentMouseCoordinateY, false);
+    //                 if (diagram[hovobj].symbolkind == symbolKind.erAttribute) {
+    //                     p2 = diagram[hovobj].centerPoint;
+    //                 } else {
+    //                     p2 = points.addPoint(currentMouseCoordinateX, currentMouseCoordinateY, false);
+    //                 }
+    //                 diagram[lineStartObj].connectorTop.push({from:p1, to:p2});
+    //                 diagram[hovobj].connectorTop.push({from:p2, to:p1});
+    //             }
+    //         }
+    //     }
+    // }
+
+    // // Code for creating symbols when mouse is released
+    // // Symbol (1 UML diagram symbol 2 ER Attribute 3 ER Entity 4 Lines 5 ER Relation 6 Text 7 UML Lines)
+    // //----------------------------------------------------------------------
+
+    // var diagramObject;
+
+    // if (uimode == "CreateClass" && md == mouseState.boxSelectOrCreateMode) {
+    //     var classB = new Symbol(symbolKind.uml); // UML
+    //     classB.name = "New" + diagram.length;
+    //     classB.operations.push({text:"- makemore()"});
+    //     classB.attributes.push({text:"+ height:Integer"});
+    //     classB.topLeft = p1;
+    //     classB.bottomRight = p2;
+    //     classB.middleDivider = p3;
+    //     classB.centerPoint = p3;
+    //     diagram.push(classB);
+    //     lastSelectedObject = diagram.length -1;
+    //     diagram[lastSelectedObject].targeted = true;
+    //     selected_objects.push(diagram[lastSelectedObject]);
+    //     diagramObject = diagram[lastSelectedObject];
+    // } else if (uimode == "CreateERAttr" && md == mouseState.boxSelectOrCreateMode) {
+    //     erAttributeA = new Symbol(symbolKind.erAttribute); // ER attributes
+    //     erAttributeA.name = "Attr" + diagram.length;
+    //     erAttributeA.topLeft = p1;
+    //     erAttributeA.bottomRight = p2;
+    //     erAttributeA.centerPoint = p3;
+    //     erAttributeA.object_type = "";
+    //     erAttributeA.fontColor = "#000";
+    //     erAttributeA.font = "Arial";
+    //     diagram.push(erAttributeA);
+    //     //selecting the newly created attribute and open the dialogmenu.
+    //     lastSelectedObject = diagram.length -1;
+    //     diagram[lastSelectedObject].targeted = true;
+    //     selected_objects.push(diagram[lastSelectedObject]);
+    //     diagramObject = diagram[lastSelectedObject];
+    // } else if (uimode == "CreateEREntity" && md == mouseState.boxSelectOrCreateMode) {
+    //     erEnityA = new Symbol(symbolKind.erEntity); // ER entity
+    //     erEnityA.name = "Entity" + diagram.length;
+    //     erEnityA.topLeft = p1;
+    //     erEnityA.bottomRight = p2;
+    //     erEnityA.centerPoint = p3;
+    //     erEnityA.arity = [];
+    //     erEnityA.object_type = "";
+    //     erEnityA.fontColor = "#000";
+    //     erEnityA.font = "Arial";
+    //     diagram.push(erEnityA);
+    //     //selecting the newly created enitity and open the dialogmenu.
+    //     lastSelectedObject = diagram.length -1;
+    //     diagram[lastSelectedObject].targeted = true;
+    //     selected_objects.push(diagram[lastSelectedObject]);
+    //     diagramObject = diagram[lastSelectedObject];
+    // } else if (uimode == "CreateLine" && md == mouseState.boxSelectOrCreateMode) {
+    //     //Code for making a line, if start and end object are different, except attributes and if no object is text
+    //     if((symbolStartKind != symbolEndKind || (symbolStartKind == symbolKind.erAttribute && symbolEndKind == symbolKind.erAttribute)
+    //     || symbolStartKind == symbolKind.uml && symbolEndKind == symbolKind.uml) && (symbolStartKind != symbolKind.line && symbolEndKind != symbolKind.line)
+    //     && (symbolStartKind != symbolKind.text && symbolEndKind != symbolKind.text) && okToMakeLine) {
+    //         erLineA = new Symbol(symbolKind.line); // Lines
+    //         erLineA.name = "Line" + diagram.length
+    //         erLineA.topLeft = p1;
+    //         erLineA.object_type = "";
+    //         erLineA.bottomRight = p2;
+    //         erLineA.centerPoint = p3;
+    //         diagram.push(erLineA);
+    //         //selecting the newly created enitity and open the dialogmenu.
+    //         lastSelectedObject = diagram.length -1;
+    //         diagram[lastSelectedObject].targeted = true;
+    //         selected_objects.push(diagram[lastSelectedObject]);
+    //         //resets the mode so that next click can move or select an object instead of drawing another line
+    //         //only happens when a line has been created between 2 objects
+    //         if ($("#linebutton").hasClass("pressed")){
+    //             $("#linebutton.buttonsStyle").removeClass("pressed").addClass("unpressed");
+    //         }
+    //         uimode = "normal";
+
+    //         createCardinality();
+    //         updateGraphics();
+    //     }
+    // } else if (uimode == "CreateERRelation" && md == mouseState.boxSelectOrCreateMode) {
+    //     erRelationA = new Symbol(symbolKind.erRelation); // ER Relation
+    //     erRelationA.name = "Relation" + diagram.length;
+    //     erRelationA.topLeft = p1;
+    //     erRelationA.bottomRight = p2;
+    //     erRelationA.centerPoint = p3;
+    //     diagram.push(erRelationA);
+    //     //selecting the newly created relation and open the dialog menu.
+    //     lastSelectedObject = diagram.length -1;
+    //     diagram[lastSelectedObject].targeted = true;
+    //     selected_objects.push(diagram[lastSelectedObject]);
+    //     diagramObject = diagram[lastSelectedObject];
+    // } else if (md == mouseState.boxSelectOrCreateMode && uimode == "normal") {
+    //     diagram.targetItemsInsideSelectionBox(currentMouseCoordinateX, currentMouseCoordinateY, startMouseCoordinateX, startMouseCoordinateY);
+    // }
+    // else if(uimode != "Moved" && !ctrlIsClicked && md != mouseState.boxSelectOrCreateMode) {
+    //     //Unselects every object.
+    //     for(var i = 0; i < diagram.length; i++) {
+    //         diagram[i].targeted = false;
+    //     }
+    //     //Sets the clicked object as targeted
+    //     selected_objects = [];
+    //     if (lastSelectedObject >= 0) {
+    //         selected_objects.push(diagram[lastSelectedObject]);
+    //         //You have to target an object when you start to draw
+    //         if(md != mouseState.empty) diagram[lastSelectedObject].targeted = true;
+    //     }
+    // } else if (uimode == "CreateUMLLine" && md == mouseState.boxSelectOrCreateMode) {
+    //     //Code for making a line, if start and end object are different, except attributes and if no object is text
+    //     if((symbolStartKind != symbolEndKind || (symbolStartKind == symbolKind.erAttribute && symbolEndKind == symbolKind.erAttribute)
+    //     || symbolStartKind == symbolKind.uml && symbolEndKind == symbolKind.uml) && (symbolStartKind != symbolKind.umlLine && symbolEndKind != symbolKind.umlLine)
+    //     && (symbolStartKind != symbolKind.text && symbolEndKind != symbolKind.text) && okToMakeLine) {
+    //         umlLineA = new Symbol(symbolKind.umlLine); //UML Lines
+    //         umlLineA.name = "Line" + diagram.length
+    //         umlLineA.topLeft = p1;
+    //         umlLineA.object_type = "";
+    //         umlLineA.bottomRight = p2;
+    //         umlLineA.centerPoint = p3;
+    //         diagram.push(umlLineA);
+    //         //selecting the newly created enitity and open the dialogmenu.
+    //         lastSelectedObject = diagram.length -1;
+    //         diagram[lastSelectedObject].targeted = true;
+    //         selected_objects.push(diagram[lastSelectedObject]);
+    //         //resets the mode so that next click can move or select an object instead of drawing another line
+    //         //only happens when a line has been created between 2 objects
+    //         if ($("#umllinebutton").hasClass("pressed")){
+    //             $("#umllinebutton.buttonsStyle").removeClass("pressed").addClass("unpressed");
+    //         }
+    //         uimode = "normal";
+
+    //         createCardinality();
+    //         updateGraphics();
+    //     }
+    // }
+    // //when symbol is er relation then don't assign variables since it's already done earlier when creating points
+    // if (diagramObject && diagramObject.symbolkind != symbolKind.erRelation) {
+    //     p1BeforeResize.x = points[diagramObject.topLeft].x;
+    //     p1BeforeResize.y = points[diagramObject.topLeft].y;
+    //     p2BeforeResize.x = points[diagramObject.bottomRight].x;
+    //     p2BeforeResize.y = points[diagramObject.bottomRight].y;
+    // }
+
+    // //If the object is created by just clicking and not dragging then set variable so that points 
+    // //are moved to mouse position inside the adjust function 
+    // if (diagramObject && p1BeforeResize.x == p2BeforeResize.x && p1BeforeResize.y == p2BeforeResize.y) {
+    //     diagramObject.pointsAtSamePosition = true;
+    // }
+
+    // hashFunction();
+    // updateGraphics();
+    // diagram.updateLineRelations();
+    // // Clear mouse state
+    // md = mouseState.empty;
+    // if(saveState) SaveState();
 
 }
 
