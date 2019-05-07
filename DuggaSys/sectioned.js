@@ -361,6 +361,9 @@ function deleteItem(item_lid = null) {
 //----------------------------------------------------------------------------------
 
 function updateItem() {
+  var deadline = $("#deadline").val()+" "+$("#deadlinehours").val()+":"+$("#deadlineminutes").val();
+
+  console.log(deadline);
 
   AJAXService("UPDATE", prepareItem(), "SECTION");
 
