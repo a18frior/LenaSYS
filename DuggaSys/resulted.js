@@ -73,14 +73,14 @@ function setup() {
   // Remove all children, at the time of writing there is only 1 and its unwanted.
 /*  while(document.getElementById("dropdownc").hasChildNodes()){
     document.getElementById("dropdownc").removeChild(document.getElementById("dropdownc").firstChild);
-  }*/
+  }
 
   var customFilterDiv = document.createElement("div");
   customFilterDiv.id = "customfilter";
   var columnFilterDiv = document.createElement("div");
   columnFilterDiv.id = "columnfilter";
   document.getElementById("dropdownc").appendChild(columnFilterDiv);
-  document.getElementById("dropdownc").appendChild(customFilterDiv);
+  document.getElementById("dropdownc").appendChild(customFilterDiv);*/
 
 	window.onscroll = function () {
 		magicHeading()
