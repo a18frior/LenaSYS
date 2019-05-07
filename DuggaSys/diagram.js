@@ -1440,7 +1440,7 @@ function setMode(mode) { //"CreateClass" yet to be implemented in .php
 }
 
 $(document).ready(function() {
-    $("#linebutton, #attributebutton, #entitybutton, #relationbutton, #squarebutton, #drawfreebutton, #classbutton, #drawtextbutton, #umllinebutton").click(function() {
+    $("#objectbutton, #linebutton, #attributebutton, #entitybutton, #relationbutton, #squarebutton, #drawfreebutton, #classbutton, #drawtextbutton, #umllinebutton").click(function() {
         $("#moveButton").removeClass("pressed").addClass("unpressed");
         $("#moveButton").css("visibility", "hidden");
         if ($(this).hasClass("pressed")) {
@@ -2392,6 +2392,7 @@ function switchToolbar(direction) {
     $("#labelTools").show();
     $("#labelUndo").show();
     $(".buttonsStyle").hide();
+    $("#objectbutton").show();
     $("#linebutton").show();
     $("#attributebutton").show();
     $("#entitybutton").show();
@@ -2527,74 +2528,14 @@ function mousemoveevt(ev, t) {
         startMouseCoordinateY = canvasToPixels(0, ev.clientY - boundingRect.top).y;
     }
 
-    reWrite();
-    updateGraphics();
-
     if(canvasRightClick == 0){
-        if (md == mouseState.empty) {
-            // Select a new point only if mouse is not already moving a point or selection box
-            sel = diagram.closestPoint(currentMouseCoordinateX, currentMouseCoordinateY);
-            if (sel.distance < tolerance) {
-                canvas.style.cursor = "default";
-            } else {
-                if(uimode == "MoveAround"){
-                    canvas.style.cursor = "all-scroll";
-                }
-                else {
-                    canvas.style.cursor = "default";
-                }
-            }
-            // If mouse is not pressed highlight closest point
-            points.clearAllSelects();
-            movobj = diagram.itemClicked();
-        } else if (md == mouseState.noPointAvailable) {
-            // If mouse is pressed down and no point is close show selection box
-        } else if (md == mouseState.insidePoint) {
-            // If mouse is pressed down and at a point in selected object - move that point
-            if(!sel.point.fake) {
-                sel.point.x = currentMouseCoordinateX;
-                sel.point.y = currentMouseCoordinateY;
-
-                //If we changed a point of a path object,
-                //  we need to recalculate the bounding-box so that it will remain clickable.
-                if(diagram[lastSelectedObject].kind == kind.path) {
-                    diagram[lastSelectedObject].calculateBoundingBox();
-                }
-            } else {
-                sel.point.x.x = currentMouseCoordinateX;
-                sel.point.y.y = currentMouseCoordinateY;
-            }
-            updateGraphics();
-            // If mouse is pressed down and at a point in selected object - move that point
-        } else if (md == mouseState.insideMovableObject) {
-            // If mouse is pressed down inside a movable object - move that object
-            if (movobj != -1 ) {
-                uimode = "Moved";
-                $(".buttonsStyle").removeClass("pressed").addClass("unpressed");
-                for (var i = 0; i < diagram.length; i++) {
-                    if (diagram[i].targeted == true && !diagram[movobj].locked) {
-                        if(snapToGrid) {
-                            currentMouseCoordinateX = Math.round(currentMouseCoordinateX / gridSize) * gridSize;
-                            currentMouseCoordinateY = Math.round(currentMouseCoordinateY / gridSize) * gridSize;
-                        }
-                        diagram[i].move(currentMouseCoordinateX - startMouseCoordinateX, currentMouseCoordinateY - startMouseCoordinateY);
-                    }
-                }
-
-                startMouseCoordinateX = currentMouseCoordinateX;
-                startMouseCoordinateY = currentMouseCoordinateY;
-            }
-        }
-        if (md == mouseState.boxSelectOrCreateMode && uimode == "normal") {
-            diagram.targetItemsInsideSelectionBox(currentMouseCoordinateX, currentMouseCoordinateY, startMouseCoordinateX, startMouseCoordinateY, true);
-        } else {
-            diagram.checkForHover(currentMouseCoordinateX, currentMouseCoordinateY);
-        }
-        updateGraphics();
-        // Draw select or create dotted box
         if (md == mouseState.boxSelectOrCreateMode && uimode != "MoveAround") {
-            if (figureType == "Free" && uimode == "CreateFigure") {
-                if(p2 != null && !(isFirstPoint)) {
+            if (uimode == "CreateObject") {
+                if(isFirstPoint){
+                    
+                }
+                else if(p2 != null && !(isFirstPoint)) {
+                    console.log("isDrawing")
                     ctx.setLineDash([3, 3]);
                     ctx.beginPath();
                     ctx.moveTo(pixelsToCanvas(startMouseCoordinateX).x, pixelsToCanvas(0, startMouseCoordinateY).y);
@@ -2608,118 +2549,203 @@ function mousemoveevt(ev, t) {
                         crossFillStyle = "rgba(255, 102, 68, 0.0)";
                     }
                 }
-            } else if(uimode == "CreateFigure" && figureType == "Square") {
-                ctx.setLineDash([3, 3]);
-                ctx.beginPath();
-                ctx.moveTo(pixelsToCanvas(startMouseCoordinateX).x, pixelsToCanvas(0, startMouseCoordinateY).y);
-                ctx.lineTo(pixelsToCanvas(currentMouseCoordinateX).x, pixelsToCanvas(0, startMouseCoordinateY).y);
-                ctx.lineTo(pixelsToCanvas(currentMouseCoordinateX).x, pixelsToCanvas(0, currentMouseCoordinateY).y);
-                ctx.lineTo(pixelsToCanvas(startMouseCoordinateX).x, pixelsToCanvas(0, currentMouseCoordinateY).y);
-                ctx.lineTo(pixelsToCanvas(startMouseCoordinateX).x, pixelsToCanvas(0, startMouseCoordinateY).y);
-                ctx.strokeStyle = "#d51";
-                ctx.stroke();
-                ctx.setLineDash([]);
-                ctx.closePath();
-                if (!developerModeActive) {
-                    crossStrokeStyle1 = "rgba(255, 102, 68, 0.0)";
-                    crossStrokeStyle2 = "rgba(255, 102, 68, 0.0)";
-                    crossFillStyle = "rgba(255, 102, 68, 0.0)";
-                }
-            } else if (uimode == "CreateEREntity") {
-                ctx.setLineDash([3, 3]);
-                ctx.beginPath();
-                ctx.moveTo(pixelsToCanvas(startMouseCoordinateX).x, pixelsToCanvas(0, startMouseCoordinateY).y);
-                ctx.lineTo(pixelsToCanvas(currentMouseCoordinateX).x, pixelsToCanvas(0, startMouseCoordinateY).y);
-                ctx.lineTo(pixelsToCanvas(currentMouseCoordinateX).x, pixelsToCanvas(0, currentMouseCoordinateY).y);
-                ctx.lineTo(pixelsToCanvas(startMouseCoordinateX).x, pixelsToCanvas(0, currentMouseCoordinateY).y);
-                ctx.lineTo(pixelsToCanvas(startMouseCoordinateX).x, pixelsToCanvas(0, startMouseCoordinateY).y);
-                ctx.strokeStyle = "#000";
-                ctx.stroke();
-                ctx.setLineDash([]);
-                ctx.closePath();
-                if (!developerModeActive) {
-                    crossStrokeStyle1 = "rgba(255, 102, 68, 0.0)";
-                    crossStrokeStyle2 = "rgba(255, 102, 68, 0.0)";
-                    crossFillStyle = "rgba(255, 102, 68, 0.0)";
-                }
-            } else if(uimode == "CreateERRelation") {
-                ctx.setLineDash([3, 3]);
-                var midx = pixelsToCanvas(startMouseCoordinateX).x+((pixelsToCanvas(currentMouseCoordinateX).x-pixelsToCanvas(startMouseCoordinateX).x)/2);
-                var midy = pixelsToCanvas(0, startMouseCoordinateY).y+((pixelsToCanvas(0, currentMouseCoordinateY).y-pixelsToCanvas(0, startMouseCoordinateY).y)/2);
-                ctx.beginPath();
-                ctx.moveTo(midx, pixelsToCanvas(0, startMouseCoordinateY).y);
-                ctx.lineTo(pixelsToCanvas(currentMouseCoordinateX).x, midy);
-                ctx.lineTo(midx, pixelsToCanvas(0, currentMouseCoordinateY).y);
-                ctx.lineTo(pixelsToCanvas(startMouseCoordinateX).x, midy);
-                ctx.lineTo(midx, pixelsToCanvas(0, startMouseCoordinateY).y);
-                ctx.strokeStyle = "#000";
-                ctx.stroke();
-                ctx.setLineDash([]);
-                ctx.closePath();
-                if (!developerModeActive) {
-                    crossStrokeStyle1 = "rgba(255, 102, 68, 0.0)";
-                    crossStrokeStyle2 = "rgba(255, 102, 68, 0.0)";
-                    crossFillStyle = "rgba(255, 102, 68, 0.0)";
-                }
-            } else if(uimode == "CreateERAttr") {
-                ctx.setLineDash([3, 3]);
-                drawOval(pixelsToCanvas(startMouseCoordinateX).x, pixelsToCanvas(0, startMouseCoordinateY).y, pixelsToCanvas(currentMouseCoordinateX).x, pixelsToCanvas(0, currentMouseCoordinateY).y);
-                ctx.strokeStyle = "#000";
-                ctx.stroke();
-                ctx.setLineDash([]);
-                if (!developerModeActive) {
-                    crossStrokeStyle1 = "rgba(255, 102, 68, 0.0)";
-                    crossStrokeStyle2 = "rgba(255, 102, 68, 0.0)";
-                    crossFillStyle = "rgba(255, 102, 68, 0.0)";
-                }
-            } else if(uimode == "CreateLine") {
-                // Path settings for preview line
-                ctx.setLineDash([3, 3]);
-                ctx.beginPath();
-                ctx.moveTo(pixelsToCanvas(startMouseCoordinateX).x, pixelsToCanvas(0, startMouseCoordinateY).y);
-                ctx.lineTo(pixelsToCanvas(currentMouseCoordinateX).x, pixelsToCanvas(0, currentMouseCoordinateY).y);
-                ctx.strokeStyle = "#000";
-                ctx.stroke();
-                ctx.setLineDash([]);
-                if (!developerModeActive) {
-                    crossStrokeStyle1 = "rgba(255, 102, 68, 0.0)";
-                    crossStrokeStyle2 = "rgba(255, 102, 68, 0.0)";
-                    crossFillStyle = "rgba(255, 102, 68, 0.0)";
-                }
-            } else if(uimode == "CreateUMLLine") {
-                // Path settings for preview line
-                ctx.setLineDash([3, 3]);
-                ctx.beginPath();
-                ctx.moveTo(pixelsToCanvas(startMouseCoordinateX).x, pixelsToCanvas(0, startMouseCoordinateY).y);
-                ctx.lineTo(pixelsToCanvas(currentMouseCoordinateX).x, pixelsToCanvas(0, currentMouseCoordinateY).y);
-                ctx.strokeStyle = "#000";
-                ctx.stroke();
-                ctx.setLineDash([]);
-                if (!developerModeActive) {
-                    crossStrokeStyle1 = "rgba(255, 102, 68, 0.0)";
-                    crossStrokeStyle2 = "rgba(255, 102, 68, 0.0)";
-                    crossFillStyle = "rgba(255, 102, 68, 0.0)";
-                    }
-                } else {
-                ctx.setLineDash([3, 3]);
-                ctx.beginPath();
-                ctx.moveTo(pixelsToCanvas(startMouseCoordinateX).x, pixelsToCanvas(0, startMouseCoordinateY).y);
-                ctx.lineTo(pixelsToCanvas(currentMouseCoordinateX).x, pixelsToCanvas(0, startMouseCoordinateY).y);
-                ctx.lineTo(pixelsToCanvas(currentMouseCoordinateX).x, pixelsToCanvas(0, currentMouseCoordinateY).y);
-                ctx.lineTo(pixelsToCanvas(startMouseCoordinateX).x, pixelsToCanvas(0, currentMouseCoordinateY).y);
-                ctx.lineTo(pixelsToCanvas(startMouseCoordinateX).x, pixelsToCanvas(0, startMouseCoordinateY).y);
-                ctx.strokeStyle = "#000";
-                ctx.stroke();
-                ctx.setLineDash([]);
-                ctx.closePath();
-                if (!developerModeActive) {
-                    crossStrokeStyle1 = "rgba(255, 102, 68, 0.0)";
-                    crossStrokeStyle2 = "rgba(255, 102, 68, 0.0)";
-                    crossFillStyle = "rgba(255, 102, 68, 0.0)";
-                }
             }
         }
     }
+
+    reWrite();
+    updateGraphics();
+
+    // if(canvasRightClick == 0){
+    //     if (md == mouseState.empty) {
+    //         // Select a new point only if mouse is not already moving a point or selection box
+    //         sel = diagram.closestPoint(currentMouseCoordinateX, currentMouseCoordinateY);
+    //         if (sel.distance < tolerance) {
+    //             canvas.style.cursor = "default";
+    //         } else {
+    //             if(uimode == "MoveAround"){
+    //                 canvas.style.cursor = "all-scroll";
+    //             }
+    //             else {
+    //                 canvas.style.cursor = "default";
+    //             }
+    //         }
+    //         // If mouse is not pressed highlight closest point
+    //         points.clearAllSelects();
+    //         movobj = diagram.itemClicked();
+    //     } else if (md == mouseState.noPointAvailable) {
+    //         // If mouse is pressed down and no point is close show selection box
+    //     } else if (md == mouseState.insidePoint) {
+    //         // If mouse is pressed down and at a point in selected object - move that point
+    //         if(!sel.point.fake) {
+    //             sel.point.x = currentMouseCoordinateX;
+    //             sel.point.y = currentMouseCoordinateY;
+
+    //             //If we changed a point of a path object,
+    //             //  we need to recalculate the bounding-box so that it will remain clickable.
+    //             if(diagram[lastSelectedObject].kind == kind.path) {
+    //                 diagram[lastSelectedObject].calculateBoundingBox();
+    //             }
+    //         } else {
+    //             sel.point.x.x = currentMouseCoordinateX;
+    //             sel.point.y.y = currentMouseCoordinateY;
+    //         }
+    //         updateGraphics();
+    //         // If mouse is pressed down and at a point in selected object - move that point
+    //     } else if (md == mouseState.insideMovableObject) {
+    //         // If mouse is pressed down inside a movable object - move that object
+    //         if (movobj != -1 ) {
+    //             uimode = "Moved";
+    //             $(".buttonsStyle").removeClass("pressed").addClass("unpressed");
+    //             for (var i = 0; i < diagram.length; i++) {
+    //                 if (diagram[i].targeted == true && !diagram[movobj].locked) {
+    //                     if(snapToGrid) {
+    //                         currentMouseCoordinateX = Math.round(currentMouseCoordinateX / gridSize) * gridSize;
+    //                         currentMouseCoordinateY = Math.round(currentMouseCoordinateY / gridSize) * gridSize;
+    //                     }
+    //                     diagram[i].move(currentMouseCoordinateX - startMouseCoordinateX, currentMouseCoordinateY - startMouseCoordinateY);
+    //                 }
+    //             }
+
+    //             startMouseCoordinateX = currentMouseCoordinateX;
+    //             startMouseCoordinateY = currentMouseCoordinateY;
+    //         }
+    //     }
+    //     if (md == mouseState.boxSelectOrCreateMode && uimode == "normal") {
+    //         diagram.targetItemsInsideSelectionBox(currentMouseCoordinateX, currentMouseCoordinateY, startMouseCoordinateX, startMouseCoordinateY, true);
+    //     } else {
+    //         diagram.checkForHover(currentMouseCoordinateX, currentMouseCoordinateY);
+    //     }
+    //     updateGraphics();
+    //     // Draw select or create dotted box
+    //     if (md == mouseState.boxSelectOrCreateMode && uimode != "MoveAround") {
+    //         if (figureType == "Free" && uimode == "CreateFigure") {
+    //             if(p2 != null && !(isFirstPoint)) {
+    //                 ctx.setLineDash([3, 3]);
+    //                 ctx.beginPath();
+    //                 ctx.moveTo(pixelsToCanvas(startMouseCoordinateX).x, pixelsToCanvas(0, startMouseCoordinateY).y);
+    //                 ctx.lineTo(pixelsToCanvas(currentMouseCoordinateX).x, pixelsToCanvas(0, currentMouseCoordinateY).y);
+    //                 ctx.strokeStyle = "#000";
+    //                 ctx.stroke();
+    //                 ctx.setLineDash([]);
+    //                 if (!developerModeActive) {
+    //                     crossStrokeStyle1 = "rgba(255, 102, 68, 0.0)";
+    //                     crossStrokeStyle2 = "rgba(255, 102, 68, 0.0)";
+    //                     crossFillStyle = "rgba(255, 102, 68, 0.0)";
+    //                 }
+    //             }
+    //         } else if(uimode == "CreateFigure" && figureType == "Square") {
+    //             ctx.setLineDash([3, 3]);
+    //             ctx.beginPath();
+    //             ctx.moveTo(pixelsToCanvas(startMouseCoordinateX).x, pixelsToCanvas(0, startMouseCoordinateY).y);
+    //             ctx.lineTo(pixelsToCanvas(currentMouseCoordinateX).x, pixelsToCanvas(0, startMouseCoordinateY).y);
+    //             ctx.lineTo(pixelsToCanvas(currentMouseCoordinateX).x, pixelsToCanvas(0, currentMouseCoordinateY).y);
+    //             ctx.lineTo(pixelsToCanvas(startMouseCoordinateX).x, pixelsToCanvas(0, currentMouseCoordinateY).y);
+    //             ctx.lineTo(pixelsToCanvas(startMouseCoordinateX).x, pixelsToCanvas(0, startMouseCoordinateY).y);
+    //             ctx.strokeStyle = "#d51";
+    //             ctx.stroke();
+    //             ctx.setLineDash([]);
+    //             ctx.closePath();
+    //             if (!developerModeActive) {
+    //                 crossStrokeStyle1 = "rgba(255, 102, 68, 0.0)";
+    //                 crossStrokeStyle2 = "rgba(255, 102, 68, 0.0)";
+    //                 crossFillStyle = "rgba(255, 102, 68, 0.0)";
+    //             }
+    //         } else if (uimode == "CreateEREntity") {
+    //             ctx.setLineDash([3, 3]);
+    //             ctx.beginPath();
+    //             ctx.moveTo(pixelsToCanvas(startMouseCoordinateX).x, pixelsToCanvas(0, startMouseCoordinateY).y);
+    //             ctx.lineTo(pixelsToCanvas(currentMouseCoordinateX).x, pixelsToCanvas(0, startMouseCoordinateY).y);
+    //             ctx.lineTo(pixelsToCanvas(currentMouseCoordinateX).x, pixelsToCanvas(0, currentMouseCoordinateY).y);
+    //             ctx.lineTo(pixelsToCanvas(startMouseCoordinateX).x, pixelsToCanvas(0, currentMouseCoordinateY).y);
+    //             ctx.lineTo(pixelsToCanvas(startMouseCoordinateX).x, pixelsToCanvas(0, startMouseCoordinateY).y);
+    //             ctx.strokeStyle = "#000";
+    //             ctx.stroke();
+    //             ctx.setLineDash([]);
+    //             ctx.closePath();
+    //             if (!developerModeActive) {
+    //                 crossStrokeStyle1 = "rgba(255, 102, 68, 0.0)";
+    //                 crossStrokeStyle2 = "rgba(255, 102, 68, 0.0)";
+    //                 crossFillStyle = "rgba(255, 102, 68, 0.0)";
+    //             }
+    //         } else if(uimode == "CreateERRelation") {
+    //             ctx.setLineDash([3, 3]);
+    //             var midx = pixelsToCanvas(startMouseCoordinateX).x+((pixelsToCanvas(currentMouseCoordinateX).x-pixelsToCanvas(startMouseCoordinateX).x)/2);
+    //             var midy = pixelsToCanvas(0, startMouseCoordinateY).y+((pixelsToCanvas(0, currentMouseCoordinateY).y-pixelsToCanvas(0, startMouseCoordinateY).y)/2);
+    //             ctx.beginPath();
+    //             ctx.moveTo(midx, pixelsToCanvas(0, startMouseCoordinateY).y);
+    //             ctx.lineTo(pixelsToCanvas(currentMouseCoordinateX).x, midy);
+    //             ctx.lineTo(midx, pixelsToCanvas(0, currentMouseCoordinateY).y);
+    //             ctx.lineTo(pixelsToCanvas(startMouseCoordinateX).x, midy);
+    //             ctx.lineTo(midx, pixelsToCanvas(0, startMouseCoordinateY).y);
+    //             ctx.strokeStyle = "#000";
+    //             ctx.stroke();
+    //             ctx.setLineDash([]);
+    //             ctx.closePath();
+    //             if (!developerModeActive) {
+    //                 crossStrokeStyle1 = "rgba(255, 102, 68, 0.0)";
+    //                 crossStrokeStyle2 = "rgba(255, 102, 68, 0.0)";
+    //                 crossFillStyle = "rgba(255, 102, 68, 0.0)";
+    //             }
+    //         } else if(uimode == "CreateERAttr") {
+    //             ctx.setLineDash([3, 3]);
+    //             drawOval(pixelsToCanvas(startMouseCoordinateX).x, pixelsToCanvas(0, startMouseCoordinateY).y, pixelsToCanvas(currentMouseCoordinateX).x, pixelsToCanvas(0, currentMouseCoordinateY).y);
+    //             ctx.strokeStyle = "#000";
+    //             ctx.stroke();
+    //             ctx.setLineDash([]);
+    //             if (!developerModeActive) {
+    //                 crossStrokeStyle1 = "rgba(255, 102, 68, 0.0)";
+    //                 crossStrokeStyle2 = "rgba(255, 102, 68, 0.0)";
+    //                 crossFillStyle = "rgba(255, 102, 68, 0.0)";
+    //             }
+    //         } else if(uimode == "CreateLine") {
+    //             // Path settings for preview line
+    //             ctx.setLineDash([3, 3]);
+    //             ctx.beginPath();
+    //             ctx.moveTo(pixelsToCanvas(startMouseCoordinateX).x, pixelsToCanvas(0, startMouseCoordinateY).y);
+    //             ctx.lineTo(pixelsToCanvas(currentMouseCoordinateX).x, pixelsToCanvas(0, currentMouseCoordinateY).y);
+    //             ctx.strokeStyle = "#000";
+    //             ctx.stroke();
+    //             ctx.setLineDash([]);
+    //             if (!developerModeActive) {
+    //                 crossStrokeStyle1 = "rgba(255, 102, 68, 0.0)";
+    //                 crossStrokeStyle2 = "rgba(255, 102, 68, 0.0)";
+    //                 crossFillStyle = "rgba(255, 102, 68, 0.0)";
+    //             }
+    //         } else if(uimode == "CreateUMLLine") {
+    //             // Path settings for preview line
+    //             ctx.setLineDash([3, 3]);
+    //             ctx.beginPath();
+    //             ctx.moveTo(pixelsToCanvas(startMouseCoordinateX).x, pixelsToCanvas(0, startMouseCoordinateY).y);
+    //             ctx.lineTo(pixelsToCanvas(currentMouseCoordinateX).x, pixelsToCanvas(0, currentMouseCoordinateY).y);
+    //             ctx.strokeStyle = "#000";
+    //             ctx.stroke();
+    //             ctx.setLineDash([]);
+    //             if (!developerModeActive) {
+    //                 crossStrokeStyle1 = "rgba(255, 102, 68, 0.0)";
+    //                 crossStrokeStyle2 = "rgba(255, 102, 68, 0.0)";
+    //                 crossFillStyle = "rgba(255, 102, 68, 0.0)";
+    //                 }
+    //             } else {
+    //             ctx.setLineDash([3, 3]);
+    //             ctx.beginPath();
+    //             ctx.moveTo(pixelsToCanvas(startMouseCoordinateX).x, pixelsToCanvas(0, startMouseCoordinateY).y);
+    //             ctx.lineTo(pixelsToCanvas(currentMouseCoordinateX).x, pixelsToCanvas(0, startMouseCoordinateY).y);
+    //             ctx.lineTo(pixelsToCanvas(currentMouseCoordinateX).x, pixelsToCanvas(0, currentMouseCoordinateY).y);
+    //             ctx.lineTo(pixelsToCanvas(startMouseCoordinateX).x, pixelsToCanvas(0, currentMouseCoordinateY).y);
+    //             ctx.lineTo(pixelsToCanvas(startMouseCoordinateX).x, pixelsToCanvas(0, startMouseCoordinateY).y);
+    //             ctx.strokeStyle = "#000";
+    //             ctx.stroke();
+    //             ctx.setLineDash([]);
+    //             ctx.closePath();
+    //             if (!developerModeActive) {
+    //                 crossStrokeStyle1 = "rgba(255, 102, 68, 0.0)";
+    //                 crossStrokeStyle2 = "rgba(255, 102, 68, 0.0)";
+    //                 crossFillStyle = "rgba(255, 102, 68, 0.0)";
+    //             }
+    //         }
+    //     }
+    // }
 }
 
 //----------------------------------------------------------
@@ -2733,48 +2759,62 @@ function mousedownevt(ev) {
     startMouseCoordinateX = currentMouseCoordinateX;
     startMouseCoordinateY = currentMouseCoordinateY;
 
-    if(uimode == "Moved" && md != mouseState.boxSelectOrCreateMode) {
-        uimode = "normal";
-        md = mouseState.empty;
-    }
-
-    if (uimode == "CreateLine" || uimode == "CreateUMLLine") {
-        hovobj = diagram.indexOf(diagram.checkForHover(currentMouseCoordinateX, currentMouseCoordinateY));
-
-        md = mouseState.boxSelectOrCreateMode;  // Box select or Create mode.
-        //If you start on canvas or not
-        if (hovobj == -1) {
-            md = mouseState.empty;
-        } else {
-            sel = diagram.closestPoint(currentMouseCoordinateX, currentMouseCoordinateY);
-            //Store which object you are hovering over in lineStartObj
-            lineStartObj = hovobj;
-
-            //Get which kind of symbol mousedownevt execute on
-            symbolStartKind = diagram[lineStartObj].symbolkind;
-        }
-    } else if (sel.distance < tolerance / zoomValue) {
-        md = mouseState.insidePoint;
-    } else if (movobj != -1) {
-        md = mouseState.insideMovableObject;
-        handleSelect();
-    } else {
+    if(uimode == "CreateObject"){
         md = mouseState.boxSelectOrCreateMode; // Box select or Create mode.
-        if(uimode != "CreateFigure") {
-            startMouseCoordinateX = currentMouseCoordinateX;
-            startMouseCoordinateY = currentMouseCoordinateY;
-        }
+        startMouseCoordinateX = currentMouseCoordinateX;
+        startMouseCoordinateY = currentMouseCoordinateY;
+
         if(uimode != "MoveAround" && !ctrlIsClicked) {
             for (var i = 0; i < selected_objects.length; i++) {
                 selected_objects[i].targeted = false;
             }
             lastSelectedObject = -1;
             selected_objects = [];
-        }
-        if(uimode == "CreateFigure" && figureType == "Square") {
-            createFigure();
-        }
+        }        
     }
+
+    // if(uimode == "Moved" && md != mouseState.boxSelectOrCreateMode) {
+    //     uimode = "normal";
+    //     md = mouseState.empty;
+    // }
+
+    // if (uimode == "CreateLine" || uimode == "CreateUMLLine") {
+    //     hovobj = diagram.indexOf(diagram.checkForHover(currentMouseCoordinateX, currentMouseCoordinateY));
+
+    //     md = mouseState.boxSelectOrCreateMode;  // Box select or Create mode.
+    //     //If you start on canvas or not
+    //     if (hovobj == -1) {
+    //         md = mouseState.empty;
+    //     } else {
+    //         sel = diagram.closestPoint(currentMouseCoordinateX, currentMouseCoordinateY);
+    //         //Store which object you are hovering over in lineStartObj
+    //         lineStartObj = hovobj;
+
+    //         //Get which kind of symbol mousedownevt execute on
+    //         symbolStartKind = diagram[lineStartObj].symbolkind;
+    //     }
+    // } else if (sel.distance < tolerance / zoomValue) {
+    //     md = mouseState.insidePoint;
+    // } else if (movobj != -1) {
+    //     md = mouseState.insideMovableObject;
+    //     handleSelect();
+    // } else {
+    //     md = mouseState.boxSelectOrCreateMode; // Box select or Create mode.
+    //     if(uimode != "CreateFigure") {
+    //         startMouseCoordinateX = currentMouseCoordinateX;
+    //         startMouseCoordinateY = currentMouseCoordinateY;
+    //     }
+    //     if(uimode != "MoveAround" && !ctrlIsClicked) {
+    //         for (var i = 0; i < selected_objects.length; i++) {
+    //             selected_objects[i].targeted = false;
+    //         }
+    //         lastSelectedObject = -1;
+    //         selected_objects = [];
+    //     }
+    //     if(uimode == "CreateFigure" && figureType == "Square") {
+    //         createFigure();
+    //     }
+    // }
 }
 
 function handleSelect() {

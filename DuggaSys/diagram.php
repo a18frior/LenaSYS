@@ -65,6 +65,9 @@
                               <h4 class="label tlabel" id="labelTools">Tools</h4>
                               <div class="toolbar-drawer" id="drawerTools">
                                   <div class="tooltipdialog">
+                                      <button id='objectbutton' onclick='setMode("CreateObject");' class='buttonsStyle unpressed' data="Create Object">
+                                          <img class="toolboxButtons" src="../Shared/icons/diagram_draw_free.svg">
+                                      </button>
                                       <button id='linebutton' onclick='setMode("CreateLine");' class='buttonsStyle unpressed' data="Create Line">
                                           <img class="toolboxButtons" src="../Shared/icons/diagram_create_line.svg">
                                       </button>
