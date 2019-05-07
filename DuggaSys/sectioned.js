@@ -373,6 +373,8 @@ function updateDeadline(){
   var deadline = $("#setDeadlineValue").val()+" "+$("#deadlinehours").val()+":"+$("#deadlineminutes").val();
   var link = $("#link").val();
 
+  console.log(link, deadline);
+
   AJAXService("UPDATEDEADLINE", {deadline:deadline, link:link}, "SECTION");
 
   $("#sectionConfirmBox").css("display", "none");
