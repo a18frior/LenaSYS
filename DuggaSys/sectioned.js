@@ -361,7 +361,7 @@ function deleteItem(item_lid = null) {
 //----------------------------------------------------------------------------------
 
 function updateItem() {
-  var deadline = $("#deadline").val()+" "+$("#deadlinehours").val()+":"+$("#deadlineminutes").val();
+  var deadline = $("#setDeadlineValue").val()+" "+$("#deadlinehours").val()+":"+$("#deadlineminutes").val();
 
   console.log(deadline);
 
