@@ -144,8 +144,8 @@ function selectItem(lid, entryname, kind, evisible, elink, moment, gradesys, hig
   $("#tabs").html(makeoptions(gradesys, ["0 tabs", "1 tabs", "2 tabs", "3 tabs", "end", "1 tab + end", "2 tabs + end"], [0, 1, 2, 3, 4, 5, 6]));
   $("#highscoremode").html(makeoptions(highscoremode, ["None", "Time Based", "Click Based"], [0, 1, 2]));
 
-  $("#deadlinehours").html(makeoptions(deadline.toString().substr(11,2),hourArrOptions,hourArrValue));
-  $("#deadlineminutes").html(makeoptions(deadline.toString().substr(14,2),minuteArrOptions,minuteArrValue));
+  $("#deadlinehours").html(makeoptions(deadline.substr(11,2),hourArrOptions,hourArrValue));
+  $("#deadlineminutes").html(makeoptions(deadline.substr(14,2),minuteArrOptions,minuteArrValue));
   $("#setDeadlineValue").val(deadline.substr(0,10));
 
   var groups = [];
