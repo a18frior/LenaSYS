@@ -43,7 +43,8 @@ $startdate=getOP('startdate');
 $enddate=getOP('enddate');
 $showgrps=getOP('showgrp');
 $grptype=getOP('grptype');
-$deadline=$_POST('deadline');
+
+//$deadline=$_POST('deadline');
 
 $grpmembershp="UNK";
 $unmarked = 0;
