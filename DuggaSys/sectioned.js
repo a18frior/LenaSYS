@@ -342,7 +342,7 @@ function prepareItem() {
   param.grptype = $("#grptype").val();
   param.deadline = $("#setDeadlineValue").val()+" "+$("#deadlinehours").val()+":"+$("#deadlineminutes").val();
 
-  console.log(item['link']);
+  console.log(retdata);
 
   return param;
 }
