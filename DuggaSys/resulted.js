@@ -64,7 +64,7 @@ function setup() {
   filt += `<b>Keywords:</b> markG, markU, date <br> <b>Ex:</b> markG:färgdugga`;
   filt += `</div><span>?</span></td>`;
 
-	$("#menuHook").before(filt);
+	$("#sort").after(filt);
 
 
 	/*  Add filter menu   */

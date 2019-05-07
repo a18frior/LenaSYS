@@ -56,7 +56,6 @@
 					echo "</td>";
 				}else{
 
-						echo "<td id='menuHook' class='navSpacer'>";
 
 						echo "<td id='select' style='display:none;' class='navButt'>";
 						echo   "<span class='dropdown-container' onmouseover='hoverc();' onmouseleave='leavec();'>";
@@ -77,6 +76,7 @@
 
 						echo "</td>";
 
+            echo "<td id='menuHook' class='navSpacer'>";
 			}
           if(checklogin()) {
             echo "<td class='navName'><a id='userName' href='profile.php' title='".$_SESSION['loginname']."&#39;s profile'>".$_SESSION['loginname']."</a></td>";
