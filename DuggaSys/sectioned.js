@@ -340,6 +340,9 @@ function prepareItem() {
   param.moment = $("#moment").val();
   param.comments = $("#comments").val();
   param.grptype = $("#grptype").val();
+  param.deadline = $("#setDeadlineValue").val()+" "+$("#deadlinehours").val()+":"+$("#deadlineminutes").val();
+
+  console.log(param);
 
   return param;
 }
@@ -361,9 +364,6 @@ function deleteItem(item_lid = null) {
 //----------------------------------------------------------------------------------
 
 function updateItem() {
-  var deadline = $("#setDeadlineValue").val()+" "+$("#deadlinehours").val()+":"+$("#deadlineminutes").val();
-
-  AJAXService("SAVDUGGA", {deadline:deadline}, "DUGGA");
   AJAXService("UPDATE", prepareItem(), "SECTION");
 
   $("#sectionConfirmBox").css("display", "none");
