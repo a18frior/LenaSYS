@@ -374,7 +374,7 @@ function updateDeadline(){
 
   console.log(link, deadline);
 
-  AJAXService("SAVDUGGA", {deadline:deadline, link:link}, "DUGGA");
+  AJAXService("UPDATEDEADLINE", {deadline:deadline, link:link}, "SECTION");
 
   $("#sectionConfirmBox").css("display", "none");
   $("#editSection").css("display", "none");
