@@ -43,7 +43,7 @@ $startdate=getOP('startdate');
 $enddate=getOP('enddate');
 $showgrps=getOP('showgrp');
 $grptype=getOP('grptype');
-$deadline=getOP('deadline');
+$deadline=$_POST('deadline');
 
 $grpmembershp="UNK";
 $unmarked = 0;
@@ -301,7 +301,7 @@ if($gradesys=="UNK") $gradesys=0;
 					$deadlinequery = $pdo->prepare("UPDATE quiz SET deadline=:deadline WHERE id=:link");
 					$deadlinequery->bindParam(':deadline',$deadline);
 					$deadlinequery->bindParam(':link',$link)
-					
+
 					if(!$deadlinequery->execute()){
 						$error=$deadlinequery->errorInfo();
 						$debug="ERROR THE DEADLINE QUERY FAILED".$error[2];
