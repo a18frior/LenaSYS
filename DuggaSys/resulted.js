@@ -608,6 +608,7 @@ function saveResponse() {
 //----------------------------------------
 
 function returnedResults(data) {
+	console.log(JSON.stringify(data));
 	if (data['debug'] !== "NONE!")
 		alert(data['debug']);
 	if (data.gradeupdated === true) {
