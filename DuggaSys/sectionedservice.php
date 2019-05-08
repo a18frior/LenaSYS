@@ -270,7 +270,7 @@ if($gradesys=="UNK") $gradesys=0;
 					$query->bindParam(':entryname', $sectname);
 					$query->bindParam(':comments', $comments);
 					$query->bindParam(':highscoremode', $highscoremode);
-					
+
 					if ($grptype != "UNK") {
 						$query->bindParam(':groupkind', $grptype);
 					} else {
@@ -303,7 +303,7 @@ if($gradesys=="UNK") $gradesys=0;
 						}
 					}
 				}else if(strcmp($opt,"UPDATEDEADLINE")===0){
-					var_dump(strcmp($opt,"UPDATEDEADLINE"));
+					var_dump(strcmp($opt);
 					// $deadlinequery = $pdo->prepare("UPDATE quiz SET deadline=:deadline WHERE id=:link;");
 					// $deadlinequery->bindParam(':deadline',$deadline);
 					// $deadlinequery->bindParam(':link',$link)
