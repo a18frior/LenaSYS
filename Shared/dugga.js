@@ -959,8 +959,8 @@ function processLogin() {
 					setTimeout(function(){
 						$("input#username").removeClass("loginFail");
 						$("input#password").removeClass("loginFail");
-						displayAlertText("#login #message", "");
-					}, 2500);
+						displayAlertText("#login #message", "Try again");
+					}, 2000);
           //closeWindows();
         }
 

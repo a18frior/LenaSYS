@@ -5,16 +5,19 @@
 	}
 	@keyframes loginFail {
 		0% {
-			background-color: inherit;
+			background-color: rgba(255,255,255,1);
 		}
-		33% {
+		25% {
 			background-color: rgba(255, 0, 6, 0.2);
 		}
-		67% {
-			background-color: inherit;
+		50% {
+			background-color: rgba(255,255,255,1);
+		}
+		75% {
+			background-color: rgba(255, 0, 6, 0.2);
 		}
 		100% {
-			background-color:rgba(255, 0, 6, 0.2);
+			background-color: rgba(255,255,255,1);
 		}
 	}
 	</style>
