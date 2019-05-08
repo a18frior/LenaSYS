@@ -1165,18 +1165,6 @@ input {
   background-color: inherit;
 }
 
-@keyframes loginFail {
-  0% {
-    background-color: inherit;
-  }
-  50% {
-    background-color: rgba(255, 0, 6, 0.2);
-  }
-  100% {
-    background-color: inherit;
-  }
-}
-
 #loginBoxTitle {
   font-size: 15px;
 }

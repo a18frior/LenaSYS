@@ -1,3 +1,16 @@
+	<style>	
+	@keyframes loginFail {
+		0% {
+			background-color: inherit;
+		}
+		50% {
+			background-color: rgba(255, 0, 6, 0.2);
+		}
+		100% {
+			background-color: inherit;
+		}
+	}
+	</style>
 		<!-- Overlay -->
 
   <div id="overlay" style="display:none"></div>
