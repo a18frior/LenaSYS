@@ -1,4 +1,8 @@
 	<style>	
+	.loginFail {
+		animation: loginFail 2s;
+		animation-iteration-count:2;
+	}
 	@keyframes loginFail {
 		0% {
 			background-color: inherit;

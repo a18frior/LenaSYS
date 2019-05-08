@@ -954,8 +954,8 @@ function processLogin() {
 						//setTimeout(displayAlertText("#login #message", ""), 2500);
           }
 
-          $("#login #username").css("animation", "loginFail 1.5s", "animation-iteration-count", "2");
-          $("input#password").css("animation", "loginFail 1.5s", "animation-iteration-count", "2");
+					document.getElementById("username").addClass("loginFail");
+					document.getElementById("password").addClass("loginFail");
           //closeWindows();
         }
 
