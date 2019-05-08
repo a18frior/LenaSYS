@@ -289,15 +289,15 @@ if($gradesys=="UNK") $gradesys=0;
 					$query->bindParam(':visible', $visibility);
 					$query->bindParam(':gradesys', $gradesys);
 
-					if(!$query->execute()) {
-						$error=$query->errorInfo();
-						$debug="Error updating entries".$error[2];
-					}
-
 					// TESTING PURPOSE
 					if(!$deadlinequery->execute()){
 						$error=$deadlinequery->errorInfo();
 						$debug="ERROR THE DEADLINE QUERY FAILED".$error[2];
+					}
+
+					if(!$query->execute()) {
+						$error=$query->errorInfo();
+						$debug="Error updating entries".$error[2];
 					}
 
 					// insert into list forthe specific course
