@@ -364,8 +364,8 @@ function deleteItem(item_lid = null) {
 function updateItem() {
   AJAXService("UPDATE", prepareItem(), "SECTION");
 
-  $("#sectionConfirmBox").css("display", "none");
-  $("#editSection").css("display", "none");
+  // $("#sectionConfirmBox").css("display", "none");
+  // $("#editSection").css("display", "none");
 }
 
 function updateDeadline(){
