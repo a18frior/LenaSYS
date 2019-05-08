@@ -971,6 +971,7 @@ function Symbol(kindOfSymbol) {
             this.drawUMLLine(x1, y1, x2, y2);
         }
 
+
         ctx.restore();
         ctx.setLineDash([]);
 
@@ -2427,6 +2428,15 @@ var isFirstPoint = true;
 var startPosition;
 var numberOfPointsInFigure = 0;
 
+
+
+
+
+
+
+
+
+
 function createFigure() {
     startMouseCoordinateX = currentMouseCoordinateX;
     startMouseCoordinateY = currentMouseCoordinateY;
@@ -2484,7 +2494,106 @@ function freeDraw(){
 
 function cancelFreeDraw(){
     isFirstPoint = true;
+    let polygon = new Polygon("FreeDraw", "FreeDraw");
+    for(let i = 0; i < currentlyDrawnObject; i++){
+        polygon.push(currentlyDrawnObject[i]);
+    }
+    currentlyDrawnObject = [];
+    diagram.push(polygon);
 }
+
+
+//--------------------------------------------------------------------
+// Symbol - stores a diagram symbol
+// Function Polygon() handles the CREATE-functions in the diagram.
+//--------------------------------------------------------------------
+function Polygon(type, kindOfSymbol) {
+    this.kind = type;               // If free draw or polygon
+    this.name = "New Polygon";      // New Polygon default name in new class
+    this.targeted = false;
+    this.symbolkind = kindOfSymbol; // Symbol kind (1 UML diagram symbol 2 ER Attribute 3 ER Entity 4 Lines 5 ER Relation)
+    this.pointsArray = [];
+    this.operations = [];           // Operations array
+    this.attributes = [];           // Attributes array
+    this.textLines = [];            // Free text array
+    this.textsize = 14;             // 14 pixels text size is default
+    this.symbolColor = '#ffffff';   // change background colors on entities
+    this.strokeColor = '#000000';   // change standard line color
+    this.font = "Arial";            // set the standard font
+    this.lineWidth = 2;
+    this.fontColor = '#000000';
+    this.name = "New Class";        // Default name is new class
+    this.key_type = "normal";       // Defult key type for a class.
+    this.sizeOftext = "Tiny";       // Used to set size of text.
+    this.textAlign = "center";      // Used to change alignment of free text
+    this.topLeft;                   // Top Left Point
+    this.bottomRight;               // Bottom Right Point
+    this.middleDivider;             // Middle divider Point
+    this.centerPoint;               // centerPoint
+    this.cardinality = [
+      {"value": null, "isCorrectSide": null, "symbolKind": null, "axis": null, "parentBox": null}
+    ];
+    this.minWidth;
+    this.minHeight;
+    this.locked = false;
+    this.isOval = false;
+    this.isAttribute = false;
+    this.isRelation = false;
+    this.isLine = false;
+    this.pointsAtSamePosition = false;
+    // Connector arrays - for connecting and sorting relationships between diagram objects
+    this.connectorTop = [];
+    this.connectorBottom = [];
+    this.connectorLeft = [];
+    this.connectorRight = [];
+
+    // Properties array that stores different kind of objects. Refer to the properties with "properties['symbolColor']"
+    this.properties = {
+        'symbolColor': '#ffffff',                       // Change background colors on entities.
+        'strokeColor': '#000000',                       // Change standard line color.
+        'fontColor': '#000000',                         // Change the color of the font.
+        'font': 'Arial',                                // Set the standard font.
+        'lineWidth': '2',                               // LineWidth preset is 2.
+        'textSize': '14',                               // 14 pixels text size is default.
+        'sizeOftext': 'Tiny',                           // Used to set size of text.
+        'textAlign': 'center',                          // Used to change alignment of free text.
+        'shadowColor': 'rgba(0, 0, 0, 0.3',             // The shadow color.
+        'shadowBlur': '10',                             // Shadowblur for all objects.
+        'shadowOffsetX': '3',                           // The horizontal distance of the shadow for the object.
+        'shadowOffsetY': '6',                           // The vertical distance of the shadow for the object.
+        'key_type': 'normal'                            // Defult key type for a class.
+    };
+
+    this.drawPolygon = function() {
+        console.log("DRAW")
+        // for(let i = 0; i < this.pointsArray.length - 1; i++){
+        //     p1 = points[pointsArray[i]];
+        //     p2 = points[pointsArray[i+1]]
+        //     drawDashedLine({x: pixelsToCanvas(p1.x).x, y: pixelsToCanvas(0, p1.y).y},
+        //                    {x: pixelsToCanvas(p2.x).x, y: pixelsToCanvas(0, p2.y).y});
+        // }
+    }
+
+    this.adjust = function() {
+        return -1;
+    }
+
+    this.checkForHover = function() {
+        return -1;
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
 
 //--------------------------------------------------------------------
 // figureFreeDraw: Free draw, the user have to click for every point to draw on the canvas.

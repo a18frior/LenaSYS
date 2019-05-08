@@ -458,16 +458,16 @@ function moveToBack(){
 // cancelFreeDraw: removes all the lines that has been drawn when in the free draw mode
 //----------------------------------------------------------------------
 
-function cancelFreeDraw() {
-    if(uimode == "CreateFigure" && figureType == "Free" && md == mouseState.boxSelectOrCreateMode) {
-        for (var i = 0; i < numberOfPointsInFigure; i++) {
-            diagram.pop();
-        }
-        cleanUp();
-        md = mouseState.empty;      //Prevents the dashed line box, when drawing a square, to appear immediately
-        updateGraphics();
-    }
-}
+// function cancelFreeDraw() {
+//     if(uimode == "CreateFigure" && figureType == "Free" && md == mouseState.boxSelectOrCreateMode) {
+//         for (var i = 0; i < numberOfPointsInFigure; i++) {
+//             diagram.pop();
+//         }
+//         cleanUp();
+//         md = mouseState.empty;      //Prevents the dashed line box, when drawing a square, to appear immediately
+//         updateGraphics();
+//     }
+// }
 
 //----------------------------------------------------------------------
 // fillCloneArray: used for copy and paste functionality in the keyDownHandlerFunction
@@ -701,24 +701,27 @@ diagram.closestPoint = function(mx, my) {
 //--------------------------------------------------------------------
 
 diagram.draw = function() {
-    this.adjustPoints();
-    for(var i = 0; i < this.length; i++) {
-        if (this[i].kind == kind.path) {
-            this[i].draw(1, 1);
-        }
-    }
-    //Draws all lines first so that they appear behind the object instead
-    for(var i = 0; i < this.length; i++) {
-        if(this[i].symbolkind == symbolKind.line) {
-            this[i].draw();
-        }
-    }
+    // this.adjustPoints();
+    // for(var i = 0; i < this.length; i++) {
+    //     if (this[i].kind == kind.path) {
+    //         this[i].draw(1, 1);
+    //     }
+    // }
+    // //Draws all lines first so that they appear behind the object instead
+    // for(var i = 0; i < this.length; i++) {
+    //     if(this[i].symbolkind == symbolKind.line) {
+    //         this[i].draw();
+    //     }
+    // }
+    // for (var i = 0; i < this.length; i++) {
+    //     if(this[i].kind == kind.symbol && this[i].symbolkind != symbolKind.line) {
+    //         this[i].draw();
+    //     }
+    // }
     for (var i = 0; i < this.length; i++) {
-        if(this[i].kind == kind.symbol && this[i].symbolkind != symbolKind.line) {
-            this[i].draw();
-        }
+        // this[i].drawPolygon();
+        console.log(this[i])
     }
-
 }
 
 //--------------------------------------------------------------------
@@ -838,24 +841,24 @@ diagram.itemClicked = function() {
 //                (currently only of kind==2 && symbolkind == 4 (aka. lines))
 //--------------------------------------------------------------------
 diagram.checkForHover = function(posX, posY) {
-    for (var i = 0; i < this.length; i++) {
-        this[i].isHovered = false;
-    }
-    var hoveredObjects = this.filter(symbol => symbol.checkForHover(posX, posY));
-    if (hoveredObjects.length <= 0) return -1;
-    hoveredObjects.sort(function(a, b) {
-        if(a.kind == kind.path && b.kind == kind.symbol) return -1;
-        else if(a.kind != kind.path && b.kind == kind.path) return 1;
-        else if (a.symbolkind != symbolKind.line && b.symbolkind != symbolKind.line) return 0;
-        else if (a.symbolkind == symbolKind.line && b.symbolkind != symbolKind.line) return -1;
-        else if (a.symbolkind != symbolKind.line && b.symbolkind == symbolKind.line) return 1;
-        else return 0;
-    });
-    if (hoveredObjects.length && hoveredObjects[hoveredObjects.length - 1].kind != kind.path) {
-        //We only want to set it to true when md is not in selectionbox mode
-        hoveredObjects[hoveredObjects.length - 1].isHovered = md != mouseState.insideMovableObject || uimode != "normal";
-    }
-    return hoveredObjects[hoveredObjects.length - 1];
+    // for (var i = 0; i < this.length; i++) {
+    //     this[i].isHovered = false;
+    // }
+    // var hoveredObjects = this.filter(symbol => symbol.checkForHover(posX, posY));
+    // if (hoveredObjects.length <= 0) return -1;
+    // hoveredObjects.sort(function(a, b) {
+    //     if(a.kind == kind.path && b.kind == kind.symbol) return -1;
+    //     else if(a.kind != kind.path && b.kind == kind.path) return 1;
+    //     else if (a.symbolkind != symbolKind.line && b.symbolkind != symbolKind.line) return 0;
+    //     else if (a.symbolkind == symbolKind.line && b.symbolkind != symbolKind.line) return -1;
+    //     else if (a.symbolkind != symbolKind.line && b.symbolkind == symbolKind.line) return 1;
+    //     else return 0;
+    // });
+    // if (hoveredObjects.length && hoveredObjects[hoveredObjects.length - 1].kind != kind.path) {
+    //     //We only want to set it to true when md is not in selectionbox mode
+    //     hoveredObjects[hoveredObjects.length - 1].isHovered = md != mouseState.insideMovableObject || uimode != "normal";
+    // }
+    // return hoveredObjects[hoveredObjects.length - 1];
 }
 
 // Indicates that objects are movable by changing the appearance of the cursor
@@ -2488,6 +2491,7 @@ function drawOutline(){
 //---------------------------------------------------
 
 function mousemoveevt(ev, t) {
+    console.log(diagram.length)
     // console.log("firstpoint: " + isFirstPoint)
     // console.log("md: " + md)
     // console.log("uimode: " + uimode)
