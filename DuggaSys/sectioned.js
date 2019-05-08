@@ -143,7 +143,6 @@ function selectItem(lid, entryname, kind, evisible, elink, moment, gradesys, hig
   $("#visib").html(makeoptions(evisible, ["Hidden", "Public", "Login"], [0, 1, 2]));
   $("#tabs").html(makeoptions(gradesys, ["0 tabs", "1 tabs", "2 tabs", "3 tabs", "end", "1 tab + end", "2 tabs + end"], [0, 1, 2, 3, 4, 5, 6]));
   $("#highscoremode").html(makeoptions(highscoremode, ["None", "Time Based", "Click Based"], [0, 1, 2]));
-
   $("#deadlinehours").html(makeoptions(deadline.substr(11,2),hourArrOptions,hourArrValue));
   $("#deadlineminutes").html(makeoptions(deadline.substr(14,2),minuteArrOptions,minuteArrValue));
   $("#setDeadlineValue").val(deadline.substr(0,10));
@@ -342,14 +341,6 @@ function prepareItem() {
   param.comments = $("#comments").val();
   param.grptype = $("#grptype").val();
   param.deadline = $("#setDeadlineValue").val()+" "+$("#deadlinehours").val()+":"+$("#deadlineminutes").val();
-  jsondeadline.deadline1 = param.deadline;
-  jsondeadline.comment1 = "";
-  jsondeadline.deadline2 = "";
-  jsondeadline.comment2 = "";
-  jsondeadline.deadline3 = "";
-  jsondeadline.comment3 = "";
-  jsondeadline=JSON.stringify(jsondeadline);
-  param.jsondeadline = jsondeadline;
 
   return param;
 }
@@ -381,9 +372,7 @@ function updateDeadline(){
   var deadline = $("#setDeadlineValue").val()+" "+$("#deadlinehours").val()+":"+$("#deadlineminutes").val();
   var link = $("#link").val();
 
-  console.log(link, deadline);
-
-  AJAXService("UPDATEDEADLINE", {deadline:deadline, link:link}, "SECTION");
+  AJAXService("UPDATEDEADLINE", prepareItem(), "SECTION");
 
   $("#sectionConfirmBox").css("display", "none");
   $("#editSection").css("display", "none");
