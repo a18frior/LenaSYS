@@ -307,7 +307,7 @@ if($gradesys=="UNK") $gradesys=0;
 					// $deadlinequery = $pdo->prepare("UPDATE quiz SET deadline=:deadline WHERE id=:link;");
 					// $deadlinequery->bindParam(':deadline',$deadline);
 					// $deadlinequery->bindParam(':link',$link)
-					//
+					
 					// if(!$deadlinequery->execute()){
 					// 	$error=$deadlinequery->errorInfo();
 					// 	$debug="ERROR THE DEADLINE QUERY FAILED".$error[2];
