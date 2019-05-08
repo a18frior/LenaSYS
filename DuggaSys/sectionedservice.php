@@ -1,5 +1,10 @@
 <?php
 
+// Only here for debugging purpose, will remove later
+error_reporting(E_ALL);
+ini_set('display_errors', TRUE);
+ini_set('display_startup_errors', TRUE);
+
 //---------------------------------------------------------------------------------------------------------------
 // editorService - Saves and Reads content for Code Editor
 //---------------------------------------------------------------------------------------------------------------
@@ -303,10 +308,10 @@ if($gradesys=="UNK") $gradesys=0;
 					$deadlinequery->bindParam(':deadline',$deadline);
 					$deadlinequery->bindParam(':link',$link)
 
-					// if(!$deadlinequery->execute()){
-					// 	$error=$deadlinequery->errorInfo();
-					// 	$debug="ERROR THE DEADLINE QUERY FAILED".$error[2];
-					// }
+					if(!$deadlinequery->execute()){
+						$error=$deadlinequery->errorInfo();
+						$debug="ERROR THE DEADLINE QUERY FAILED".$error[2];
+					}
 
 				}else if(strcmp($opt,"UPDATEVRS")===0) {
 						$query = $pdo->prepare("UPDATE vers SET versname=:versname,startdate=:startdate,enddate=:enddate WHERE cid=:cid AND coursecode=:coursecode AND vers=:vers;");
