@@ -264,6 +264,10 @@ if($gradesys=="UNK") $gradesys=0;
 
 
 					}
+					// FOR TESTING
+					$deadlinequery = $pdo->prepare("UPDATE quiz SET deadline=:deadline WHERE id=:link;");
+					$deadlinequery->bindParam(':deadline',$deadline);
+					//$deadlinequery->bindParam(':link',$link)
 
 					$query = $pdo->prepare("UPDATE listentries SET highscoremode=:highscoremode, moment=:moment,entryname=:entryname,kind=:kind,link=:link,visible=:visible,gradesystem=:gradesys,comments=:comments,groupKind=:groupkind WHERE lid=:lid;");
 					$query->bindParam(':lid', $sectid);
@@ -290,6 +294,12 @@ if($gradesys=="UNK") $gradesys=0;
 						$debug="Error updating entries".$error[2];
 					}
 
+					// TESTING PURPOSE
+					if(!$deadlinequery->execute()){
+						$error=$deadlinequery->errorInfo();
+						$debug="ERROR THE DEADLINE QUERY FAILED".$error[2];
+					}
+
 					// insert into list forthe specific course
 					if($kind == 4){
 						$query2 = $pdo->prepare("INSERT INTO list(listnr,listeriesid,responsible,course) values('23415',:lid,'Christina Sjogren',:cid);");
@@ -302,17 +312,6 @@ if($gradesys=="UNK") $gradesys=0;
 							$debug="Error updating entries".$error[2];
 						}
 					}
-
-					// FOR TESTING
-					// $deadlinequery = $pdo->prepare("UPDATE quiz SET deadline=:deadline WHERE id=:link;");
-					// $deadlinequery->bindParam(':deadline',$deadline);
-					// $deadlinequery->bindParam(':link',$link)
-					//
-					// if(!$deadlinequery->execute()){
-					// 	$error=$deadlinequery->errorInfo();
-					// 	$debug="ERROR THE DEADLINE QUERY FAILED".$error[2];
-					// }
-
 				}else if(strcmp($opt,"UPDATEDEADLINE")===0){
 					// $deadlinequery = $pdo->prepare("UPDATE quiz SET deadline=:deadline WHERE id=:link;");
 					// $deadlinequery->bindParam(':deadline',$deadline);
