@@ -230,18 +230,6 @@ if($gradesys=="UNK") $gradesys=0;
 						}
 					}
 				} else if(strcmp($opt,"UPDATE")===0) {
-
-					// FOR TESTING
-					$deadlinequery = $pdo->prepare("UPDATE quiz SET jsondeadline=:jsondeadline, deadline=:deadline WHERE id=:link;");
-					$deadlinequery->bindParam(':deadline',$deadline);
-					$deadlinequery->bindParam(':link',$link)
-
-					// TESTING PURPOSE
-					if(!$deadlinequery->execute()){
-						$error=$deadlinequery->errorInfo();
-						$debug="ERROR THE DEADLINE QUERY FAILED".$error[2];
-					}
-
 					// Insert a new code example and update variables accordingly.
 					if($link==-1) {
 
@@ -314,14 +302,15 @@ if($gradesys=="UNK") $gradesys=0;
 						}
 					}
 				}else if(strcmp($opt,"UPDATEDEADLINE")===0){
-					// $deadlinequery = $pdo->prepare("UPDATE quiz SET deadline=:deadline WHERE id=:link;");
-					// $deadlinequery->bindParam(':deadline',$deadline);
-					// $deadlinequery->bindParam(':link',$link)
-					//
-					// if(!$deadlinequery->execute()){
-					// 	$error=$deadlinequery->errorInfo();
-					// 	$debug="ERROR THE DEADLINE QUERY FAILED".$error[2];
-					// }
+					// FOR TESTING
+					$deadlinequery = $pdo->prepare("UPDATE quiz SET jsondeadline=:jsondeadline, deadline=:deadline WHERE id=:link;");
+					$deadlinequery->bindParam(':deadline',$deadline);
+					$deadlinequery->bindParam(':link',$link)
+
+					if(!$deadlinequery->execute()){
+						$error=$deadlinequery->errorInfo();
+						$debug="ERROR THE DEADLINE QUERY FAILED".$error[2];
+					}
 				}else if(strcmp($opt,"UPDATEVRS")===0) {
 						$query = $pdo->prepare("UPDATE vers SET versname=:versname,startdate=:startdate,enddate=:enddate WHERE cid=:cid AND coursecode=:coursecode AND vers=:vers;");
 						$query->bindParam(':cid', $courseid);
