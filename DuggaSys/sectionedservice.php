@@ -269,7 +269,6 @@ if($gradesys=="UNK") $gradesys=0;
 					$deadlinequery = $pdo->prepare("UPDATE quiz SET jsondeadline=:jsondeadline, deadline=:deadline WHERE id=:link;");
 					$deadlinequery->bindParam(':deadline',$deadline);
 					$deadlinequery->bindParam(':jsondeadline', $jsondeadline);
-					var_dump("HELLO");
 					//$deadlinequery->bindParam(':link',$link)
 
 					$query = $pdo->prepare("UPDATE listentries SET highscoremode=:highscoremode, moment=:moment,entryname=:entryname,kind=:kind,link=:link,visible=:visible,gradesystem=:gradesys,comments=:comments,groupKind=:groupkind WHERE lid=:lid;");
@@ -294,8 +293,8 @@ if($gradesys=="UNK") $gradesys=0;
 
 					// TESTING PURPOSE
 					if(!$deadlinequery->execute()){
-						$error=$deadlinequery->errorInfo();
-						$debug="ERROR THE DEADLINE QUERY FAILED".$error[2];
+						//$error=$deadlinequery->errorInfo();
+						//$debug="ERROR THE DEADLINE QUERY FAILED".$error[2];
 					}
 
 					if(!$query->execute()) {
