@@ -944,12 +944,14 @@ function processLogin() {
 
           reloadPage();
         }else if(result['login'] == "limit"){
-          displayAlertText("#login #message", "Too many failed attempts, <br /> try again later");
+					displayAlertText("#login #message", "Too many failed attempts, <br /> try again later");
+					setTimeout(displayAlertText("#login #message", ""), 2500);
         }else{
           if(typeof result.reason != "undefined") {
-            setTimeout(displayAlertText("#login #message", result.reason), 5000);
+            displayAlertText("#login #message", result.reason);
           } else {
-            setTimeout(displayAlertText("#login #message", "Wrong username or password"), 5000);
+						displayAlertText("#login #message", "Wrong username or password");
+						setTimeout(displayAlertText("#login #message", ""), 2500);
           }
 
           $("#login #username").css("animation", "loginFail 1.5s", "animation-iteration-count", "2");
