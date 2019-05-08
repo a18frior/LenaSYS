@@ -265,12 +265,12 @@ if($gradesys=="UNK") $gradesys=0;
 
 					}
 
-					$query = $pdo->prepare("UPDATE listentries set highscoremode=:highscoremode, moment=:moment,entryname=:entryname,kind=:kind,link=:link,visible=:visible,gradesystem=:gradesys,comments=:comments,groupKind=:groupkind WHERE lid=:lid;");
+					$query = $pdo->prepare("UPDATE listentries SET highscoremode=:highscoremode, moment=:moment,entryname=:entryname,kind=:kind,link=:link,visible=:visible,gradesystem=:gradesys,comments=:comments,groupKind=:groupkind WHERE lid=:lid;");
 					$query->bindParam(':lid', $sectid);
 					$query->bindParam(':entryname', $sectname);
 					$query->bindParam(':comments', $comments);
 					$query->bindParam(':highscoremode', $highscoremode);
-
+					
 					if ($grptype != "UNK") {
 						$query->bindParam(':groupkind', $grptype);
 					} else {
