@@ -2377,6 +2377,11 @@ span.arrow {
 	border: 2px solid #dbd0d8;
 }
 
+#accessTable td select {
+  height: 40px;
+  width: 100%;
+}
+
 .accessTableText {
 	margin-left: 3px;
 	margin-right: 3px;
