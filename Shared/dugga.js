@@ -954,8 +954,8 @@ function processLogin() {
 						//setTimeout(displayAlertText("#login #message", ""), 2500);
           }
 
-					document.getElementById("login#username").className = "loginFail";
-					document.getElementById("login#password").className = "loginFail";
+					document.getElementById("username").className = "loginFail";
+					document.getElementById("password").className = "loginFail";
           //closeWindows();
         }
 
