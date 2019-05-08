@@ -953,7 +953,7 @@ function processLogin() {
           }
 
           $("#login #username").css("background-color", "rgba(255, 0, 6, 0.2)", "animation", "loginFail 1.5s", "animation-iteration-count", "2");
-          $("input#password").css("background-color", "rgba(255, 0, 6, 0.2)");
+          $("input#password").css("background-color", "rgba(255, 0, 6, 0.2)", "animation", "loginFail 1.5s", "animation-iteration-count", "2");
           //closeWindows();
         }
 
