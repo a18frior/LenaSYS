@@ -83,7 +83,7 @@ function loadStoredFolders(f) {
 function Save() {
     c = [];
     for (var i = 0; i < diagram.length; i++) {
-        c[i] = "Polygon";//diagram[i].constructor.name;
+        c[i] = diagram[i].constructor.name;
         c[i] = c[i].replace(/"/g,"");
     }
     var obj = {diagram:diagram, points:points, diagramNames:c};
@@ -181,6 +181,8 @@ function Load() {
             b.diagram[i] = Object.assign(new Symbol, b.diagram[i]);
         } else if (b.diagramNames[i] == "Path") {
             b.diagram[i] = Object.assign(new Path, b.diagram[i]);
+        } else if(b.diagramNames[i] == "Polygon"){
+            b.diagram[i] = Object.assign(new Polygon, b.diagram[i]);
         }
     }
     diagram.length = b.diagram.length;
