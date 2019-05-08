@@ -231,6 +231,8 @@
 
 
 					<div id='inputwrapper-deadline' class='inputwrapper'><span>Set Deadline:</span><span style='float:right'><input class='' type='date' id='setDeadlineValue' value='' /><select style='width:55px;' id='deadlineminutes'></select><select style='width:55px;' id='deadlinehours'></select></span></div>
+					<div id='inputwrapper-deadline2' class='inputwrapper'><span>Set Deadline2:</span><span style='float:right'><input class='' type='date' id='setDeadlineValue2' value='' /><select style='width:55px;' id='deadlineminutes2'></select><select style='width:55px;' id='deadlinehours2'></select></span></div>
+					<div id='inputwrapper-deadline3' class='inputwrapper'><span>Set Deadline3:</span><span style='float:right'><input class='' type='date' id='setDeadlineValue3' value='' /><select style='width:55px;' id='deadlineminutes3'></select><select style='width:55px;' id='deadlinehours3'></select></span></div>
 
 
 					<div id='inputwrapper-tabs' class='inputwrapper'><span>Tabs:</span><select id='tabs' ></select></div>

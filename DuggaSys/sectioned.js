@@ -322,6 +322,7 @@ function addColorsToTabSections(kind, visible, spkind) {
 function prepareItem() {
   // Create parameter object and fill with information
   var param = {};
+  var jsondeadline = {"deadline1":"", "comment1":"","deadline2":"", "comment2":"", "deadline3":"", "comment3":""};
 
   // Storing tabs in gradesys column!
   var kind = $("#type").val()
@@ -341,8 +342,6 @@ function prepareItem() {
   param.comments = $("#comments").val();
   param.grptype = $("#grptype").val();
   param.deadline = $("#setDeadlineValue").val()+" "+$("#deadlinehours").val()+":"+$("#deadlineminutes").val();
-
-  var jsondeadline = {"deadline1":"", "comment1":"","deadline2":"", "comment2":"", "deadline3":"", "comment3":""};
   jsondeadline.deadline1 = param.deadline;
   jsondeadline.comment1 = "";
   jsondeadline.deadline2 = "";
