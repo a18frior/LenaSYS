@@ -947,9 +947,9 @@ function processLogin() {
           displayAlertText("#login #message", "Too many failed attempts, <br /> try again later");
         }else{
           if(typeof result.reason != "undefined") {
-            displayAlertText("#login #message", result.reason);
+            setTimeout(displayAlertText("#login #message", result.reason), 5000);
           } else {
-            displayAlertText("#login #message", "Wrong username or password");
+            setTimeout(displayAlertText("#login #message", "Wrong username or password"), 5000);
           }
 
           $("#login #username").css("animation", "loginFail 1.5s", "animation-iteration-count", "2");
