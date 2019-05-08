@@ -3,11 +3,14 @@
 		0% {
 			background-color: inherit;
 		}
-		50% {
+		33% {
 			background-color: rgba(255, 0, 6, 0.2);
 		}
-		100% {
+		67% {
 			background-color: inherit;
+		}
+		100% {
+			background-color:rgba(255, 0, 6, 0.2);
 		}
 	}
 	</style>

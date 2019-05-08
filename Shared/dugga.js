@@ -952,8 +952,8 @@ function processLogin() {
             displayAlertText("#login #message", "Wrong username or password");
           }
 
-          $("#login #username").css("background-color", "rgba(255, 0, 6, 0.2)", "animation", "loginFail 1.5s", "animation-iteration-count", "2");
-          $("input#password").css("background-color", "rgba(255, 0, 6, 0.2)", "animation", "loginFail 1.5s", "animation-iteration-count", "2");
+          $("#login #username").css("animation", "loginFail 1.5s", "animation-iteration-count", "2");
+          $("input#password").css("animation", "loginFail 1.5s", "animation-iteration-count", "2");
           //closeWindows();
         }
 
