@@ -76,6 +76,7 @@ var globalLeftClick = false;        // Global left click state (not only for can
 var globalRightClick = false;       // Global left click state (not only for canvas)
 var zoomValue = 1.00;
 var md = mouseState.empty;          // Mouse state, Mode to determine action on canvas
+var currentlyDrawnObject = [];
 var hovobj = -1;
 var lineStartObj = -1;
 var movobj = -1;                    // Moving object ID
@@ -171,10 +172,14 @@ const rightMouseClick = 2;
 var dragDistanceReached = false;
 
 // Hides the context menu. Needed in order to be able to right click and drag to move the camera.
-window.addEventListener('contextmenu', function (e)
+window.addEventListener('contextmenu', function (ev)
     {
-        if (dragDistanceReached == true) {
-            e.preventDefault();
+        if(dragDistanceReached){
+            ev.preventDefault();
+        }
+        if (!isFirstPoint) {
+            ev.preventDefault();
+            cancelFreeDraw();
         }
     },
     false
@@ -1249,6 +1254,7 @@ function updateGraphics() {
     diagram.draw();
     points.drawPoints();
     drawVirtualA4();
+    drawOutline();
 }
 
 //---------------------------------------------------------------------------------
@@ -2444,12 +2450,47 @@ function pointDistance(point1, point2) {
     return [width, height];
 }
 
+function drawDashedLine(p1, p2){
+    ctx.setLineDash([3, 3]);
+    ctx.beginPath();
+    ctx.moveTo(p1.x, p1.y);
+    ctx.lineTo(p2.x, p2.y);
+    ctx.strokeStyle = "#000";
+    ctx.stroke();
+    ctx.setLineDash([]);
+}
+
+function drawOutline(){
+    if(!isFirstPoint){
+        for(let i = 0; i < currentlyDrawnObject.length - 1; i++){
+            p1 = points[currentlyDrawnObject[i]];
+            p2 = points[currentlyDrawnObject[i+1]];
+
+            console.log("P1: " + p1)
+            console.log("P2: " + p2)
+            drawDashedLine({x: pixelsToCanvas(p1.x).x, y: pixelsToCanvas(0, p1.y).y},
+                           {x: pixelsToCanvas(p2.x).x, y: pixelsToCanvas(0, p2.y).y});
+        }
+
+        drawDashedLine({x: pixelsToCanvas(startMouseCoordinateX).x, y: pixelsToCanvas(0, startMouseCoordinateY).y},
+                       {x: pixelsToCanvas(currentMouseCoordinateX).x, y: pixelsToCanvas(0, currentMouseCoordinateY).y});
+
+        // if (!developerModeActive) {
+        crossStrokeStyle1 = "rgba(255, 102, 68, 1.0)";
+        crossStrokeStyle2 = "rgba(255, 102, 68, 1.0)";
+        crossFillStyle = "rgba(255, 102, 68, 1.0)";
+        // }
+    }
+}
+
 //---------------------------------------------------
 // Is called each time the mouse moves on the canvas
 //---------------------------------------------------
 
 function mousemoveevt(ev, t) {
-    console.log("firstpoint: " + isFirstPoint)
+    // console.log("firstpoint: " + isFirstPoint)
+    // console.log("md: " + md)
+    // console.log("uimode: " + uimode)
 
     // Get canvasMouse coordinates for both X & Y.
     currentMouseCoordinateX = canvasToPixels(ev.clientX - boundingRect.left).x;
@@ -2459,18 +2500,7 @@ function mousemoveevt(ev, t) {
         if (uimode == "CreateObject") {
             if(!(isFirstPoint)) {
                 console.log("isDrawing")
-                ctx.setLineDash([3, 3]);
-                ctx.beginPath();
-                ctx.moveTo(pixelsToCanvas(startMouseCoordinateX).x, pixelsToCanvas(0, startMouseCoordinateY).y);
-                ctx.lineTo(pixelsToCanvas(currentMouseCoordinateX).x, pixelsToCanvas(0, currentMouseCoordinateY).y);
-                ctx.strokeStyle = "#000";
-                ctx.stroke();
-                ctx.setLineDash([]);
-                if (!developerModeActive) {
-                    crossStrokeStyle1 = "rgba(255, 102, 68, 1.0)";
-                    crossStrokeStyle2 = "rgba(255, 102, 68, 1.0)";
-                    crossFillStyle = "rgba(255, 102, 68, 1.0)";
-                }
+                
             }
         }
     }
@@ -2498,7 +2528,7 @@ function mousemoveevt(ev, t) {
             // Used to cancel free draw
             if(canvasRightClick && !isFirstPoint){
                 dragDistanceReached = true;
-                cancelObjectFreeDraw();
+                cancelFreeDraw();
             }
         }
 
@@ -2519,7 +2549,7 @@ function mousemoveevt(ev, t) {
 
     // Right click logic
     else if(canvasRightClick){
-        
+
     }
 
     reWrite();
@@ -2741,7 +2771,7 @@ function mousedownevt(ev) {
 
     // Left mouse click logic
     if (ev.button == leftMouseClick) {
-        if(uimode == "ObjectFreeDraw" || uimode == "CreateObject"){
+        if(uimode == "FreeDraw" || uimode == "CreateObject"){
             md = mouseState.boxSelectOrCreateMode; // Box select or Create mode.
             createPolygon();
         }
@@ -2751,6 +2781,10 @@ function mousedownevt(ev) {
         if (typeof InitPageX == 'undefined' && typeof InitPageY == 'undefined') {
             InitPageX = ev.pageX;
             InitPageY = ev.pageY;
+        }
+
+        if(!canvasRightClick){
+            dragDistanceReached = false; 
         }
     } 
 
@@ -2762,9 +2796,12 @@ function mousedownevt(ev) {
             InitPageX = ev.pageX;
             InitPageY = ev.pageY;
         }
-    }
 
-    dragDistanceReached = false;    
+        if(!canvasLeftClick){
+            dragDistanceReached = false; 
+        }
+    }
+   
 
     
 

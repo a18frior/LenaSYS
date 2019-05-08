@@ -68,7 +68,7 @@
                                       <button id='objectbutton' onclick='setMode("CreateObject");' class='buttonsStyle unpressed' data="Create Object">
                                           <img class="toolboxButtons" src="../Shared/icons/diagram_draw_square.svg">
                                       </button>
-                                      <button id='freedrawbutton' onclick='setMode("ObjectFreeDraw");' class='buttonsStyle unpressed' data="Create Free Draw">
+                                      <button id='freedrawbutton' onclick='setMode("FreeDraw");' class='buttonsStyle unpressed' data="Create Free Draw">
                                           <img class="toolboxButtons" src="../Shared/icons/diagram_draw_free.svg">
                                       </button>
                                       <button id='linebutton' onclick='setMode("CreateLine");' class='buttonsStyle unpressed' data="Create Line">
