@@ -954,8 +954,12 @@ function processLogin() {
 						//setTimeout(displayAlertText("#login #message", ""), 2500);
           }
 
-					document.getElementById("username").className = "loginFail";
-					document.getElementById("password").className = "loginFail";
+					$("input#username").addClass("loginFail");
+					$("input#password").addClass("loginFail");
+					setTimeout(function(){
+						$("input#username").removeClass("loginFail");
+						$("input#password").removeClass("loginFail");
+					}, 2500);
           //closeWindows();
         }
 
