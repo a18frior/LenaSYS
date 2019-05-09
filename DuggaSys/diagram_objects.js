@@ -2164,6 +2164,7 @@ function Path() {
     //--------------------------------------------------------------------
     // isClicked: Returns true if coordinate xk, yk falls inside the bounding box of the symbol
     //--------------------------------------------------------------------
+
     this.isClicked = function(xCoordinate, yCoordinate) {
         var intersections = 0;
         if (xCoordinate > this.minX && xCoordinate < this.maxX && yCoordinate > this.minY && yCoordinate < this.maxY) {
@@ -2473,6 +2474,159 @@ var numberOfPointsInFigure = 0;
 
 
 
+
+
+
+
+//--------------------------------------------------------------------------//
+//                             POLYGON CLASS                                //
+//--------------------------------------------------------------------------//
+
+function Polygon(type, kindOfSymbol) {
+    this.kind = type;               // If free draw or polygon
+    this.name = "Polygon";          // New Polygon default name in new class
+    this.symbolkind = kindOfSymbol; // Symbol kind (1 UML diagram symbol 2 ER Attribute 3 ER Entity 4 Lines 5 ER Relation)
+    this.pointsArray = [];
+    this.operations = [];           // Operations array
+    this.attributes = [];           // Attributes array
+    this.textLines = [];            // Free text array
+    this.bottomRight;               // Bottom Right Point
+    this.middleDivider;             // Middle divider Point
+    this.centerPoint;               // centerPoint
+    this.minWidth = 0;
+    this.minHeight = 0;
+    this.locked = false;
+    this.isHovered = false;
+    this.isSelected = false;
+
+    // Connector arrays - for connecting and sorting relationships between diagram objects
+    this.connectorTop = [];
+    this.connectorBottom = [];
+    this.connectorLeft = [];
+    this.connectorRight = [];
+
+    this.cardinality = [
+      {"value": null, "isCorrectSide": null, "symbolKind": null, "axis": null, "parentBox": null}
+    ];
+
+    // Properties array that stores different kind of objects. Refer to the properties with "properties['symbolColor']"
+    this.properties = {
+        'symbolColor': 'white',                         // Change background colors on entities.
+        'strokeColor': 'black',                         // Change standard line color.
+        'fontColor': 'black',                           // Change the color of the font.
+        'font': 'Arial',                                // Set the standard font.
+        'lineWidth': '2',                               // LineWidth preset is 2.
+        'textSize': '14',                               // 14 pixels text size is default.
+        'sizeOftext': 'Tiny',                           // Used to set size of text.
+        'textAlign': 'center',                          // Used to change alignment of free text.
+        'shadowColor': 'rgba(0, 0, 0, 0.3',             // The shadow color.
+        'shadowBlur': '10',                             // Shadowblur for all objects.
+        'shadowOffsetX': '3',                           // The horizontal distance of the shadow for the object.
+        'shadowOffsetY': '6',                           // The vertical distance of the shadow for the object.
+        'key_type': 'normal'                            // Defult key type for a class.
+    };
+
+
+    this.drawPolygon = function() {
+        this.fillPolygon();
+        this.drawOutlines();
+
+    }
+
+    this.fillPolygon = function(){
+        ctx.strokeStyle = this.targeted ? "#F82" : this.properties['strokeColor'];
+        ctx.fillStyle = "white";
+        ctx.globalAlpha = this.opacity;
+        ctx.lineWidth = this.properties['lineWidth'] * diagram.getZoomValue();
+
+        ctx.beginPath();
+        ctx.moveTo(pixelsToCanvas(this.pointsArray[0].x).x, pixelsToCanvas(0, this.pointsArray[0].y).y);
+        for (let i = 1; i < this.pointsArray.length; i++) {
+            let segment = this.pointsArray[i];
+            ctx.lineTo(pixelsToCanvas(this.pointsArray[i].x).x, pixelsToCanvas(0, this.pointsArray[i].y).y);
+        }
+        ctx.lineTo(pixelsToCanvas(this.pointsArray[0].x).x, pixelsToCanvas(0, this.pointsArray[0].y).y);
+
+        ctx.closePath();
+        ctx.fill();
+    }
+
+    this.drawOutlines = function() {
+        if(this.isHovered){
+            this.properties['strokeColor'] = "orange";
+        } else {
+            this.properties['strokeColor'] = "black";            
+        }
+
+        for(let i = 0; i < this.pointsArray.length -1; i++){
+            let p1 = this.pointsArray[i];
+            let p2 = this.pointsArray[i+1];
+            drawLine({x: pixelsToCanvas(p1.x).x, y: pixelsToCanvas(0, p1.y).y},
+                     {x: pixelsToCanvas(p2.x).x, y: pixelsToCanvas(0, p2.y).y});
+        }
+
+        let firstPoint = this.pointsArray[0];
+        let lastPoint = this.pointsArray[this.pointsArray.length - 1];
+
+        drawLine({x: pixelsToCanvas(firstPoint.x).x, y: pixelsToCanvas(0, firstPoint.y).y},
+                 {x: pixelsToCanvas(lastPoint.x).x, y: pixelsToCanvas(0, lastPoint.y).y}, this.properties['strokeColor']);
+    }
+
+    this.adjust = function() {
+        return -1;
+    }
+
+    this.checkForHover = function() {
+        let intersections = 0;
+        let pointA, pointB, deltaX, deltaY, k, tempPoint, x, y;
+
+        // Check if mouse has an even amount of intersections for lines in polygon
+        for (let i = 0; i < this.pointsArray.length; i++) {
+            pointA = this.pointsArray[i];
+            if(i == this.pointsArray.length-1){
+                pointB = this.pointsArray[0];
+            } else {
+                pointB = this.pointsArray[i+1];
+            }
+            if ((pointA.x <= currentMouseCoordinateX && pointB.x >= currentMouseCoordinateX) || 
+                (pointA.x >= currentMouseCoordinateX && pointB.x <= currentMouseCoordinateX)) {
+                deltaX = pointB.x - pointA.x;
+                deltaY = pointB.y - pointA.y;
+                k = deltaY / deltaX;
+                if (pointB.x < pointA.x) {
+                    tempPoint = pointA;
+                    pointA = pointB;
+                    pointB = pointA;
+                }
+                x = currentMouseCoordinateX - pointA.x;
+                y = (k * x) + pointA.y;
+                if (y < currentMouseCoordinateY) {
+                    intersections++;
+                }
+            }
+        }
+        if(intersections % 2 > 0){
+            return true;
+        }
+        return false;
+    }
+
+    this.erase = function(){
+        this.erasePoints();
+
+    }
+
+    this.erasePoints = function(){
+        for(let i = 0; i < this.pointsArray.length; i++){
+            points.pop(this.pointsArray[i]);
+        }
+    }
+}
+
+//------------------------------------
+// Called onmousedown and onmouseup
+//------------------------------------
+
 function createPolygon() {
     if(uimode == "FreeDraw"){
         freeDraw();
@@ -2481,6 +2635,10 @@ function createPolygon() {
         polygonDraw();
     }
 }
+
+//-------------------------------------
+// Is used when creating a new polygon
+//-------------------------------------
 
 function polygonDraw(){
     p1 = null;
@@ -2501,6 +2659,10 @@ function polygonDraw(){
     }
 }
 
+//----------------------------------------------
+// Is used when creating a new free draw object
+//----------------------------------------------
+
 function freeDraw(){
     p1 = null;
     if (isFirstPoint) {
@@ -2519,146 +2681,53 @@ function freeDraw(){
     currentlyDrawnObject.push(p2);
 }
 
-function cancelFreeDraw(){
-    isFirstPoint = true;
-    pointsAtSamePosition = true;
+//------------------------------------------------------
+// Terminates free draw and creates a free draw object
+//------------------------------------------------------
+
+function endFreeDraw(){
     let polygon = new Polygon("FreeDraw", "FreeDraw");
     for(let i = 0; i < currentlyDrawnObject.length; i++){
         polygon.pointsArray.push(points[currentlyDrawnObject[i]]);
     }
+
+    isFirstPoint = true;
     currentlyDrawnObject = [];
     diagram.push(polygon);
 
     SaveState();
 }
 
-
-
-//--------------------------------------------------------------------
-// Symbol - stores a diagram symbol
-// Function Polygon() handles the CREATE-functions in the diagram.
-//--------------------------------------------------------------------
-function Polygon(type, kindOfSymbol) {
-    this.kind = type;               // If free draw or polygon
-    this.name = "Polygon";          // New Polygon default name in new class
-    this.targeted = false;
-    this.symbolkind = kindOfSymbol; // Symbol kind (1 UML diagram symbol 2 ER Attribute 3 ER Entity 4 Lines 5 ER Relation)
-    this.pointsArray = [];
-    this.operations = [];           // Operations array
-    this.attributes = [];           // Attributes array
-    this.textLines = [];            // Free text array
-    this.textsize = 14;             // 14 pixels text size is default
-    this.symbolColor = '#ffffff';   // change background colors on entities
-    this.strokeColor = '#000000';   // change standard line color
-    this.fillColor = '#ffffff';     // change standard fill color
-    this.font = "Arial";            // set the standard font
-    this.lineWidth = 2;
-    this.fontColor = '#000000';
-    this.key_type = "normal";       // Defult key type for a class.
-    this.sizeOftext = "Tiny";       // Used to set size of text.
-    this.textAlign = "center";      // Used to change alignment of free text
-    this.topLeft;                   // Top Left Point
-    this.bottomRight;               // Bottom Right Point
-    this.middleDivider;             // Middle divider Point
-    this.centerPoint;               // centerPoint
-    this.cardinality = [
-      {"value": null, "isCorrectSide": null, "symbolKind": null, "axis": null, "parentBox": null}
-    ];
-    this.minWidth;
-    this.minHeight;
-    this.locked = false;
-    this.isOval = false;
-    this.isAttribute = false;
-    this.isRelation = false;
-    this.isLine = false;
-    this.pointsAtSamePosition = false;
-    // Connector arrays - for connecting and sorting relationships between diagram objects
-    this.connectorTop = [];
-    this.connectorBottom = [];
-    this.connectorLeft = [];
-    this.connectorRight = [];
-
-    // Properties array that stores different kind of objects. Refer to the properties with "properties['symbolColor']"
-    this.properties = {
-        'symbolColor': '#ffffff',                       // Change background colors on entities.
-        'strokeColor': '#000000',                       // Change standard line color.
-        'fontColor': '#000000',                         // Change the color of the font.
-        'font': 'Arial',                                // Set the standard font.
-        'lineWidth': '2',                               // LineWidth preset is 2.
-        'textSize': '14',                               // 14 pixels text size is default.
-        'sizeOftext': 'Tiny',                           // Used to set size of text.
-        'textAlign': 'center',                          // Used to change alignment of free text.
-        'shadowColor': 'rgba(0, 0, 0, 0.3',             // The shadow color.
-        'shadowBlur': '10',                             // Shadowblur for all objects.
-        'shadowOffsetX': '3',                           // The horizontal distance of the shadow for the object.
-        'shadowOffsetY': '6',                           // The vertical distance of the shadow for the object.
-        'key_type': 'normal'                            // Defult key type for a class.
-    };
-
-    this.drawPolygon = function() {
-        this.clearBackground();
-        this.drawOutlines();
-
-    }
-
-    this.clearBackground = function(){
-        ctx.strokeStyle = this.targeted ? "#F82" : this.properties['strokeColor'];
-        ctx.fillStyle = "white";
-        ctx.globalAlpha = this.opacity;
-        ctx.lineWidth = this.properties['lineWidth'] * diagram.getZoomValue();
-
-        ctx.beginPath();
-        ctx.moveTo(pixelsToCanvas(this.pointsArray[0].x).x, pixelsToCanvas(0, this.pointsArray[0].y).y);
-        for (let i = 1; i < this.pointsArray.length; i++) {
-            let segment = this.pointsArray[i];
-            ctx.lineTo(pixelsToCanvas(this.pointsArray[i].x).x, pixelsToCanvas(0, this.pointsArray[i].y).y);
-        }
-        ctx.lineTo(pixelsToCanvas(this.pointsArray[0].x).x, pixelsToCanvas(0, this.pointsArray[0].y).y);
-
-        ctx.closePath();
-        ctx.fill();
-    }
-
-    this.drawOutlines = function() {
-         for(let i = 0; i < this.pointsArray.length -1; i++){
-            let p1 = this.pointsArray[i];
-            let p2 = this.pointsArray[i+1];
-            drawLine({x: pixelsToCanvas(p1.x).x, y: pixelsToCanvas(0, p1.y).y},
-                           {x: pixelsToCanvas(p2.x).x, y: pixelsToCanvas(0, p2.y).y});
-        }
-
-        let firstPoint = this.pointsArray[0];
-        let lastPoint = this.pointsArray[this.pointsArray.length - 1];
-
-        drawLine({x: pixelsToCanvas(firstPoint.x).x, y: pixelsToCanvas(0, firstPoint.y).y},
-                           {x: pixelsToCanvas(lastPoint.x).x, y: pixelsToCanvas(0, lastPoint.y).y});
-    }
-
-    this.adjust = function() {
-        return -1;
-    }
-
-    this.checkForHover = function() {
-        return -1;
-    }
-
-    this.erase = function(){
-        this.erasePoints();
-
-    }
-
-    this.erasePoints = function(){
-        for(let i = 0; i < this.pointsArray.length; i++){
-            points.pop(this.pointsArray[i]);
-        }
-    }
-}
-
-function drawLine(p1, p2) {
+function drawDashedLine(p1, p2){
+    ctx.setLineDash([3, 3]);
     ctx.beginPath();
     ctx.moveTo(p1.x, p1.y);
     ctx.lineTo(p2.x, p2.y);
     ctx.strokeStyle = "#000";
+    ctx.stroke();
+    ctx.setLineDash([]);
+}
+
+function drawOutline(){
+    if(!isFirstPoint){
+        for(let i = 0; i < currentlyDrawnObject.length - 1; i++){
+            let p1 = points[currentlyDrawnObject[i]];
+            let p2 = points[currentlyDrawnObject[i+1]];
+
+            drawDashedLine({x: pixelsToCanvas(p1.x).x, y: pixelsToCanvas(0, p1.y).y},
+                           {x: pixelsToCanvas(p2.x).x, y: pixelsToCanvas(0, p2.y).y});
+        }
+
+        drawDashedLine({x: pixelsToCanvas(startMouseCoordinateX).x, y: pixelsToCanvas(0, startMouseCoordinateY).y},
+                       {x: pixelsToCanvas(currentMouseCoordinateX).x, y: pixelsToCanvas(0, currentMouseCoordinateY).y});
+    }
+}
+
+function drawLine(p1, p2, strokeColor) {
+    ctx.beginPath();
+    ctx.moveTo(p1.x, p1.y);
+    ctx.lineTo(p2.x, p2.y);
+    ctx.strokeStyle = strokeColor;
     ctx.stroke();
 }
 

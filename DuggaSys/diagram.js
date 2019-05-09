@@ -77,10 +77,11 @@ var globalRightClick = false;       // Global left click state (not only for can
 var zoomValue = 1.00;
 var md = mouseState.empty;          // Mouse state, Mode to determine action on canvas
 var currentlyDrawnObject = [];
-var hovobj = -1;
+var hoveredObject = -1;
+var lastSelectedObject = -1;        // The last selected object
+var selected_objects = [];          // Is used to store multiple selected objects
 var lineStartObj = -1;
 var movobj = -1;                    // Moving object ID
-var lastSelectedObject = -1;        // The last selected object
 var uimode = "normal";              // User interface mode e.g. normal or create class currently
 var figureType = null;              // Specification of uimode, when Create Figure is set to the active mode this is set to one of the forms a figure can be drawn in.
 var widthWindow;                    // The width on the users screen is saved is in this var.
@@ -126,7 +127,6 @@ var classTemplate = {
   height: 7 * gridSize
 };
 var a = [], b = [], c = [];
-var selected_objects = [];              // Is used to store multiple selected objects
 var globalAppearanceValue = 0;          // Is used to see if the button was pressed or not
 var diagramNumber = 0;                  // Is used for localStorage so that undo and redo works.
 var diagramNumberHistory = 0;           // Is used for undo and redo
@@ -179,7 +179,7 @@ window.addEventListener('contextmenu', function (ev)
         }
         if (!isFirstPoint) {
             ev.preventDefault();
-            cancelFreeDraw();
+            endFreeDraw();
         }
     },
     false
@@ -370,7 +370,7 @@ function keyDownHandler(e) {
         ctrlIsClicked = true;
     }
     else if(key == escapeKey) {
-        cancelFreeDraw();
+        endFreeDraw();
     }
     else if((key == key1 || key == num1) && shiftIsClicked){
         moveToFront();
@@ -612,7 +612,8 @@ function copySymbol(symbol) {
 //--------------------------------------------------------------------
 
 points.drawPoints = function() {
-    ctx.strokeStyle = crossStrokeStyle1;
+    // ctx.strokeStyle = crossStrokeStyle1;
+    ctx.strokeStyle = "blue";
     ctx.lineWidth = 2 * zoomValue;
     for (var i = 0; i < this.length; i++) {
         var point = this[i];
@@ -830,34 +831,27 @@ diagram.targetItemsInsideSelectionBox = function (ex, ey, sx, sy, hover) {
 
 diagram.itemClicked = function() {
     if(uimode == "MoveAround") return -1;
-    var obj = this.checkForHover(currentMouseCoordinateX, currentMouseCoordinateY);
-    if (typeof obj !== 'undefined' && obj != -1) return this.indexOf(obj);
+    let obj = this.checkForHover();
+    if (typeof obj !== 'undefined' && obj != false) return this.indexOf(obj);
     else return -1;
 }
 
-//--------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 // checkForHover: Executes isHovered method in all diagram objects
 //                (currently only of kind==2 && symbolkind == 4 (aka. lines))
-//--------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+
 diagram.checkForHover = function(posX, posY) {
-    // for (var i = 0; i < this.length; i++) {
-    //     this[i].isHovered = false;
-    // }
-    // var hoveredObjects = this.filter(symbol => symbol.checkForHover(posX, posY));
-    // if (hoveredObjects.length <= 0) return -1;
-    // hoveredObjects.sort(function(a, b) {
-    //     if(a.kind == kind.path && b.kind == kind.symbol) return -1;
-    //     else if(a.kind != kind.path && b.kind == kind.path) return 1;
-    //     else if (a.symbolkind != symbolKind.line && b.symbolkind != symbolKind.line) return 0;
-    //     else if (a.symbolkind == symbolKind.line && b.symbolkind != symbolKind.line) return -1;
-    //     else if (a.symbolkind != symbolKind.line && b.symbolkind == symbolKind.line) return 1;
-    //     else return 0;
-    // });
-    // if (hoveredObjects.length && hoveredObjects[hoveredObjects.length - 1].kind != kind.path) {
-    //     //We only want to set it to true when md is not in selectionbox mode
-    //     hoveredObjects[hoveredObjects.length - 1].isHovered = md != mouseState.insideMovableObject || uimode != "normal";
-    // }
-    // return hoveredObjects[hoveredObjects.length - 1];
+    for (let i = 0; i < this.length; i++) {
+        this[i].isHovered = false;     
+    }
+    for (let i = this.length - 1; i > -1; i--) {
+        if(this[i].checkForHover()){
+            this[i].isHovered = true;      
+            return this[i];      
+        }
+    }
+    return false;
 }
 
 // Indicates that objects are movable by changing the appearance of the cursor
@@ -2397,39 +2391,18 @@ function pointDistance(point1, point2) {
     return [width, height];
 }
 
-function drawDashedLine(p1, p2){
-    ctx.setLineDash([3, 3]);
-    ctx.beginPath();
-    ctx.moveTo(p1.x, p1.y);
-    ctx.lineTo(p2.x, p2.y);
-    ctx.strokeStyle = "#000";
-    ctx.stroke();
-    ctx.setLineDash([]);
-}
-
-function drawOutline(){
-    if(!isFirstPoint){
-        for(let i = 0; i < currentlyDrawnObject.length - 1; i++){
-            let p1 = points[currentlyDrawnObject[i]];
-            let p2 = points[currentlyDrawnObject[i+1]];
-
-            drawDashedLine({x: pixelsToCanvas(p1.x).x, y: pixelsToCanvas(0, p1.y).y},
-                           {x: pixelsToCanvas(p2.x).x, y: pixelsToCanvas(0, p2.y).y});
-        }
-
-        drawDashedLine({x: pixelsToCanvas(startMouseCoordinateX).x, y: pixelsToCanvas(0, startMouseCoordinateY).y},
-                       {x: pixelsToCanvas(currentMouseCoordinateX).x, y: pixelsToCanvas(0, currentMouseCoordinateY).y});
-    }
-}
 
 //---------------------------------------------------
 // Is called each time the mouse moves on the canvas
 //---------------------------------------------------
 
 function mousemoveevt(ev, t) {
+    console.log(uimode)
     // Get canvasMouse coordinates for both X & Y.
     currentMouseCoordinateX = canvasToPixels(ev.clientX - boundingRect.left).x;
     currentMouseCoordinateY = canvasToPixels(0, ev.clientY - boundingRect.top).y;
+
+    hoveredObject = diagram.checkForHover();
 
     if (md == mouseState.boxSelectOrCreateMode && uimode != "MoveAround") {
         if (uimode == "CreateObject") {
@@ -2439,6 +2412,7 @@ function mousemoveevt(ev, t) {
         }
     }
 
+    // At least one of left mouse click and right mouse click is pressed
     if(canvasLeftClick || canvasRightClick) {
         // deltas are used to determine the range of which the mouse is allowed to move when pressed.
         deltaX = 8;
@@ -2462,7 +2436,7 @@ function mousemoveevt(ev, t) {
             // Used to cancel free draw
             if(canvasRightClick && !isFirstPoint){
                 dragDistanceReached = true;
-                cancelFreeDraw();
+                endFreeDraw();
             }
         }
 
@@ -2476,12 +2450,17 @@ function mousemoveevt(ev, t) {
         }
     }
 
-    // Left click logic
+    // Neither left mouse click or right mouse click is pressed
+    else {
+
+    }
+
+    // Left mouse click logic
     if(canvasLeftClick){
         
     }
 
-    // Right click logic
+    // Right mouse click logic
     else if(canvasRightClick){
 
     }
@@ -2708,6 +2687,8 @@ function mousedownevt(ev) {
         if(uimode == "FreeDraw" || uimode == "CreateObject"){
             md = mouseState.boxSelectOrCreateMode; // Box select or Create mode.
             createPolygon();
+        } else {
+            console.log(uimode)
         }
 
 
