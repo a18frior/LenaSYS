@@ -666,7 +666,7 @@ function renderSortOptionsDugga(col,status,colname) {
 			}
 		}
 		*/
-		if (col != "arrow" && col != "cogwheel" && col != "trashcan") {
+		if (col != "arrow" && col != "cogwheel" && col != "trashcan") {			//Disable sorting for pen, cog and trashcan icons
 			if (status ==- 1) {
 				str += "<span class='sortableHeading' onclick='duggaTable.toggleSortStatus(\"" + col + "\",0)'>" + colname + "</span>";
 			} else if (status == 0) {
