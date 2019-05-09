@@ -65,7 +65,7 @@
                               <h4 class="label tlabel" id="labelTools">Tools</h4>
                               <div class="toolbar-drawer" id="drawerTools">
                                   <div class="tooltipdialog">
-                                      <button id='objectbutton' onclick='setMode("CreateObject");' class='buttonsStyle unpressed' data="Create Object">
+                                      <button id='polygonbutton' onclick='setMode("CreatePolygon");' class='buttonsStyle unpressed' data="Create Polygon">
                                           <img class="toolboxButtons" src="../Shared/icons/diagram_draw_square.svg">
                                       </button>
                                       <button id='freedrawbutton' onclick='setMode("FreeDraw");' class='buttonsStyle unpressed' data="Create Free Draw">

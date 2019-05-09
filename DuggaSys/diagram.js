@@ -89,6 +89,7 @@ var heightWindow;                   // The height on the users screen is saved i
 var consoleInt = 0;
 var sx = 0, sy = 0;                 // Current X- and Y-coordinant from which the canvas start from
 var waldoPoint = "";
+var isFirstPoint = true;
 var moveValue = 0;                  // Used to deside if the canvas should translate or not
 var activePoint = null;             // This point indicates what point is being hovered by the user
 var p1 = null;                      // When creating a new figure, these two variables are used ...
@@ -306,6 +307,14 @@ function generateExampleCode() {
 
 var diagram = [];
 
+function mouseDown() {
+    globalMouseState = 1;
+}
+
+function mouseUp() {
+    globalMouseState = 0;
+}
+
 function keyDownHandler(e) {
     var key = e.keyCode;
     if(appearanceMenuOpen) return;
@@ -362,7 +371,7 @@ function keyDownHandler(e) {
         e.preventDefault();
         for(var i = 0; i < diagram.length; i++) {
             selected_objects.push(diagram[i]);
-            diagram[i].targeted = true;
+            diagram[i].select();
         }
         updateGraphics();
     }
@@ -598,8 +607,8 @@ function copySymbol(symbol) {
         clone.middleDivider = points.push(middleDividerClone) - 1;
         clone.centerPoint = clone.middleDivider;
     }
-    clone.targeted = true;
-    symbol.targeted = false;
+    clone.select();
+    symbol.deselect();
 
     diagram.push(clone);
 
@@ -612,11 +621,11 @@ function copySymbol(symbol) {
 //--------------------------------------------------------------------
 
 points.drawPoints = function() {
-    // ctx.strokeStyle = crossStrokeStyle1;
-    ctx.strokeStyle = "blue";
+    ctx.strokeStyle = crossStrokeStyle1;
     ctx.lineWidth = 2 * zoomValue;
     for (var i = 0; i < this.length; i++) {
         var point = this[i];
+        // console.log(point)
         if (!point.isSelected) {
             ctx.beginPath();
             ctx.moveTo(pixelsToCanvas(point.x).x - crossSize, pixelsToCanvas(0, point.y).y - crossSize);
@@ -642,7 +651,7 @@ points.drawPoints = function() {
 //--------------------------------------------------------------------
 
 points.closestPoint = function(xCoordinate, yCoordinate, pointIndex) {
-    var distance = 50000000;
+    var distance = Number.MAX_VALUE;
     var index = -1;
     for (var i = 0; i < this.length; i++) {
         if(i == pointIndex) continue;
@@ -780,9 +789,9 @@ diagram.targetItemsInsideSelectionBox = function (ex, ey, sx, sy, hover) {
             if(!hover) {
                 if (pointsSelected >= tempPoints.length) {
                     selected_objects.push(this[i]);
-                    this[i].targeted = true;
+                    this[i].select();
                 } else {
-                    this[i].targeted = false;
+                    this[i].deselect();
                 }
             }else {
                 if (pointsSelected >= tempPoints.length) {
@@ -803,22 +812,22 @@ diagram.targetItemsInsideSelectionBox = function (ex, ey, sx, sy, hover) {
                 sy < tempBottomRightY && ey > tempBottomRightY) {
                 if (ctrlIsClicked && !hover) {
                     if (index >= 0) {
-                        this[i].targeted = false;
+                        this[i].deselect();
                         selected_objects.splice(index, 1);
                     } else if(!hover) {
-                        this[i].targeted = true;
+                        this[i].select();
                         selected_objects.push(this[i]);
                     }
                 } else {
                     if (index < 0 && !hover) {
-                        this[i].targeted = true;
+                        this[i].select();
                         selected_objects.push(this[i]);
                     } else if(hover) {
                         this[i].isHovered = true;
                     }
                 }
             } else if(!ctrlIsClicked) {
-                if(!hover) this[i].targeted = false;
+                if(!hover) this[i].deselect();
                 if (index >= 0) selected_objects.splice(index, 1);
             }
         }
@@ -1028,8 +1037,8 @@ function initializeCanvas() {
 
 function deselectObjects() {
 	for(let i = 0; i < diagram.length; i++) {
-		diagram[i].targeted = false;
-		diagram[i].isSelected = false;
+		diagram[i].deselect();
+		diagram[i].deselect();
 		diagram[i].isHovered = false;
 	}
 }
@@ -1332,6 +1341,7 @@ function eraseObject(object) {
     diagram.deleteObject(object);
     objectsToDelete.forEach(eraseObject);
     updateGraphics();
+    SaveState();
 }
 
 //-------------------------------------------------------------------------
@@ -1374,7 +1384,7 @@ function setMode(mode) { //"CreateClass" yet to be implemented in .php
 }
 
 $(document).ready(function() {
-    $("#objectbutton, #freedrawbutton, #linebutton, #attributebutton, #entitybutton, #relationbutton, #squarebutton, #drawfreebutton, #classbutton, #drawtextbutton, #umllinebutton").click(function() {
+    $("#polygonbutton, #freedrawbutton, #linebutton, #attributebutton, #entitybutton, #relationbutton, #squarebutton, #drawfreebutton, #classbutton, #drawtextbutton, #umllinebutton").click(function() {
         $("#moveButton").removeClass("pressed").addClass("unpressed");
         $("#moveButton").css("visibility", "hidden");
         if ($(this).hasClass("pressed")) {
@@ -2271,7 +2281,7 @@ function switchToolbar(direction) {
     $("#labelTools").show();
     $("#labelUndo").show();
     $(".buttonsStyle").hide();
-    $("#objectbutton").show();
+    $("#polygonbutton").show();
     $("#freedrawbutton").show();
     $("#linebutton").show();
     $("#attributebutton").show();
@@ -2402,10 +2412,11 @@ function mousemoveevt(ev, t) {
     currentMouseCoordinateX = canvasToPixels(ev.clientX - boundingRect.left).x;
     currentMouseCoordinateY = canvasToPixels(0, ev.clientY - boundingRect.top).y;
 
+    // closestPoint
     hoveredObject = diagram.checkForHover();
 
-    if (md == mouseState.boxSelectOrCreateMode && uimode != "MoveAround") {
-        if (uimode == "CreateObject") {
+    if (uimode == "createPolygon") {
+        if (uimode == "CreatePolygon") {
             if(!(isFirstPoint)) {
                 
             }
@@ -2457,7 +2468,14 @@ function mousemoveevt(ev, t) {
 
     // Left mouse click logic
     if(canvasLeftClick){
-        
+        if(uimode == "normal" && selected_objects.length > 0){
+            for(let i = 0; i < selected_objects.length; i++){
+                selected_objects[i].move((currentMouseCoordinateX - startMouseCoordinateX) * zoomValue, 
+                                         (currentMouseCoordinateY - startMouseCoordinateY) * zoomValue);
+            }
+            startMouseCoordinateX = canvasToPixels(ev.clientX - boundingRect.left).x;
+            startMouseCoordinateY = canvasToPixels(0, ev.clientY - boundingRect.top).y;
+        }
     }
 
     // Right mouse click logic
@@ -2510,7 +2528,7 @@ function mousemoveevt(ev, t) {
     //             uimode = "Moved";
     //             $(".buttonsStyle").removeClass("pressed").addClass("unpressed");
     //             for (var i = 0; i < diagram.length; i++) {
-    //                 if (diagram[i].targeted == true && !diagram[movobj].locked) {
+    //                 if (diagram[i].isSelected == true && !diagram[movobj].locked) {
     //                     if(snapToGrid) {
     //                         currentMouseCoordinateX = Math.round(currentMouseCoordinateX / gridSize) * gridSize;
     //                         currentMouseCoordinateY = Math.round(currentMouseCoordinateY / gridSize) * gridSize;
@@ -2662,7 +2680,7 @@ function mousemoveevt(ev, t) {
 
 function deselectAllObjects(){
     for (var i = 0; i < selected_objects.length; i++) {
-        selected_objects[i].targeted = false;
+        selected_objects[i].deselect();
     }
     lastSelectedObject = -1;
     selected_objects = [];
@@ -2678,21 +2696,17 @@ function mousedownevt(ev) {
     startMouseCoordinateX = currentMouseCoordinateX;
     startMouseCoordinateY = currentMouseCoordinateY;
 
-    if(uimode != "MoveAround" && !ctrlIsClicked) {
-        deselectAllObjects();
-    }
-
     // Left mouse click logic
     if (ev.button == leftMouseClick) {
-        if(uimode == "FreeDraw" || uimode == "CreateObject"){
-            md = mouseState.boxSelectOrCreateMode; // Box select or Create mode.
+        canvasLeftClick = true;
+
+        if((uimode == "FreeDraw" || uimode == "CreatePolygon") && (!diagram.checkForHover() || !isFirstPoint)){
             createPolygon();
         } else {
-            console.log(uimode)
+            handleSelect();
         }
 
 
-        canvasLeftClick = true;
         if (typeof InitPageX == 'undefined' && typeof InitPageY == 'undefined') {
             InitPageX = ev.pageX;
             InitPageY = ev.pageY;
@@ -2753,7 +2767,7 @@ function mousedownevt(ev) {
     //     }
     //     if(uimode != "MoveAround" && !ctrlIsClicked) {
     //         for (var i = 0; i < selected_objects.length; i++) {
-    //             selected_objects[i].targeted = false;
+    //             selected_objects[i].deselect();
     //         }
     //         lastSelectedObject = -1;
     //         selected_objects = [];
@@ -2766,39 +2780,39 @@ function mousedownevt(ev) {
 
 function handleSelect() {
     lastSelectedObject = diagram.itemClicked(currentMouseCoordinateX, currentMouseCoordinateY);
-    var last = diagram[lastSelectedObject];
+    let last = diagram[lastSelectedObject];
 
-    if (last.targeted == false && uimode != "MoveAround") {
-        for (var i = 0; i < diagram.length; i++) {
-            diagram[i].targeted = false;
+    if (last && last.isSelected == false && uimode != "MoveAround") {
+        for (let i = 0; i < diagram.length; i++) {
+            diagram[i].deselect();
         }
         // Will add multiple selected diagram objects if the
         // CTRL/CMD key is currently active
         if (ctrlIsClicked) {
             if(selected_objects.indexOf(last) < 0) {
                 selected_objects.push(last);
-                last.targeted = true;
+                last.select();
             }
-            for (var i = 0; i < selected_objects.length; i++) {
-                if (selected_objects[i].targeted == false) {
+            for (let i = 0; i < selected_objects.length; i++) {
+                if (selected_objects[i].isSelected == false) {
                     if(selected_objects.indexOf(last) < 0) {
                         selected_objects.push(last);
                     }
-                    selected_objects[i].targeted = true;
+                    selected_objects[i].select();
                 }
             }
         } else {
             selected_objects = [];
             selected_objects.push(last);
-            last.targeted = true;
+            last.select();
         }
     } else if(uimode != "MoveAround") {
         if(ctrlIsClicked) {
-            var index = selected_objects.indexOf(last);
+            let index = selected_objects.indexOf(last);
             if(index > -1) {
                 selected_objects.splice(index, 1);
             }
-            last.targeted = false;
+            last.deselect();
             //when deselecting object, set lastSelectedObject to index of last object in selected_objects
             lastSelectedObject = diagram.indexOf(selected_objects[selected_objects.length-1]);
         }
@@ -2808,7 +2822,9 @@ function handleSelect() {
 function mouseupevt(ev) {
     // Left mouse click logic
     if(ev.button == leftMouseClick){
-        if(uimode == "CreateObject"){
+        handleSelect();
+
+        if((uimode == "CreatePolygon" || uimode == "FreeDraw") && !diagram.checkForHover()){
             if(dragDistanceReached && !isFirstPoint){
                 createPolygon();
             }
@@ -3015,7 +3031,7 @@ function mouseupevt(ev) {
     //     classB.centerPoint = p3;
     //     diagram.push(classB);
     //     lastSelectedObject = diagram.length -1;
-    //     diagram[lastSelectedObject].targeted = true;
+    //     diagram[lastSelectedObject].select();
     //     selected_objects.push(diagram[lastSelectedObject]);
     //     diagramObject = diagram[lastSelectedObject];
     // } else if (uimode == "CreateERAttr" && md == mouseState.boxSelectOrCreateMode) {
@@ -3030,7 +3046,7 @@ function mouseupevt(ev) {
     //     diagram.push(erAttributeA);
     //     //selecting the newly created attribute and open the dialogmenu.
     //     lastSelectedObject = diagram.length -1;
-    //     diagram[lastSelectedObject].targeted = true;
+    //     diagram[lastSelectedObject].select();
     //     selected_objects.push(diagram[lastSelectedObject]);
     //     diagramObject = diagram[lastSelectedObject];
     // } else if (uimode == "CreateEREntity" && md == mouseState.boxSelectOrCreateMode) {
@@ -3046,7 +3062,7 @@ function mouseupevt(ev) {
     //     diagram.push(erEnityA);
     //     //selecting the newly created enitity and open the dialogmenu.
     //     lastSelectedObject = diagram.length -1;
-    //     diagram[lastSelectedObject].targeted = true;
+    //     diagram[lastSelectedObject].select();
     //     selected_objects.push(diagram[lastSelectedObject]);
     //     diagramObject = diagram[lastSelectedObject];
     // } else if (uimode == "CreateLine" && md == mouseState.boxSelectOrCreateMode) {
@@ -3063,7 +3079,7 @@ function mouseupevt(ev) {
     //         diagram.push(erLineA);
     //         //selecting the newly created enitity and open the dialogmenu.
     //         lastSelectedObject = diagram.length -1;
-    //         diagram[lastSelectedObject].targeted = true;
+    //         diagram[lastSelectedObject].select();
     //         selected_objects.push(diagram[lastSelectedObject]);
     //         //resets the mode so that next click can move or select an object instead of drawing another line
     //         //only happens when a line has been created between 2 objects
@@ -3084,7 +3100,7 @@ function mouseupevt(ev) {
     //     diagram.push(erRelationA);
     //     //selecting the newly created relation and open the dialog menu.
     //     lastSelectedObject = diagram.length -1;
-    //     diagram[lastSelectedObject].targeted = true;
+    //     diagram[lastSelectedObject].select();
     //     selected_objects.push(diagram[lastSelectedObject]);
     //     diagramObject = diagram[lastSelectedObject];
     // } else if (md == mouseState.boxSelectOrCreateMode && uimode == "normal") {
@@ -3093,14 +3109,14 @@ function mouseupevt(ev) {
     // else if(uimode != "Moved" && !ctrlIsClicked && md != mouseState.boxSelectOrCreateMode) {
     //     //Unselects every object.
     //     for(var i = 0; i < diagram.length; i++) {
-    //         diagram[i].targeted = false;
+    //         diagram[i].deselect();
     //     }
-    //     //Sets the clicked object as targeted
+    //     //Sets the clicked object as isSelected
     //     selected_objects = [];
     //     if (lastSelectedObject >= 0) {
     //         selected_objects.push(diagram[lastSelectedObject]);
     //         //You have to target an object when you start to draw
-    //         if(md != mouseState.empty) diagram[lastSelectedObject].targeted = true;
+    //         if(md != mouseState.empty) diagram[lastSelectedObject].select();
     //     }
     // } else if (uimode == "CreateUMLLine" && md == mouseState.boxSelectOrCreateMode) {
     //     //Code for making a line, if start and end object are different, except attributes and if no object is text
@@ -3116,7 +3132,7 @@ function mouseupevt(ev) {
     //         diagram.push(umlLineA);
     //         //selecting the newly created enitity and open the dialogmenu.
     //         lastSelectedObject = diagram.length -1;
-    //         diagram[lastSelectedObject].targeted = true;
+    //         diagram[lastSelectedObject].select();
     //         selected_objects.push(diagram[lastSelectedObject]);
     //         //resets the mode so that next click can move or select an object instead of drawing another line
     //         //only happens when a line has been created between 2 objects
@@ -3153,7 +3169,7 @@ function mouseupevt(ev) {
 }
 
 function doubleclick(ev) {
-    if (lastSelectedObject != -1 && diagram[lastSelectedObject].targeted == true) {
+    if (lastSelectedObject != -1 && diagram[lastSelectedObject].isSelected == true) {
         openAppearanceDialogMenu();
     } else {
         createText(currentMouseCoordinateX, currentMouseCoordinateY);
@@ -3183,7 +3199,7 @@ function createText(posX, posY) {
 
     diagram.push(text);
     lastSelectedObject = diagram.length -1;
-    diagram[lastSelectedObject].targeted = true;
+    diagram[lastSelectedObject].select();
     selected_objects.push(diagram[lastSelectedObject]);
     updateGraphics();
 }
