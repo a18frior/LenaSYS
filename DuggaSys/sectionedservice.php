@@ -1,9 +1,5 @@
 <?php
 
-// Only here for debugging purpose, will remove later
-error_reporting(E_ALL);
-ini_set('display_errors', TRUE);
-ini_set('display_startup_errors', TRUE);
 
 //---------------------------------------------------------------------------------------------------------------
 // editorService - Saves and Reads content for Code Editor
