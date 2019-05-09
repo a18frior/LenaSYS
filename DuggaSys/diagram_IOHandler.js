@@ -9,6 +9,63 @@ var c;
 var b;
 var ac = [];
 
+//---------------------------------------------
+// loadDiagram: retrive an old diagram if it exist.
+//---------------------------------------------
+
+function loadDiagram() {
+    var checkLocalStorage = localStorage.getItem('localdiagram');
+    //loacal storage and hash
+    if (checkLocalStorage != "" && checkLocalStorage != null) {
+        var localDiagram = JSON.parse(localStorage.getItem('localdiagram'));
+    }
+    var localHexHash = localStorage.getItem('localhash');
+    var diagramToString = "";
+    var hash = 0;
+    for(var i = 0; i < diagram.length; i++) {
+        diagramToString += JSON.stringify(diagram[i]);
+    }
+    if (diagram.length != 0) {
+        for (var i = 0; i < diagramToString.length; i++) {
+            var char = diagramToString.charCodeAt(i);
+            hash = ((hash << 5) - hash) + char;
+            hash = hash & hash;         // Convert to 32bit integer
+        }
+        var hexHash = hash.toString(16);
+    }
+    if (typeof localHexHash !== "undefined" && typeof localDiagram !== "undefined") {
+        if (localHexHash != hexHash) {
+            b = JSON.parse(JSON.stringify(localDiagram));
+            for (var i = 0; i < b.diagram.length; i++) {
+                if (b.diagramNames[i] == "Symbol") {
+                    b.diagram[i] = Object.assign(new Symbol, b.diagram[i]);
+                } else if (b.diagramNames[i] == "Path") {
+                    b.diagram[i] = Object.assign(new Path, b.diagram[i]);
+                } else if (b.diagramNames[i] == "Polygon") {
+                    b.diagram[i] = Object.assign(new Polygon, b.diagram[i]);
+                }
+            }
+            diagram.length = b.diagram.length;
+            for (var i = 0; i < b.diagram.length; i++) {
+                diagram[i] = b.diagram[i];
+            }
+            // Points fix
+            for (var i = 0; i < b.points.length; i++) {
+                b.points[i] = Object.assign(new Path, b.points[i]);
+            }
+            points.length = b.points.length;
+            for (var i = 0; i < b.points.length; i++) {
+                points[i] = b.points[i];
+            }
+        }
+    }
+
+    deselectObjects();
+    updateGraphics();
+
+    SaveState();
+}
+
 function downloadMode(el) {
     var canvas = document.getElementById("content");
     var selectBox = document.getElementById("download");
@@ -62,7 +119,6 @@ function newProject() {
     document.getElementById('newProject').style.display = "block";
 }
 function loadNew() {
-
     document.getElementById('showStoredFolders').style.display = "none";
     document.getElementById('showStored').style.display = "none";
     document.getElementById('showNew').style.display = "block";
@@ -88,12 +144,11 @@ function Save() {
     }
     var obj = {diagram:diagram, points:points, diagramNames:c};
     a = JSON.stringify(obj, null, "\t");
-
-    console.log("State is saved");
 }
 
 function SaveState() {
     Save();
+
     if (diagramNumberHistory < diagramNumber) {
         diagramNumberHistory++;
         diagramNumber = diagramNumberHistory;
@@ -102,12 +157,17 @@ function SaveState() {
         diagramNumberHistory = diagramNumber;
     }
     localStorage.setItem("diagram" + diagramNumber, a);
+    console.log(a)
+    // localStorage.setItem("diagram" + 1, a);
     for (var key in localStorage) {
         if (key.indexOf("diagram") != -1) {
             var tmp = key.match(/\d+$/);
             if (tmp > diagramNumberHistory) localStorage.removeItem(key);
         }
     }
+    console.log(localStorage.length);
+
+    console.log("State is saved");
 }
 
 function SaveFile(el) {
@@ -171,6 +231,7 @@ function getUpload() {
         }
     }
 }
+
 function Load() {
     // Implement a JSON.parse() that will unmarshall a b c, so we can add
     // them to their respecive array so it can redraw the desired canvas.

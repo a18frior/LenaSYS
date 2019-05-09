@@ -24,7 +24,6 @@ function Symbol(kindOfSymbol) {
     this.font = "Arial";            // set the standard font
     this.lineWidth = 2;
     this.fontColor = '#000000';
-    this.name = "New Class";        // Default name is new class
     this.key_type = "normal";       // Defult key type for a class.
     this.sizeOftext = "Tiny";       // Used to set size of text.
     this.textAlign = "center";      // Used to change alignment of free text
@@ -2437,15 +2436,42 @@ var numberOfPointsInFigure = 0;
 
 
 
-function createFigure() {
-    startMouseCoordinateX = currentMouseCoordinateX;
-    startMouseCoordinateY = currentMouseCoordinateY;
-    if (figureType == "Free") {
-        figureFreeDraw();
-    } else if (figureType == "Square") {
-        figureSquare();
-    }
-}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 function createPolygon() {
     if(uimode == "FreeDraw"){
@@ -2459,6 +2485,7 @@ function createPolygon() {
 function polygonDraw(){
     p1 = null;
     if (isFirstPoint) {
+        //pointsAtSamePosition = false;
         p2 = points.addPoint(currentMouseCoordinateX, currentMouseCoordinateY, false);
         startPosition = p2;
         isFirstPoint = false;
@@ -2494,13 +2521,17 @@ function freeDraw(){
 
 function cancelFreeDraw(){
     isFirstPoint = true;
+    pointsAtSamePosition = true;
     let polygon = new Polygon("FreeDraw", "FreeDraw");
-    for(let i = 0; i < currentlyDrawnObject; i++){
-        polygon.push(currentlyDrawnObject[i]);
+    for(let i = 0; i < currentlyDrawnObject.length; i++){
+        polygon.pointsArray.push(points[currentlyDrawnObject[i]]);
     }
     currentlyDrawnObject = [];
     diagram.push(polygon);
+
+    SaveState();
 }
+
 
 
 //--------------------------------------------------------------------
@@ -2509,7 +2540,7 @@ function cancelFreeDraw(){
 //--------------------------------------------------------------------
 function Polygon(type, kindOfSymbol) {
     this.kind = type;               // If free draw or polygon
-    this.name = "New Polygon";      // New Polygon default name in new class
+    this.name = "Polygon";          // New Polygon default name in new class
     this.targeted = false;
     this.symbolkind = kindOfSymbol; // Symbol kind (1 UML diagram symbol 2 ER Attribute 3 ER Entity 4 Lines 5 ER Relation)
     this.pointsArray = [];
@@ -2522,7 +2553,6 @@ function Polygon(type, kindOfSymbol) {
     this.font = "Arial";            // set the standard font
     this.lineWidth = 2;
     this.fontColor = '#000000';
-    this.name = "New Class";        // Default name is new class
     this.key_type = "normal";       // Defult key type for a class.
     this.sizeOftext = "Tiny";       // Used to set size of text.
     this.textAlign = "center";      // Used to change alignment of free text
@@ -2565,13 +2595,23 @@ function Polygon(type, kindOfSymbol) {
     };
 
     this.drawPolygon = function() {
-        console.log("DRAW")
-        // for(let i = 0; i < this.pointsArray.length - 1; i++){
-        //     p1 = points[pointsArray[i]];
-        //     p2 = points[pointsArray[i+1]]
-        //     drawDashedLine({x: pixelsToCanvas(p1.x).x, y: pixelsToCanvas(0, p1.y).y},
-        //                    {x: pixelsToCanvas(p2.x).x, y: pixelsToCanvas(0, p2.y).y});
-        // }
+       this.drawOutlines();
+
+    }
+
+    this.drawOutlines = function() {
+         for(let i = 0; i < this.pointsArray.length -1; i++){
+            let p1 = this.pointsArray[i];
+            let p2 = this.pointsArray[i+1];
+            drawLine({x: pixelsToCanvas(p1.x).x, y: pixelsToCanvas(0, p1.y).y},
+                           {x: pixelsToCanvas(p2.x).x, y: pixelsToCanvas(0, p2.y).y});
+        }
+
+        let firstPoint = this.pointsArray[0];
+        let lastPoint = this.pointsArray[this.pointsArray.length - 1];
+
+        drawLine({x: pixelsToCanvas(firstPoint.x).x, y: pixelsToCanvas(0, firstPoint.y).y},
+                           {x: pixelsToCanvas(lastPoint.x).x, y: pixelsToCanvas(0, lastPoint.y).y});
     }
 
     this.adjust = function() {
@@ -2581,7 +2621,75 @@ function Polygon(type, kindOfSymbol) {
     this.checkForHover = function() {
         return -1;
     }
+
+    this.erase = function(){
+        this.erasePoints();
+
+    }
+
+    this.erasePoints = function(){
+        for(let i = 0; i < this.pointsArray.length; i++){
+            points.pop(this.pointsArray[i]);
+        }
+    }
 }
+
+function drawLine(p1, p2) {
+    ctx.beginPath();
+    ctx.moveTo(p1.x, p1.y);
+    ctx.lineTo(p2.x, p2.y);
+    ctx.strokeStyle = "#000";
+    ctx.stroke();
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

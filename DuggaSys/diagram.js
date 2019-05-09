@@ -719,8 +719,7 @@ diagram.draw = function() {
     //     }
     // }
     for (var i = 0; i < this.length; i++) {
-        // this[i].drawPolygon();
-        console.log(this[i])
+        this[i].drawPolygon();
     }
 }
 
@@ -1725,61 +1724,6 @@ function hashCurrent() {
     currentHash = hash.toString(16);
 }
 
-//---------------------------------------------
-// loadDiagram: retrive an old diagram if it exist.
-//---------------------------------------------
-
-function loadDiagram() {
-    var checkLocalStorage = localStorage.getItem('localdiagram');
-    //loacal storage and hash
-    if (checkLocalStorage != "" && checkLocalStorage != null) {
-        var localDiagram = JSON.parse(localStorage.getItem('localdiagram'));
-    }
-    var localHexHash = localStorage.getItem('localhash');
-    var diagramToString = "";
-    var hash = 0;
-    for(var i = 0; i < diagram.length; i++) {
-        diagramToString += JSON.stringify(diagram[i]);
-    }
-    if (diagram.length != 0) {
-        for (var i = 0; i < diagramToString.length; i++) {
-            var char = diagramToString.charCodeAt(i);
-            hash = ((hash << 5) - hash) + char;
-            hash = hash & hash;         // Convert to 32bit integer
-        }
-        var hexHash = hash.toString(16);
-    }
-    if (typeof localHexHash !== "undefined" && typeof localDiagram !== "undefined") {
-        if (localHexHash != hexHash) {
-            b = JSON.parse(JSON.stringify(localDiagram));
-            for (var i = 0; i < b.diagram.length; i++) {
-                if (b.diagramNames[i] == "Symbol") {
-                    b.diagram[i] = Object.assign(new Symbol, b.diagram[i]);
-                } else if (b.diagramNames[i] == "Path") {
-                    b.diagram[i] = Object.assign(new Path, b.diagram[i]);
-                }
-            }
-            diagram.length = b.diagram.length;
-            for (var i = 0; i < b.diagram.length; i++) {
-                diagram[i] = b.diagram[i];
-            }
-            // Points fix
-            for (var i = 0; i < b.points.length; i++) {
-                b.points[i] = Object.assign(new Path, b.points[i]);
-            }
-            points.length = b.points.length;
-            for (var i = 0; i < b.points.length; i++) {
-                points[i] = b.points[i];
-            }
-        }
-    }
-
-    deselectObjects();
-    updateGraphics();
-
-    SaveState();
-}
-
 //----------------------------------------------------------------------
 // removeLocalStorage: this function is running when you click the button clear diagram
 //----------------------------------------------------------------------
@@ -2466,23 +2410,15 @@ function drawDashedLine(p1, p2){
 function drawOutline(){
     if(!isFirstPoint){
         for(let i = 0; i < currentlyDrawnObject.length - 1; i++){
-            p1 = points[currentlyDrawnObject[i]];
-            p2 = points[currentlyDrawnObject[i+1]];
+            let p1 = points[currentlyDrawnObject[i]];
+            let p2 = points[currentlyDrawnObject[i+1]];
 
-            console.log("P1: " + p1)
-            console.log("P2: " + p2)
             drawDashedLine({x: pixelsToCanvas(p1.x).x, y: pixelsToCanvas(0, p1.y).y},
                            {x: pixelsToCanvas(p2.x).x, y: pixelsToCanvas(0, p2.y).y});
         }
 
         drawDashedLine({x: pixelsToCanvas(startMouseCoordinateX).x, y: pixelsToCanvas(0, startMouseCoordinateY).y},
                        {x: pixelsToCanvas(currentMouseCoordinateX).x, y: pixelsToCanvas(0, currentMouseCoordinateY).y});
-
-        // if (!developerModeActive) {
-        crossStrokeStyle1 = "rgba(255, 102, 68, 1.0)";
-        crossStrokeStyle2 = "rgba(255, 102, 68, 1.0)";
-        crossFillStyle = "rgba(255, 102, 68, 1.0)";
-        // }
     }
 }
 
@@ -2491,11 +2427,6 @@ function drawOutline(){
 //---------------------------------------------------
 
 function mousemoveevt(ev, t) {
-    console.log(diagram.length)
-    // console.log("firstpoint: " + isFirstPoint)
-    // console.log("md: " + md)
-    // console.log("uimode: " + uimode)
-
     // Get canvasMouse coordinates for both X & Y.
     currentMouseCoordinateX = canvasToPixels(ev.clientX - boundingRect.left).x;
     currentMouseCoordinateY = canvasToPixels(0, ev.clientY - boundingRect.top).y;
@@ -2503,7 +2434,6 @@ function mousemoveevt(ev, t) {
     if (md == mouseState.boxSelectOrCreateMode && uimode != "MoveAround") {
         if (uimode == "CreateObject") {
             if(!(isFirstPoint)) {
-                console.log("isDrawing")
                 
             }
         }
