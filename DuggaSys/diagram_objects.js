@@ -2550,6 +2550,7 @@ function Polygon(type, kindOfSymbol) {
     this.textsize = 14;             // 14 pixels text size is default
     this.symbolColor = '#ffffff';   // change background colors on entities
     this.strokeColor = '#000000';   // change standard line color
+    this.fillColor = '#ffffff';     // change standard fill color
     this.font = "Arial";            // set the standard font
     this.lineWidth = 2;
     this.fontColor = '#000000';
@@ -2595,8 +2596,27 @@ function Polygon(type, kindOfSymbol) {
     };
 
     this.drawPolygon = function() {
-       this.drawOutlines();
+        this.clearBackground();
+        this.drawOutlines();
 
+    }
+
+    this.clearBackground = function(){
+        ctx.strokeStyle = this.targeted ? "#F82" : this.properties['strokeColor'];
+        ctx.fillStyle = "white";
+        ctx.globalAlpha = this.opacity;
+        ctx.lineWidth = this.properties['lineWidth'] * diagram.getZoomValue();
+
+        ctx.beginPath();
+        ctx.moveTo(pixelsToCanvas(this.pointsArray[0].x).x, pixelsToCanvas(0, this.pointsArray[0].y).y);
+        for (let i = 1; i < this.pointsArray.length; i++) {
+            let segment = this.pointsArray[i];
+            ctx.lineTo(pixelsToCanvas(this.pointsArray[i].x).x, pixelsToCanvas(0, this.pointsArray[i].y).y);
+        }
+        ctx.lineTo(pixelsToCanvas(this.pointsArray[0].x).x, pixelsToCanvas(0, this.pointsArray[0].y).y);
+
+        ctx.closePath();
+        ctx.fill();
     }
 
     this.drawOutlines = function() {

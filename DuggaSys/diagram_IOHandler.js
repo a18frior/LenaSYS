@@ -156,16 +156,13 @@ function SaveState() {
         diagramNumber++;
         diagramNumberHistory = diagramNumber;
     }
-    localStorage.setItem("diagram" + diagramNumber, a);
-    console.log(a)
-    // localStorage.setItem("diagram" + 1, a);
+    localStorage.setItem("localdiagram", a);
     for (var key in localStorage) {
         if (key.indexOf("diagram") != -1) {
             var tmp = key.match(/\d+$/);
             if (tmp > diagramNumberHistory) localStorage.removeItem(key);
         }
     }
-    console.log(localStorage.length);
 
     console.log("State is saved");
 }
@@ -193,6 +190,8 @@ function LoadFile() {
             b.diagram[i] = Object.assign(new Symbol, b.diagram[i]);
         } else if (b.diagramNames[i] == "Path") {
             b.diagram[i] = Object.assign(new Path, b.diagram[i]);
+        } else if (b.diagramNames[i] == "Polygon") {
+            b.diagram[i] = Object.assign(new Polygon, b.diagram[i]);
         }
     }
     diagram.length = b.diagram.length;
