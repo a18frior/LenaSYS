@@ -3678,11 +3678,9 @@ function changeObjectAppearance(object_type) {
       //Inserts text for attributes and operations
       for(var i = 0;i < attributeLines.length;i++) {
         diagram[lastSelectedObject].attributes.push({text:attributeLines[i]});
-        document.getElementById("nametext").style.resize = "none";
       }
       for(var i = 0; i < operationLines.length; i++) {
         diagram[lastSelectedObject].operations.push({text:operationLines[i]});
-        document.getElementById("nametext").style.resize = "none";
       }
 
     } else if (diagram[lastSelectedObject].symbolkind == symbolKind.line) {
