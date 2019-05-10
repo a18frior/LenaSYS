@@ -2663,7 +2663,7 @@
 //--------------------------------------------------------------------------//
 
 function Polygon(type, kindOfSymbol) {
-    this.kind = type;               // If free draw or polygon
+    this.type = type;               // If free draw or polygon
     this.name = "Polygon";          // New Polygon default name in new class
     this.id = -1;
     this.symbolkind = kindOfSymbol; // Symbol kind (1 UML diagram symbol 2 ER Attribute 3 ER Entity 4 Lines 5 ER Relation)
@@ -2782,10 +2782,59 @@ function Polygon(type, kindOfSymbol) {
 
     this.move = function(x, y){
         let selectedPoint = false;
-        for(let i = 0; i < this.pointsArray.length; i++){
-            if(this.pointsArray[i].isSelected){
-                selectedPoint = true;
-                this.pointsArray[i].move(x, y);              
+
+        if(this.type == "Polygon")
+        {
+            let selected_points = [];
+            for(let i = 0; i < this.pointsArray.length; i++){
+                if(this.pointsArray[i].isSelected){
+                    selectedPoint = true;      
+                    selected_points.push(this.pointsArray[i]);     
+                }
+            }
+
+            if(selectedPoint){
+                let sameX = [];
+                let sameY = [];
+
+                // Check which points should be moved on x or y
+                for(let i = 0; i < this.pointsArray.length; i++){
+                    for(let j = 0; j < selected_points.length; j++){
+                        if(selected_points.indexOf(this.pointsArray[i]) == -1){
+                            if(this.pointsArray[i].x == selected_points[j].x){
+                                sameX.push(this.pointsArray[i]);
+                            }
+                            if(this.pointsArray[i].y == selected_points[j].y){
+                                sameY.push(this.pointsArray[i]);
+                            }                            
+                        }
+                    }
+                }
+
+                // Move unselected points' x
+                for(let i = 0; i < sameX.length; i++){
+                    sameX[i].move(x, 0);
+                }
+
+                // Move unselected points' y
+                for(let i = 0; i < sameY.length; i++){
+                    let index = this.pointsArray.indexOf(sameY[i]);
+                    this.pointsArray[index].move(0, y);
+                }
+
+                // Move selected points
+                for(let i = 0; i < selected_points.length; i++){
+                    selected_points[i].move(x, y);
+                }
+            }
+        } 
+        else if(this.type == "FreeDraw")
+        {
+            for(let i = 0; i < this.pointsArray.length; i++){
+                if(this.pointsArray[i].isSelected){
+                    selectedPoint = this.pointsArray[i];
+                    this.pointsArray[i].move(x, y);              
+                }
             }
         }
 
@@ -2813,36 +2862,50 @@ function Polygon(type, kindOfSymbol) {
             }  
         }
 
-        // Check if mouse has an even amount of intersections for lines in polygon
-        for (let i = 0; i < this.pointsArray.length; i++) {
-            pointA = this.pointsArray[i];
-            if(i == this.pointsArray.length-1){
-                pointB = this.pointsArray[0];
-            } else {
-                pointB = this.pointsArray[i+1];
+        if(this.type == "Polygon"){
+            if (((this.pointsArray[0].x <= currentMouseCoordinateX && this.pointsArray[2].x >= currentMouseCoordinateX) || 
+                (this.pointsArray[0].x >= currentMouseCoordinateX && this.pointsArray[2].x <= currentMouseCoordinateX)) &&
+                ((this.pointsArray[0].y <= currentMouseCoordinateY && this.pointsArray[2].y >= currentMouseCoordinateY) ||
+                (this.pointsArray[0].y >= currentMouseCoordinateY && this.pointsArray[2].y <= currentMouseCoordinateY))) 
+            {
+                this.isHovered = true;
+                return true;
             }
-            if ((pointA.x <= currentMouseCoordinateX && pointB.x >= currentMouseCoordinateX) || 
-                (pointA.x >= currentMouseCoordinateX && pointB.x <= currentMouseCoordinateX)) {
-                deltaX = pointB.x - pointA.x;
-                deltaY = pointB.y - pointA.y;
-                k = deltaY / deltaX;
-                if (pointB.x < pointA.x) {
-                    tempPoint = pointA;
-                    pointA = pointB;
-                    pointB = pointA;
+            return false;
+        }
+
+        else if(this.type == "FreeDraw"){
+            // Check if mouse has an even amount of intersections for lines in polygon
+            for (let i = 0; i < this.pointsArray.length; i++) {
+                pointA = this.pointsArray[i];
+                if(i == this.pointsArray.length-1){
+                    pointB = this.pointsArray[0];
+                } else {
+                    pointB = this.pointsArray[i+1];
                 }
-                x = currentMouseCoordinateX - pointA.x;
-                y = (k * x) + pointA.y;
-                if (y < currentMouseCoordinateY) {
-                    intersections++;
+                if ((pointA.x <= currentMouseCoordinateX && pointB.x >= currentMouseCoordinateX) || 
+                    (pointA.x >= currentMouseCoordinateX && pointB.x <= currentMouseCoordinateX)) {
+                    deltaX = pointB.x - pointA.x;
+                    deltaY = pointB.y - pointA.y;
+                    k = deltaY / deltaX;
+                    if (pointB.x < pointA.x) {
+                        tempPoint = pointA;
+                        pointA = pointB;
+                        pointB = pointA;
+                    }
+                    x = currentMouseCoordinateX - pointA.x;
+                    y = (k * x) + pointA.y;
+                    if (y < currentMouseCoordinateY) {
+                        intersections++;
+                    }
                 }
             }
-        }
-        if(intersections % 2 > 0){
-            this.isHovered = true;
-            return true;
-        }
-        return false;
+            if(intersections % 2 > 0){
+                this.isHovered = true;
+                return true;
+            }
+            return false;
+        }        
     }
 
     this.checkForClick = function(){
@@ -2864,7 +2927,6 @@ function Polygon(type, kindOfSymbol) {
 
         // If no point is hovered check for hover of polygon
         if(this.checkForHover()){
-            this.select();
             return true;
         }
         return false;
@@ -2907,6 +2969,242 @@ function Polygon(type, kindOfSymbol) {
             this.pointsArray[i].drawPoint();
         }
     }
+
+    //--------------------------------------------------------------------
+    // getquadrant: Returns the quadrant for a x,y coordinate in relation to bounding box and box center
+    //              Quadrant Layout:
+    //                    0|1     Top = 0     Right = 1
+    //                   -----    Bottom = 2  Left = 3
+    //                    3|2
+    //--------------------------------------------------------------------
+    this.getquadrant = function (xk, yk) {
+        // Read cardinal points
+        var c = this.corners();
+        var x1 = c.tl.x;
+        var y1 = c.tl.y;
+        var x2 = c.br.x;
+        var y2 = c.br.y;
+        var vx = points[this.centerPoint].x;
+        var vy = points[this.centerPoint].y;
+        // Compute deltas and k
+        var dx = x1 - vx;
+        var dy = y1 - vy;
+        var k = dy / dx;
+        if (xk > vx) {
+            if (yk > vy) {
+                // Bottom right quadrant
+                var byk = vy + (k * (xk - vx));
+                if (yk > byk) {
+                    return 2;
+                }
+                return 1;
+            } else {
+                // Top right quadrant
+                var byk = vy - (k * (xk - vx));
+                if (yk > byk) {
+                    return 1;
+                }
+                return 0;
+            }
+        } else {
+            if (yk > vy) {
+                // Bottom left quadrant
+                var byk = vy - (k * (xk - vx));
+                if (yk > byk) {
+                    return 2;
+                }
+                return 3;
+            } else {
+                // Top left quadrant
+                var byk = (k * (xk - vx)) + vy;
+                if (yk > byk) {
+                    return 3;
+                }
+                return 0;
+            }
+        }
+        return -1;
+    }
+
+    //--------------------------------------------------------------------
+    // quadrants: Iterates over all relation ends and checks if any need to change quadrants
+    //--------------------------------------------------------------------
+    this.quadrants = function () {
+        // Fix right connector box (1)
+        var changed = false;
+        var i = 0;
+        while (i < this.connectorRight.length) {
+            var xk = points[this.connectorRight[i].to].x;
+            var yk = points[this.connectorRight[i].to].y;
+            var bb = this.getquadrant(xk, yk);
+            if (bb == 3) {
+                changed = true;
+                conn = this.connectorRight.splice(i, 1);
+                this.connectorLeft.push(conn[0]);
+            } else if (bb == 0) {
+                changed = true;
+                conn = this.connectorRight.splice(i, 1);
+                this.connectorTop.push(conn[0]);
+            } else if (bb == 2) {
+                changed = true;
+                conn = this.connectorRight.splice(i, 1);
+                this.connectorBottom.push(conn[0]);
+            } else {
+                i++;
+            }
+        }
+        // Fix left connector box (3)
+        var i = 0;
+        while (i < this.connectorLeft.length) {
+            var xk = points[this.connectorLeft[i].to].x;
+            var yk = points[this.connectorLeft[i].to].y;
+            var bb = this.getquadrant(xk, yk);
+            if (bb == 1) {
+                changed = true;
+                conn = this.connectorLeft.splice(i, 1);
+                this.connectorRight.push(conn[0]);
+            } else if (bb == 0) {
+                changed = true;
+                conn = this.connectorLeft.splice(i, 1);
+                this.connectorTop.push(conn[0]);
+            } else if (bb == 2) {
+                changed = true;
+                conn = this.connectorLeft.splice(i, 1);
+                this.connectorBottom.push(conn[0]);
+            } else {
+                i++;
+            }
+        }
+        // Fix top connector box (0)
+        var i = 0;
+        while (i < this.connectorTop.length) {
+            var xk = points[this.connectorTop[i].to].x;
+            var yk = points[this.connectorTop[i].to].y;
+            var bb = this.getquadrant(xk, yk);
+            if (bb == 1) {
+                changed = true;
+                conn = this.connectorTop.splice(i, 1);
+                this.connectorRight.push(conn[0]);
+            } else if (bb == 3) {
+                changed = true;
+                conn = this.connectorTop.splice(i, 1);
+                this.connectorLeft.push(conn[0]);
+            } else if (bb == 2) {
+                changed = true;
+                conn = this.connectorTop.splice(i, 1);
+                this.connectorBottom.push(conn[0]);
+            } else {
+                i++;
+            }
+        }
+        // Fix bottom connector box (2)
+        var i = 0;
+        while (i < this.connectorBottom.length) {
+            var xk = points[this.connectorBottom[i].to].x;
+            var yk = points[this.connectorBottom[i].to].y;
+            var bb = this.getquadrant(xk, yk);
+            if (bb == 1) {
+                changed = true;
+                conn = this.connectorBottom.splice(i, 1);
+                this.connectorRight.push(conn[0]);
+            } else if (bb == 3) {
+                changed = true;
+                conn = this.connectorBottom.splice(i, 1);
+                this.connectorLeft.push(conn[0]);
+            } else if (bb == 0) {
+                changed = true;
+                conn = this.connectorBottom.splice(i, 1);
+                this.connectorTop.push(conn[0]);
+            } else {
+                i++;
+            }
+        }
+        return changed;
+    }
+
+    //-------------------------------------------------------------------------------
+    // corners: init four points, the four corners based on the two cornerpoints in the symbol.
+    //-------------------------------------------------------------------------------
+    this.corners = function() {
+        var p1 = points[this.topLeft];
+        var p2 = points[this.bottomRight];
+        if(p1.x < p2.x) {
+            if(p1.y < p2.y) {
+                // We are in the topleft
+                tl = {x:p1.x, y:p1.y};
+                br = {x:p2.x, y:p2.y};
+                tr = {x:br.x, y:tl.y};
+                bl = {x:tl.x, y:br.y};
+            }else {
+                // We are in the bottomleft
+                tr = {x:p2.x, y:p2.y};
+                bl = {x:p1.x, y:p1.y};
+                tl = {x:bl.x, y:tr.y};
+                br = {x:tr.x, y:bl.y};
+            }
+        } else {
+            if(p1.y < p2.y) {
+                // We are in the topright
+                tr = {x:p1.x, y:p1.y};
+                bl = {x:p2.x, y:p2.y};
+                tl = {x:bl.x, y:tr.y};
+                br = {x:tr.x, y:bl.y};
+            }else {
+                // We are in the bottomright
+                br = {x:p1.x, y:p1.y};
+                tl = {x:p2.x, y:p2.y};
+                bl = {x:tl.x, y:br.y};
+                tr = {x:br.x, y:tl.y};
+            }
+        }
+        return {
+            tl: tl,
+            tr: tr,
+            br: br,
+            bl: bl
+        };
+    }
+
+    //-------------------------------------------------------------------------------
+    // getCorners: init four points, the four corners based on the two cornerpoints in the symbol.
+    //-------------------------------------------------------------------------------
+    function getCorners(p1, p2) {
+     if(p1.x < p2.x) {
+            if(p1.y < p2.y) {
+                //we are in the topleft
+                tl = {x:p1.x, y:p1.y};
+                br = {x:p2.x, y:p2.y};
+                tr = {x:br.x, y:tl.y};
+                bl = {x:tl.x, y:br.y};
+            }else {
+                //we are in the bottomleft
+                tr = {x:p2.x, y:p2.y};
+                bl = {x:p1.x, y:p1.y};
+                tl = {x:bl.x, y:tr.y};
+                br = {x:tr.x, y:bl.y};
+            }
+        }else {
+            if(p1.y < p2.y) {
+                //we are in the topright
+                tr = {x:p1.x, y:p1.y};
+                bl = {x:p2.x, y:p2.y};
+                tl = {x:bl.x, y:tr.y};
+                br = {x:tr.x, y:bl.y};
+            }else {
+                //we are in the bottomright
+                br = {x:p1.x, y:p1.y};
+                tl = {x:p2.x, y:p2.y};
+                bl = {x:tl.x, y:br.y};
+                tr = {x:br.x, y:tl.y};
+            }
+        }
+        return {
+            tl: tl,
+            tr: tr,
+            br: br,
+            bl: bl
+        };
+    }
 }
 
 //------------------------------------
@@ -2931,6 +3229,7 @@ function polygonDraw(){
     if (isFirstPoint) {
         //pointsAtSamePosition = false;
         p2 = points.addPoint(new Point(currentMouseCoordinateX, currentMouseCoordinateY));
+        currentlyDrawnObject.push(p2);
         startPosition = p2;
         isFirstPoint = false;
     } else {
@@ -2940,8 +3239,9 @@ function polygonDraw(){
             p2 = activePoint;
         } else {
             p2 = points.addPoint(new Point(currentMouseCoordinateX, currentMouseCoordinateY));
+            currentlyDrawnObject.push(p2);
         }
-        isFirstPoint = true;
+        endPolygonDraw();
     }
 }
 
@@ -2973,6 +3273,28 @@ function freeDraw(){
 
 function endFreeDraw(){
     let polygon = new Polygon("FreeDraw", "FreeDraw");
+    polygon.addPoints(currentlyDrawnObject);
+
+    isFirstPoint = true;
+    currentlyDrawnObject = [];
+    diagram.push(polygon);
+
+    SaveState();
+}
+
+function endPolygonDraw() {
+    let polygon = new Polygon("Polygon", 1);
+    let x1 = currentlyDrawnObject[0].x;
+    let x2 = currentlyDrawnObject[1].x;
+    let y1 = currentlyDrawnObject[0].y;
+    let y2 = currentlyDrawnObject[1].y;
+
+    // Make sure that points are in the correct order
+    currentlyDrawnObject.pop();                     
+    currentlyDrawnObject.push(new Point(x2, y1));
+    currentlyDrawnObject.push(new Point(x2, y2));
+    currentlyDrawnObject.push(new Point(x1, y2));
+
     polygon.addPoints(currentlyDrawnObject);
 
     isFirstPoint = true;

@@ -1254,14 +1254,13 @@ function mod(n, m) {
 
 function updateGraphics() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    diagram.updateQuadrants();
     drawGrid();
     drawOrigoLine();
     if(developerModeActive) {
         drawOrigo();
     }
-    diagram.sortConnectors();
-    diagram.updateQuadrants();
+   // diagram.sortConnectors();
+    // diagram.updateQuadrants();
     diagram.draw();
     drawVirtualA4();
     drawOutline();
@@ -2469,7 +2468,6 @@ function mousemoveevt(ev, t) {
 
     // Left mouse click logic
     if(canvasLeftClick){
-        console.log(uimode)
         if(uimode == "Drag" && selected_objects.length > 0){
             console.log(selected_objects.length)
             for(let i = 0; i < selected_objects.length; i++){
@@ -2794,48 +2792,9 @@ function mousedownevt(ev) {
     // }
 }
 
-function handleSelect() {
-    lastSelectedObject = diagram.itemClicked();
-    let last = diagram[lastSelectedObject];
-    console.log(last)
-
-    if (last && uimode != "MoveAround") {
-        for (let i = 0; i < diagram.length; i++) {
-            diagram[i].deselect();
-        }
-        // Will add multiple selected diagram objects if the
-        // CTRL/CMD key is currently active
-        if (ctrlIsClicked) {
-            if(selected_objects.indexOf(last) < 0) {
-                last.select();
-            }
-            for (let i = 0; i < selected_objects.length; i++) {
-                if (selected_objects[i].isSelected == false) {
-                    selected_objects[i].select();
-                }
-            }
-        } else {
-            selected_objects = [];
-            last.select();
-        }
-    } else if(uimode != "MoveAround") {
-        if(ctrlIsClicked) {
-            let index = selected_objects.indexOf(last);
-            if(index > -1) {
-                selected_objects.splice(index, 1);
-            }
-
-            //when deselecting object, set lastSelectedObject to index of last object in selected_objects
-            lastSelectedObject = diagram.indexOf(selected_objects[selected_objects.length-1]);
-        }
-    }
-}
-
 function mouseupevt(ev) {
     // Left mouse click logic
     if(ev.button == leftMouseClick){
-        handleSelect();
-
         if((uimode == "CreatePolygon" || uimode == "FreeDraw") && !diagram.checkForHover()){
             if(dragDistanceReached && !isFirstPoint){
                 createPolygon();
