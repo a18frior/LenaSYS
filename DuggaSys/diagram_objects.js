@@ -2713,6 +2713,10 @@ function Polygon(type, kindOfSymbol) {
 
     }
 
+    this.getPoints = function() {
+        return this.pointsArray;
+    }
+
     this.fillPolygon = function(){
         ctx.strokeStyle = this.isSelected ? "#F82" : this.properties['strokeColor'];
         ctx.fillStyle = "white";
@@ -2781,6 +2785,14 @@ function Polygon(type, kindOfSymbol) {
         let intersections = 0;
         let pointA, pointB, deltaX, deltaY, k, tempPoint, x, y;
 
+        for(let i = 0; i < this.pointsArray.length; i++) {
+            let p = this.pointsArray[i];  
+            // if(p.checkForHover()){
+            //     this.isHovered;
+            //     return true;
+            // }  
+        }
+
         // Check if mouse has an even amount of intersections for lines in polygon
         for (let i = 0; i < this.pointsArray.length; i++) {
             pointA = this.pointsArray[i];
@@ -2822,6 +2834,26 @@ function Polygon(type, kindOfSymbol) {
             points.pop(this.pointsArray[i]);
         }
     }
+
+    this.createPoints = function(){
+        let point;
+        let tempArray = [];
+        for(let i = 0; i < this.pointsArray.length; i++){
+            point = Object.assign(new Point, this.pointsArray[i]);
+            points.addPoint(point);
+            tempArray.push(point);
+        }
+        this.pointsArray = [];
+        this.addPoints(tempArray);
+    }
+
+    this.addPoints = function(pointsArray){
+        let p;
+        for(let i = 0; i < pointsArray.length; i++){
+            p = pointsArray[i];
+            this.pointsArray.push(p);
+        }
+    }
 }
 
 //------------------------------------
@@ -2845,7 +2877,7 @@ function polygonDraw(){
     p1 = null;
     if (isFirstPoint) {
         //pointsAtSamePosition = false;
-        p2 = points.addPoint(currentMouseCoordinateX, currentMouseCoordinateY, false);
+        p2 = points.addPoint(new Point(currentMouseCoordinateX, currentMouseCoordinateY));
         startPosition = p2;
         isFirstPoint = false;
     } else {
@@ -2854,7 +2886,7 @@ function polygonDraw(){
         if (activePoint != null) {
             p2 = activePoint;
         } else {
-            p2 = points.addPoint(currentMouseCoordinateX, currentMouseCoordinateY, false);
+            p2 = points.addPoint(new Point(currentMouseCoordinateX, currentMouseCoordinateY));
         }
         isFirstPoint = true;
     }
@@ -2867,7 +2899,7 @@ function polygonDraw(){
 function freeDraw(){
     p1 = null;
     if (isFirstPoint) {
-        p2 = points.addPoint(currentMouseCoordinateX, currentMouseCoordinateY, false);
+        p2 = points.addPoint(new Point(currentMouseCoordinateX, currentMouseCoordinateY));
         startPosition = p2;
         isFirstPoint = false;
     } else {
@@ -2876,7 +2908,7 @@ function freeDraw(){
         if (activePoint != null) {
             p2 = activePoint;
         } else {
-            p2 = points.addPoint(currentMouseCoordinateX, currentMouseCoordinateY, false);
+            p2 = points.addPoint(new Point(currentMouseCoordinateX, currentMouseCoordinateY));
         }
     }
     currentlyDrawnObject.push(p2);
@@ -2888,9 +2920,7 @@ function freeDraw(){
 
 function endFreeDraw(){
     let polygon = new Polygon("FreeDraw", "FreeDraw");
-    for(let i = 0; i < currentlyDrawnObject.length; i++){
-        polygon.pointsArray.push(points[currentlyDrawnObject[i]]);
-    }
+    polygon.addPoints(currentlyDrawnObject);
 
     isFirstPoint = true;
     currentlyDrawnObject = [];
@@ -2911,10 +2941,10 @@ function drawDashedLine(p1, p2){
 
 function drawOutline(){
     if(!isFirstPoint){
-        let lastPoint = points[currentlyDrawnObject[0]];
+        let lastPoint = currentlyDrawnObject[0];
         for(let i = 0; i < currentlyDrawnObject.length - 1; i++){
-            let p1 = points[currentlyDrawnObject[i]];
-            let p2 = points[currentlyDrawnObject[i+1]];
+            let p1 = currentlyDrawnObject[i];
+            let p2 = currentlyDrawnObject[i+1];
             lastPoint = p2;
 
             drawDashedLine({x: pixelsToCanvas(p1.x).x, y: pixelsToCanvas(0, p1.y).y},
@@ -2932,4 +2962,39 @@ function drawLine(p1, p2, strokeColor) {
     ctx.lineTo(p2.x, p2.y);
     ctx.strokeStyle = strokeColor;
     ctx.stroke();
+}
+
+
+
+
+
+
+
+function Point(x, y, parent = {}){
+    this.x = x;
+    this.y = y;
+    this.isHovered = false;
+    this.isSelected = false;
+    this.parent = parent;
+
+    this.checkForHover = function(){
+        if(currentMouseCoordinateX < this.x + tolerance &&
+           currentMouseCoordinateX > this.x - tolerance &&
+           currentMouseCoordinateY > this.y - tolerance &&
+           currentMouseCoordinateY < this.y + tolerance) 
+        {
+            this.isHovered = true;
+            return true;
+        }
+        this.isHovered = false;
+        return false;
+    }
+
+    this.setParent = function (parent) {
+        this.parent = parent;
+    }
+
+    this.getParent = function() {
+        return this.parent;
+    }
 }

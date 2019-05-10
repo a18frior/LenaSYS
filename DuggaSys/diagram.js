@@ -555,17 +555,9 @@ var points = [];
 //           returns index of that point
 //--------------------------------------------------------------------
 
-points.addPoint = function(xCoordinate, yCoordinate, isSelected) {
-    //If we have an unused index we use it first
-    for(var i = 0; i < points.length; i++) {
-        if(points[i] == "") {
-            points[i] = {x:xCoordinate, y:yCoordinate, isSelected:isSelected};
-            return i;
-        }
-    }
-
-    this.push({x:xCoordinate, y:yCoordinate, isSelected:isSelected});
-    return this.length - 1;
+points.addPoint = function(point) {
+    this.push(point);
+    return point;
 }
 
 //----------------------------------------------------------------------
@@ -625,7 +617,6 @@ points.drawPoints = function() {
     ctx.lineWidth = 2 * zoomValue;
     for (var i = 0; i < this.length; i++) {
         var point = this[i];
-        // console.log(point)
         if (!point.isSelected) {
             ctx.beginPath();
             ctx.moveTo(pixelsToCanvas(point.x).x - crossSize, pixelsToCanvas(0, point.y).y - crossSize);
@@ -2407,7 +2398,6 @@ function pointDistance(point1, point2) {
 //---------------------------------------------------
 
 function mousemoveevt(ev, t) {
-    console.log(uimode)
     // Get canvasMouse coordinates for both X & Y.
     currentMouseCoordinateX = canvasToPixels(ev.clientX - boundingRect.left).x;
     currentMouseCoordinateY = canvasToPixels(0, ev.clientY - boundingRect.top).y;

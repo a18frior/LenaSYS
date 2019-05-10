@@ -48,11 +48,14 @@ function loadDiagram() {
             diagram.length = b.diagram.length;
             for (var i = 0; i < b.diagram.length; i++) {
                 diagram[i] = b.diagram[i];
+                diagram[i].createPoints();
             }
-            points.length = b.points.length;
-            for (var i = 0; i < b.points.length; i++) {
-                points[i] = b.points[i];
-            }
+
+
+            // points.length = b.points.length;
+            // for (var i = 0; i < b.points.length; i++) {
+            //     points[i] = new Point(b.points[i].x, b.points[i].y);
+            // }
         }
     }
 
@@ -128,9 +131,13 @@ function loadStoredFolders(f) {
     document.getElementById('showStoredFolders').style.display = "block";
 }
 
-/*function getImage() {
-
-}*/
+function convertPointsFromObjects(points){
+    let pointsArray = [];
+    for(let i = 0; i < points.length; i++){
+        pointsArray.push({x: points[i].x, y: points[i].y});
+    }
+    return pointsArray;
+}
 
 function Save() {
     c = [];
@@ -138,7 +145,7 @@ function Save() {
         c[i] = diagram[i].constructor.name;
         c[i] = c[i].replace(/"/g,"");
     }
-    var obj = {diagram:diagram, points:points, diagramNames:c};
+    var obj = {diagram:diagram, points:convertPointsFromObjects(points), diagramNames:c};
     a = JSON.stringify(obj, null, "\t");
 }
 
