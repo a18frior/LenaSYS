@@ -76,7 +76,7 @@ function resort() {
 }
 
 function toggleSortDir(col) {
-
+  console.log(col);
 }
 
 function process() {
