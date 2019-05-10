@@ -1057,8 +1057,7 @@ input {
 }
 
 .loginBox .inputwrapperSmall input[type="checkbox"] {
-  margin-right: 85px;
-  float:right; 
+  /* margin-right: 200px; */
   height: 24px;
 }
 
@@ -1070,7 +1069,8 @@ input {
 }
 
 .loginBox .inputwrapper input[type="checkbox"] {
-  margin-right: 200px;
+  margin-right: 85px;
+  float:right;
   height: 24px;
 }
 
