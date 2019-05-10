@@ -72,7 +72,7 @@ function setup() {
 
 
 function resort() {
-
+  updateTable();
 }
 
 function toggleSortDir(col) {
