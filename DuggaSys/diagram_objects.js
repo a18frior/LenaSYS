@@ -24,7 +24,7 @@
 //     this.font = "Arial";            // set the standard font
 //     this.lineWidth = 2;
 //     this.fontColor = '#000000';
-//     this.key_type = "normal";       // Defult key type for a class.
+//     this.key_type = "Normal";       // Defult key type for a class.
 //     this.sizeOftext = "Tiny";       // Used to set size of text.
 //     this.textAlign = "center";      // Used to change alignment of free text
 //     this.topLeft;                   // Top Left Point
@@ -2767,12 +2767,16 @@ function Polygon(type, kindOfSymbol) {
 
     this.select = function(){
         this.isSelected = true;
+        if(selected_objects.indexOf(this) == -1){
+            selected_objects.push(this);
+        }
     }
 
     this.deselect = function(){
         this.isSelected = false;
+        selected_objects.pop(this);
         for(let i = 0; i < this.pointsArray.length; i++){
-            this.pointsArray[i].isSelected = false;
+            this.pointsArray[i].deselect();
         }
     }
 
@@ -2781,14 +2785,14 @@ function Polygon(type, kindOfSymbol) {
         for(let i = 0; i < this.pointsArray.length; i++){
             if(this.pointsArray[i].isSelected){
                 selectedPoint = true;
-                this.pointsArray[i].x += x;
-                this.pointsArray[i].y += y;                
+                this.pointsArray[i].move(x, y);              
             }
         }
+
+        // If no individual point is selected the polygon should be moved
         if(!selectedPoint){
             for(let i = 0; i < this.pointsArray.length; i++){
-                this.pointsArray[i].x += x;
-                this.pointsArray[i].y += y;     
+                this.pointsArray[i].move(x, y);   
             }
         }
     }
@@ -2843,21 +2847,27 @@ function Polygon(type, kindOfSymbol) {
 
     this.checkForClick = function(){
         let clickedPoint = false;
+
+        // Returns true if one of the points is hovered
         for(let i = 0; i < this.pointsArray.length; i++) {
             let p = this.pointsArray[i];  
             if(p.checkForHover()){
-                p.isSelected = true;
+                p.select();
                 clickedPoint =  true;
-            }  else {
-                p.isSelected = false;
+            } else {
+                p.deselect();
             }
         }
-
         if(clickedPoint){
             return true;
         }
 
-        return this.checkForHover();
+        // If no point is hovered check for hover of polygon
+        if(this.checkForHover()){
+            this.select();
+            return true;
+        }
+        return false;
     }
 
     this.erase = function(){
@@ -3023,7 +3033,7 @@ function Point(x, y){
     this.drawPoint = function(){
         if(this.getParent().isSelected){
             ctx.beginPath();
-            ctx.arc(this.x, this.y, 5 * diagram.getZoomValue(), 0, 2*Math.PI, false);
+            ctx.arc(pixelsToCanvas(this.x).x, pixelsToCanvas(0, this.y).y, 5 * diagram.getZoomValue(), 0, 2*Math.PI, false);
             ctx.fillStyle = '#F82';
             ctx.fill();
         }
@@ -3045,6 +3055,14 @@ function Point(x, y){
     this.move = function(x, y){
         this.x += x;
         this.y += y;
+    }
+
+    this.select = function(){
+        this.isSelected = true;
+    }
+
+    this.deselect = function(){
+        this.isSelected = false;
     }
 
     this.setParent = function (id) {

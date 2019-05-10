@@ -82,7 +82,7 @@ var lastSelectedObject = -1;        // The last selected object
 var selected_objects = [];          // Is used to store multiple selected objects
 var lineStartObj = -1;
 var movobj = -1;                    // Moving object ID
-var uimode = "normal";              // User interface mode e.g. normal or create class currently
+var uimode = "Normal";              // User interface mode e.g. normal or create class currently
 var figureType = null;              // Specification of uimode, when Create Figure is set to the active mode this is set to one of the forms a figure can be drawn in.
 var widthWindow;                    // The width on the users screen is saved is in this var.
 var heightWindow;                   // The height on the users screen is saved is in this var.
@@ -370,7 +370,6 @@ function keyDownHandler(e) {
     else if (key == aKey && ctrlIsClicked) {
         e.preventDefault();
         for(var i = 0; i < diagram.length; i++) {
-            selected_objects.push(diagram[i]);
             diagram[i].select();
         }
         updateGraphics();
@@ -787,7 +786,6 @@ diagram.targetItemsInsideSelectionBox = function (ex, ey, sx, sy, hover) {
             }
             if(!hover) {
                 if (pointsSelected >= tempPoints.length) {
-                    selected_objects.push(this[i]);
                     this[i].select();
                 } else {
                     this[i].deselect();
@@ -815,12 +813,10 @@ diagram.targetItemsInsideSelectionBox = function (ex, ey, sx, sy, hover) {
                         selected_objects.splice(index, 1);
                     } else if(!hover) {
                         this[i].select();
-                        selected_objects.push(this[i]);
                     }
                 } else {
                     if (index < 0 && !hover) {
                         this[i].select();
-                        selected_objects.push(this[i]);
                     } else if(hover) {
                         this[i].isHovered = true;
                     }
@@ -864,16 +860,9 @@ diagram.checkForHover = function(posX, posY) {
 }
 
 diagram.checkForClick = function(posX, posY) {
-    if(!ctrlIsClicked){
-        for (let i = 0; i < this.length; i++) {
-            this[i].isClicked = false;    
-            selected_objects.pop(this[i]);
-        }
-    }
-
     // Start from back of diagram to check from the top of canvas
     for (let i = this.length - 1; i > -1; i--) {
-        if(this[i].checkForClick()){     
+        if(this[i].checkForClick()){    
             return this[i];      
         }
     }
@@ -1405,7 +1394,7 @@ $(document).ready(function() {
         $("#moveButton").css("visibility", "hidden");
         if ($(this).hasClass("pressed")) {
             $(".buttonsStyle").removeClass("pressed").addClass("unpressed");
-            uimode = "normal";
+            uimode = "Normal";
         } else {
             $(".buttonsStyle").removeClass("pressed").addClass("unpressed");
             $(this).removeClass("unpressed").addClass("pressed");
@@ -2466,13 +2455,10 @@ function mousemoveevt(ev, t) {
             }
         }
 
-
         if(uimode == "MoveAround"){
             // Drag canvas
             origoOffsetX += (currentMouseCoordinateX - startMouseCoordinateX) * zoomValue;
-            origoOffsetY += (currentMouseCoordinateY - startMouseCoordinateY) * zoomValue;
-            startMouseCoordinateX = canvasToPixels(ev.clientX - boundingRect.left).x;
-            startMouseCoordinateY = canvasToPixels(0, ev.clientY - boundingRect.top).y;            
+            origoOffsetY += (currentMouseCoordinateY - startMouseCoordinateY) * zoomValue;          
         }
     }
 
@@ -2483,15 +2469,14 @@ function mousemoveevt(ev, t) {
 
     // Left mouse click logic
     if(canvasLeftClick){
-        if(uimode == "normal" && selected_objects.length > 0){
+        console.log(uimode)
+        if(uimode == "Drag" && selected_objects.length > 0){
+            console.log(selected_objects.length)
             for(let i = 0; i < selected_objects.length; i++){
-                selected_objects[i].move((currentMouseCoordinateX - startMouseCoordinateX) * zoomValue, 
-                                         (currentMouseCoordinateY - startMouseCoordinateY) * zoomValue);
+                selected_objects[i].move((currentMouseCoordinateX - startMouseCoordinateX), 
+                                         (currentMouseCoordinateY - startMouseCoordinateY));
+                                         
             }
-
-            
-            startMouseCoordinateX = canvasToPixels(ev.clientX - boundingRect.left).x;
-            startMouseCoordinateY = canvasToPixels(0, ev.clientY - boundingRect.top).y;
         }
     }
 
@@ -2499,6 +2484,9 @@ function mousemoveevt(ev, t) {
     else if(canvasRightClick){
 
     }
+
+    startMouseCoordinateX = currentMouseCoordinateX;
+    startMouseCoordinateY = currentMouseCoordinateY;  
 
     reWrite();
     updateGraphics();
@@ -2558,7 +2546,7 @@ function mousemoveevt(ev, t) {
     //             startMouseCoordinateY = currentMouseCoordinateY;
     //         }
     //     }
-    //     if (md == mouseState.boxSelectOrCreateMode && uimode == "normal") {
+    //     if (md == mouseState.boxSelectOrCreateMode && uimode == "Normal") {
     //         diagram.targetItemsInsideSelectionBox(currentMouseCoordinateX, currentMouseCoordinateY, startMouseCoordinateX, startMouseCoordinateY, true);
     //     } else {
     //         diagram.checkForHover(currentMouseCoordinateX, currentMouseCoordinateY);
@@ -2720,8 +2708,19 @@ function mousedownevt(ev) {
         if((uimode == "FreeDraw" || uimode == "CreatePolygon") && (!diagram.checkForHover() || !isFirstPoint)){
             createPolygon();
         } else {
-            diagram.checkForClick();
-            // handleSelect();
+            let last = diagram.checkForClick();
+            if(!ctrlIsClicked && selected_objects.indexOf(last) == -1){
+                for (let i = 0; i < diagram.length; i++) {
+                    diagram[i].deselect();   
+                }
+            }
+            if(last != false){
+                last.select();
+                uimode = "Drag";
+            } else {
+                uimode = "Normal";
+            }
+
         }
 
 
@@ -2748,12 +2747,11 @@ function mousedownevt(ev) {
             dragDistanceReached = false; 
         }
     }
-   
 
     
 
     // if(uimode == "Moved" && md != mouseState.boxSelectOrCreateMode) {
-    //     uimode = "normal";
+    //     uimode = "Normal";
     //     md = mouseState.empty;
     // }
 
@@ -2809,20 +2807,15 @@ function handleSelect() {
         // CTRL/CMD key is currently active
         if (ctrlIsClicked) {
             if(selected_objects.indexOf(last) < 0) {
-                selected_objects.push(last);
                 last.select();
             }
             for (let i = 0; i < selected_objects.length; i++) {
                 if (selected_objects[i].isSelected == false) {
-                    if(selected_objects.indexOf(last) < 0) {
-                        selected_objects.push(last);
-                    }
                     selected_objects[i].select();
                 }
             }
         } else {
             selected_objects = [];
-            selected_objects.push(last);
             last.select();
         }
     } else if(uimode != "MoveAround") {
@@ -2848,7 +2841,6 @@ function mouseupevt(ev) {
                 createPolygon();
             }
         }
-
 
         // Reset left mouse click state
         canvasLeftClick = false;
@@ -2903,7 +2895,7 @@ function mouseupevt(ev) {
     //     p2 = points.addPoint(currentMouseCoordinateX, currentMouseCoordinateY, false);
     //     p3 = points.addPoint((startMouseCoordinateX + currentMouseCoordinateX) * 0.5, (startMouseCoordinateY + currentMouseCoordinateY) * 0.5, false);
     // }
-    // var saveState = md == mouseState.boxSelectOrCreateMode && uimode != "normal";
+    // var saveState = md == mouseState.boxSelectOrCreateMode && uimode != "Normal";
     // if(movobj > -1) {
     //     if(diagram[movobj].symbolkind != symbolKind.line && uimode == "Moved") saveState = true;
     // }
@@ -3105,7 +3097,7 @@ function mouseupevt(ev) {
     //         if ($("#linebutton").hasClass("pressed")){
     //             $("#linebutton.buttonsStyle").removeClass("pressed").addClass("unpressed");
     //         }
-    //         uimode = "normal";
+    //         uimode = "Normal";
 
     //         createCardinality();
     //         updateGraphics();
@@ -3122,7 +3114,7 @@ function mouseupevt(ev) {
     //     diagram[lastSelectedObject].select();
     //     selected_objects.push(diagram[lastSelectedObject]);
     //     diagramObject = diagram[lastSelectedObject];
-    // } else if (md == mouseState.boxSelectOrCreateMode && uimode == "normal") {
+    // } else if (md == mouseState.boxSelectOrCreateMode && uimode == "Normal") {
     //     diagram.targetItemsInsideSelectionBox(currentMouseCoordinateX, currentMouseCoordinateY, startMouseCoordinateX, startMouseCoordinateY);
     // }
     // else if(uimode != "Moved" && !ctrlIsClicked && md != mouseState.boxSelectOrCreateMode) {
@@ -3158,7 +3150,7 @@ function mouseupevt(ev) {
     //         if ($("#umllinebutton").hasClass("pressed")){
     //             $("#umllinebutton.buttonsStyle").removeClass("pressed").addClass("unpressed");
     //         }
-    //         uimode = "normal";
+    //         uimode = "Normal";
 
     //         createCardinality();
     //         updateGraphics();
@@ -3219,7 +3211,6 @@ function createText(posX, posY) {
     diagram.push(text);
     lastSelectedObject = diagram.length -1;
     diagram[lastSelectedObject].select();
-    selected_objects.push(diagram[lastSelectedObject]);
     updateGraphics();
 }
 
@@ -3265,7 +3256,7 @@ function movemode(e, t) {
 		buttonStyle.className = "unpressed";
         canvas.addEventListener('dblclick', doubleclick, false);
         canvas.style.cursor = "default";
-        uimode = "normal";
+        uimode = "Normal";
     }
 }
 
