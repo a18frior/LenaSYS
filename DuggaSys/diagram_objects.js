@@ -2665,6 +2665,7 @@
 function Polygon(type, kindOfSymbol) {
     this.kind = type;               // If free draw or polygon
     this.name = "Polygon";          // New Polygon default name in new class
+    this.id = -1;
     this.symbolkind = kindOfSymbol; // Symbol kind (1 UML diagram symbol 2 ER Attribute 3 ER Entity 4 Lines 5 ER Relation)
     this.pointsArray = [];
     this.operations = [];           // Operations array
@@ -2707,10 +2708,18 @@ function Polygon(type, kindOfSymbol) {
     };
 
 
+    this.setID = function(id){
+        this.id = id;
+    }
+
+    this.getID = function(){
+        return this.id;
+    }
+
     this.drawPolygon = function() {
         this.fillPolygon();
         this.drawOutlines();
-
+        this.drawPoints();
     }
 
     this.getPoints = function() {
@@ -2758,9 +2767,6 @@ function Polygon(type, kindOfSymbol) {
 
     this.select = function(){
         this.isSelected = true;
-        for(let i = 0; i < this.pointsArray.length; i++){
-            this.pointsArray[i].isSelected = true;
-        }
     }
 
     this.deselect = function(){
@@ -2771,9 +2777,19 @@ function Polygon(type, kindOfSymbol) {
     }
 
     this.move = function(x, y){
+        let selectedPoint = false;
         for(let i = 0; i < this.pointsArray.length; i++){
-            this.pointsArray[i].x += x;
-            this.pointsArray[i].y += y;
+            if(this.pointsArray[i].isSelected){
+                selectedPoint = true;
+                this.pointsArray[i].x += x;
+                this.pointsArray[i].y += y;                
+            }
+        }
+        if(!selectedPoint){
+            for(let i = 0; i < this.pointsArray.length; i++){
+                this.pointsArray[i].x += x;
+                this.pointsArray[i].y += y;     
+            }
         }
     }
 
@@ -2787,10 +2803,10 @@ function Polygon(type, kindOfSymbol) {
 
         for(let i = 0; i < this.pointsArray.length; i++) {
             let p = this.pointsArray[i];  
-            // if(p.checkForHover()){
-            //     this.isHovered;
-            //     return true;
-            // }  
+            if(p.checkForHover()){
+                this.isHovered = true;
+                return true;
+            }  
         }
 
         // Check if mouse has an even amount of intersections for lines in polygon
@@ -2819,9 +2835,29 @@ function Polygon(type, kindOfSymbol) {
             }
         }
         if(intersections % 2 > 0){
+            this.isHovered = true;
             return true;
         }
         return false;
+    }
+
+    this.checkForClick = function(){
+        let clickedPoint = false;
+        for(let i = 0; i < this.pointsArray.length; i++) {
+            let p = this.pointsArray[i];  
+            if(p.checkForHover()){
+                p.isSelected = true;
+                clickedPoint =  true;
+            }  else {
+                p.isSelected = false;
+            }
+        }
+
+        if(clickedPoint){
+            return true;
+        }
+
+        return this.checkForHover();
     }
 
     this.erase = function(){
@@ -2840,6 +2876,7 @@ function Polygon(type, kindOfSymbol) {
         let tempArray = [];
         for(let i = 0; i < this.pointsArray.length; i++){
             point = Object.assign(new Point, this.pointsArray[i]);
+            point.setParent(this.id);
             points.addPoint(point);
             tempArray.push(point);
         }
@@ -2852,6 +2889,12 @@ function Polygon(type, kindOfSymbol) {
         for(let i = 0; i < pointsArray.length; i++){
             p = pointsArray[i];
             this.pointsArray.push(p);
+        }
+    }
+
+    this.drawPoints = function(){
+        for(let i = 0; i < this.pointsArray.length; i++){
+            this.pointsArray[i].drawPoint();
         }
     }
 }
@@ -2970,12 +3013,21 @@ function drawLine(p1, p2, strokeColor) {
 
 
 
-function Point(x, y, parent = {}){
+function Point(x, y){
     this.x = x;
     this.y = y;
     this.isHovered = false;
     this.isSelected = false;
-    this.parent = parent;
+    this.parentID = -1;
+
+    this.drawPoint = function(){
+        if(this.getParent().isSelected){
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, 5 * diagram.getZoomValue(), 0, 2*Math.PI, false);
+            ctx.fillStyle = '#F82';
+            ctx.fill();
+        }
+    }
 
     this.checkForHover = function(){
         if(currentMouseCoordinateX < this.x + tolerance &&
@@ -2990,11 +3042,16 @@ function Point(x, y, parent = {}){
         return false;
     }
 
-    this.setParent = function (parent) {
-        this.parent = parent;
+    this.move = function(x, y){
+        this.x += x;
+        this.y += y;
+    }
+
+    this.setParent = function (id) {
+        this.parentID = id;
     }
 
     this.getParent = function() {
-        return this.parent;
+        return diagram.getObjectByID(this.parentID);
     }
 }

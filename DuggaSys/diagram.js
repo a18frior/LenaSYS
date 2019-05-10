@@ -612,28 +612,28 @@ function copySymbol(symbol) {
 // drawPoints: Draws each of the points as a cross
 //--------------------------------------------------------------------
 
-points.drawPoints = function() {
-    ctx.strokeStyle = crossStrokeStyle1;
-    ctx.lineWidth = 2 * zoomValue;
-    for (var i = 0; i < this.length; i++) {
-        var point = this[i];
-        if (!point.isSelected) {
-            ctx.beginPath();
-            ctx.moveTo(pixelsToCanvas(point.x).x - crossSize, pixelsToCanvas(0, point.y).y - crossSize);
-            ctx.lineTo(pixelsToCanvas(point.x).x + crossSize, pixelsToCanvas(0, point.y).y + crossSize);
-            ctx.moveTo(pixelsToCanvas(point.x).x + crossSize, pixelsToCanvas(0, point.y).y - crossSize);
-            ctx.lineTo(pixelsToCanvas(point.x).x - crossSize, pixelsToCanvas(0, point.y).y + crossSize);
-            ctx.stroke();
-        } else {
-            ctx.save();
-            ctx.fillStyle = crossFillStyle;
-            ctx.strokeStyle = crossStrokeStyle2;
-            ctx.fillRect(pixelsToCanvas(point.x).x - crossSize, pixelsToCanvas(0, point.y).y - crossSize, crossSize * 2, crossSize * 2);
-            ctx.strokeRect(pixelsToCanvas(point.x).x - crossSize, pixelsToCanvas(0, point.y).y - crossSize, crossSize * 2, crossSize * 2);
-            ctx.restore();
-        }
-    }
-}
+// points.drawPoints = function() {
+//     ctx.strokeStyle = crossStrokeStyle1;
+//     ctx.lineWidth = 2 * zoomValue;
+//     for (var i = 0; i < this.length; i++) {
+//         var point = this[i];
+//         if (!point.isSelected) {
+//             ctx.beginPath();
+//             ctx.moveTo(pixelsToCanvas(point.x).x - crossSize, pixelsToCanvas(0, point.y).y - crossSize);
+//             ctx.lineTo(pixelsToCanvas(point.x).x + crossSize, pixelsToCanvas(0, point.y).y + crossSize);
+//             ctx.moveTo(pixelsToCanvas(point.x).x + crossSize, pixelsToCanvas(0, point.y).y - crossSize);
+//             ctx.lineTo(pixelsToCanvas(point.x).x - crossSize, pixelsToCanvas(0, point.y).y + crossSize);
+//             ctx.stroke();
+//         } else {
+//             ctx.save();
+//             ctx.fillStyle = crossFillStyle;
+//             ctx.strokeStyle = crossStrokeStyle2;
+//             ctx.fillRect(pixelsToCanvas(point.x).x - crossSize, pixelsToCanvas(0, point.y).y - crossSize, crossSize * 2, crossSize * 2);
+//             ctx.strokeRect(pixelsToCanvas(point.x).x - crossSize, pixelsToCanvas(0, point.y).y - crossSize, crossSize * 2, crossSize * 2);
+//             ctx.restore();
+//         }
+//     }
+// }
 
 
 //--------------------------------------------------------------------
@@ -663,7 +663,15 @@ points.closestPoint = function(xCoordinate, yCoordinate, pointIndex) {
 
 points.clearAllSelects = function() {
     for (var i = 0; i < this.length; i++) {
-        this[i].isSelected = 0;
+        this[i].isSelected = false;
+    }
+}
+
+diagram.getObjectByID = function(id){
+    for(let i = 0; i < this.length; i++){
+        if(this[i].getID() == id){
+            return this[i];
+        }
     }
 }
 
@@ -831,7 +839,7 @@ diagram.targetItemsInsideSelectionBox = function (ex, ey, sx, sy, hover) {
 
 diagram.itemClicked = function() {
     if(uimode == "MoveAround") return -1;
-    let obj = this.checkForHover();
+    let obj = this.checkForClick();
     if (typeof obj !== 'undefined' && obj != false) return this.indexOf(obj);
     else return -1;
 }
@@ -845,9 +853,27 @@ diagram.checkForHover = function(posX, posY) {
     for (let i = 0; i < this.length; i++) {
         this[i].isHovered = false;     
     }
+
+    // Start from back of diagram to check from the top of canvas
     for (let i = this.length - 1; i > -1; i--) {
-        if(this[i].checkForHover()){
-            this[i].isHovered = true;      
+        if(this[i].checkForHover()){  
+            return this[i];      
+        }
+    }
+    return false;
+}
+
+diagram.checkForClick = function(posX, posY) {
+    if(!ctrlIsClicked){
+        for (let i = 0; i < this.length; i++) {
+            this[i].isClicked = false;    
+            selected_objects.pop(this[i]);
+        }
+    }
+
+    // Start from back of diagram to check from the top of canvas
+    for (let i = this.length - 1; i > -1; i--) {
+        if(this[i].checkForClick()){     
             return this[i];      
         }
     }
@@ -1248,7 +1274,6 @@ function updateGraphics() {
     diagram.sortConnectors();
     diagram.updateQuadrants();
     diagram.draw();
-    points.drawPoints();
     drawVirtualA4();
     drawOutline();
 }
@@ -2463,6 +2488,8 @@ function mousemoveevt(ev, t) {
                 selected_objects[i].move((currentMouseCoordinateX - startMouseCoordinateX) * zoomValue, 
                                          (currentMouseCoordinateY - startMouseCoordinateY) * zoomValue);
             }
+
+            
             startMouseCoordinateX = canvasToPixels(ev.clientX - boundingRect.left).x;
             startMouseCoordinateY = canvasToPixels(0, ev.clientY - boundingRect.top).y;
         }
@@ -2693,7 +2720,8 @@ function mousedownevt(ev) {
         if((uimode == "FreeDraw" || uimode == "CreatePolygon") && (!diagram.checkForHover() || !isFirstPoint)){
             createPolygon();
         } else {
-            handleSelect();
+            diagram.checkForClick();
+            // handleSelect();
         }
 
 
@@ -2769,10 +2797,11 @@ function mousedownevt(ev) {
 }
 
 function handleSelect() {
-    lastSelectedObject = diagram.itemClicked(currentMouseCoordinateX, currentMouseCoordinateY);
+    lastSelectedObject = diagram.itemClicked();
     let last = diagram[lastSelectedObject];
+    console.log(last)
 
-    if (last && last.isSelected == false && uimode != "MoveAround") {
+    if (last && uimode != "MoveAround") {
         for (let i = 0; i < diagram.length; i++) {
             diagram[i].deselect();
         }
@@ -2802,7 +2831,7 @@ function handleSelect() {
             if(index > -1) {
                 selected_objects.splice(index, 1);
             }
-            last.deselect();
+
             //when deselecting object, set lastSelectedObject to index of last object in selected_objects
             lastSelectedObject = diagram.indexOf(selected_objects[selected_objects.length-1]);
         }

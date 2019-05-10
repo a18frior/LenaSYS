@@ -48,6 +48,7 @@ function loadDiagram() {
             diagram.length = b.diagram.length;
             for (var i = 0; i < b.diagram.length; i++) {
                 diagram[i] = b.diagram[i];
+                b.diagram[i].setID(i);
                 diagram[i].createPoints();
             }
 
