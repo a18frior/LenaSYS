@@ -2910,7 +2910,7 @@ function Polygon(type, kindOfSymbol) {
 
     this.checkForClick = function(){
         let clickedPoint = false;
-
+        
         // Returns true if one of the points is hovered
         for(let i = 0; i < this.pointsArray.length; i++) {
             let p = this.pointsArray[i];  

@@ -1042,11 +1042,9 @@ function initializeCanvas() {
 
 
 function deselectObjects() {
-	for(let i = 0; i < diagram.length; i++) {
-		diagram[i].deselect();
-		diagram[i].deselect();
-		diagram[i].isHovered = false;
-	}
+	for (let i = 0; i < diagram.length; i++) {
+        diagram[i].deselect();   
+    }
 }
 
 //-----------------------------------------------------------------------------------
@@ -2468,8 +2466,7 @@ function mousemoveevt(ev, t) {
 
     // Left mouse click logic
     if(canvasLeftClick){
-        if(uimode == "Drag" && selected_objects.length > 0){
-            console.log(selected_objects.length)
+        if(uimode == "Normal" && selected_objects.length > 0){
             for(let i = 0; i < selected_objects.length; i++){
                 selected_objects[i].move((currentMouseCoordinateX - startMouseCoordinateX), 
                                          (currentMouseCoordinateY - startMouseCoordinateY));
@@ -2681,14 +2678,6 @@ function mousemoveevt(ev, t) {
     // }
 }
 
-function deselectAllObjects(){
-    for (var i = 0; i < selected_objects.length; i++) {
-        selected_objects[i].deselect();
-    }
-    lastSelectedObject = -1;
-    selected_objects = [];
-}
-
 //----------------------------------------------------------
 // Is called when left mouse button is clicked on the canvas
 //----------------------------------------------------------
@@ -2704,17 +2693,15 @@ function mousedownevt(ev) {
         canvasLeftClick = true;
 
         if((uimode == "FreeDraw" || uimode == "CreatePolygon") && (!diagram.checkForHover() || !isFirstPoint)){
+            deselectObjects();
             createPolygon();
         } else {
             let last = diagram.checkForClick();
             if(!ctrlIsClicked && selected_objects.indexOf(last) == -1){
-                for (let i = 0; i < diagram.length; i++) {
-                    diagram[i].deselect();   
-                }
+                deselectObjects();
             }
             if(last != false){
                 last.select();
-                uimode = "Drag";
             } else {
                 uimode = "Normal";
             }
@@ -2745,6 +2732,9 @@ function mousedownevt(ev) {
             dragDistanceReached = false; 
         }
     }
+
+
+    updateGraphics();
 
     
 
@@ -2825,7 +2815,7 @@ function mouseupevt(ev) {
 
 
 
-
+    updateGraphics();
 
 
 
