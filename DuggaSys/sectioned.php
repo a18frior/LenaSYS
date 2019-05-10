@@ -229,6 +229,7 @@
 					</div>
 					<div id='inputwrapper-link' class='inputwrapper'><span>Link:</span><select id='link' ></select></div>
 					<div id='inputwrapper-gradesystem' class='inputwrapper'><span>Grade system:</span><select id='gradesys' ></select></div>
+					<div id='inputwrapper-Stedeadline' class='inputwrapper'><span>Set Deadline:</span><input type="date" value="2013-01-08"></div>
 					<div id='inputwrapper-tabs' class='inputwrapper'><span>Tabs:</span><select id='tabs' ></select></div>
 					<div id='inputwrapper-highscore' class='inputwrapper'><span>High score:</span><select id='highscoremode' ></select></div>
 					<div id='inputwrapper-moment' class='inputwrapper'><span>Moment:</span><select id='moment'></select></div>
