@@ -2350,10 +2350,10 @@ span.arrow {
 		margin:2px;
 }
 
-.tableCellHighlightning {
+/*.tableCellHighlightning {
   box-shadow: inset 20px 20px 0px 3px rgb(48, 18, 219) !important;
   background-color: rgb(240, 21, 185);
-}
+} */
 
 .tableRowHighlightning {
 	box-shadow: inset 0px 3px 0px 0px rgba(97,72,117,1),
