@@ -1063,49 +1063,49 @@
 //         }
 //     }
 
-//     this.drawERAttribute = function(x1, y1, x2, y2) {
-//         this.isAttribute = true;
-//         ctx.fillStyle = this.properties['symbolColor'];
-//         // Drawing a multivalue attribute
-//         if (this.properties['key_type'] == 'Multivalue') {
-//             drawOval(x1 - 7 * diagram.getZoomValue(), y1 - 7 * diagram.getZoomValue(), x2 + 7 * diagram.getZoomValue(), y2 + 7 * diagram.getZoomValue());
-//             ctx.stroke();
-//             this.makeShadow();
-//             drawOval(x1, y1, x2, y2);
-//         // Drawing a normal attribute
-//         } else {
-//             drawOval(x1, y1, x2, y2);
+    // this.drawERAttribute = function(x1, y1, x2, y2) {
+    //     this.isAttribute = true;
+    //     ctx.fillStyle = this.properties['symbolColor'];
+    //     // Drawing a multivalue attribute
+    //     if (this.properties['key_type'] == 'Multivalue') {
+    //         drawOval(x1 - 7 * diagram.getZoomValue(), y1 - 7 * diagram.getZoomValue(), x2 + 7 * diagram.getZoomValue(), y2 + 7 * diagram.getZoomValue());
+    //         ctx.stroke();
+    //         this.makeShadow();
+    //         drawOval(x1, y1, x2, y2);
+    //     // Drawing a normal attribute
+    //     } else {
+    //         drawOval(x1, y1, x2, y2);
 
-//             ctx.fill();
-//             this.makeShadow();
-//         }
-//         ctx.clip();
+    //         ctx.fill();
+    //         this.makeShadow();
+    //     }
+    //     ctx.clip();
 
-//         //drawing an derived attribute
-//         if (this.properties['key_type'] == 'Drive') {
+    //     //drawing an derived attribute
+    //     if (this.properties['key_type'] == 'Drive') {
 
-//             ctx.setLineDash([5, 4]);
-//         }
-//         else if (this.properties['key_type'] == 'Primary key' || this.properties['key_type'] == 'Partial key') {
-//             ctx.stroke();
-//             this.properties['key_type'] == 'Partial key' ? ctx.setLineDash([5, 4]) : ctx.setLineDash([]);
-//             var linelength = ctx.measureText(this.name).width;
-//             ctx.beginPath(1);
-//             ctx.moveTo(x1 + ((x2 - x1) * 0.5) - (linelength * 0.5), (y1 + ((y2 - y1) * 0.5)) + 10);
-//             ctx.lineTo(x1 + ((x2 - x1) * 0.5) + (linelength * 0.5), (y1 + ((y2 - y1) * 0.5)) + 10);
-//             ctx.strokeStyle = this.properties['strokeColor'];
+    //         ctx.setLineDash([5, 4]);
+    //     }
+    //     else if (this.properties['key_type'] == 'Primary key' || this.properties['key_type'] == 'Partial key') {
+    //         ctx.stroke();
+    //         this.properties['key_type'] == 'Partial key' ? ctx.setLineDash([5, 4]) : ctx.setLineDash([]);
+    //         var linelength = ctx.measureText(this.name).width;
+    //         ctx.beginPath(1);
+    //         ctx.moveTo(x1 + ((x2 - x1) * 0.5) - (linelength * 0.5), (y1 + ((y2 - y1) * 0.5)) + 10);
+    //         ctx.lineTo(x1 + ((x2 - x1) * 0.5) + (linelength * 0.5), (y1 + ((y2 - y1) * 0.5)) + 10);
+    //         ctx.strokeStyle = this.properties['strokeColor'];
 
-//         }
-//         ctx.stroke();
-//         ctx.setLineDash([]);
-//         ctx.fillStyle = this.properties['fontColor'];
-//         if(ctx.measureText(this.name).width > (x2-x1) - 4) {
-//             ctx.textAlign = "start";
-//             ctx.fillText(this.name, x1 + 4 , (y1 + ((y2 - y1) * 0.5)));
-//         }else {
-//             ctx.fillText(this.name, x1 + ((x2 - x1) * 0.5), (y1 + ((y2 - y1) * 0.5)));
-//         }
-//     }
+    //     }
+    //     ctx.stroke();
+    //     ctx.setLineDash([]);
+    //     ctx.fillStyle = this.properties['fontColor'];
+    //     if(ctx.measureText(this.name).width > (x2-x1) - 4) {
+    //         ctx.textAlign = "start";
+    //         ctx.fillText(this.name, x1 + 4 , (y1 + ((y2 - y1) * 0.5)));
+    //     }else {
+    //         ctx.fillText(this.name, x1 + ((x2 - x1) * 0.5), (y1 + ((y2 - y1) * 0.5)));
+    //     }
+    // }
 
 //     // This function is used in the drawEntity function and is run when ER entities are not in a weak state.
 //     function removeForcedAttributeFromLinesIfEntityIsNotWeak(x1, y1, x2, y2)
@@ -2670,7 +2670,9 @@ function Polygon(type, kindOfSymbol) {
     this.pointsArray = [];
     this.operations = [];           // Operations array
     this.attributes = [];           // Attributes array
+    this.lines = [];
     this.textLines = [];            // Free text array
+    this.topleft;
     this.bottomRight;               // Bottom Right Point
     this.middleDivider;             // Middle divider Point
     this.centerPoint;               // centerPoint
@@ -2681,6 +2683,8 @@ function Polygon(type, kindOfSymbol) {
     this.locked = false;
     this.isHovered = false;
     this.isSelected = false;
+    this.startPolygonID = -1;
+    this.endPolygonID = -1;
 
     // Connector arrays - for connecting and sorting relationships between diagram objects
     this.connectorTop = [];
@@ -2720,22 +2724,28 @@ function Polygon(type, kindOfSymbol) {
     }
 
     this.drawPolygon = function() {
+    	this.updateProperties();
         this.fillPolygon();
         this.drawOutlines();
         this.drawPoints();
+    }
+
+    this.updateProperties = function(){
+    	this.topleft = this.pointsArray[0];
+    	if(this.symbolkind == "Line"){
+    		this.bottomright = this.pointsArray[1];
+    	} else {
+    		this.bottomright = this.pointsArray[2];
+    	}
+    	this.centerPoint = { x: (this.topleft.x + this.bottomright.x) / 2, y: (this.topleft.y + this.bottomright.y) / 2 }
     }
 
     this.getPoints = function() {
         return this.pointsArray;
     }
 
-    this.fillPolygon = function(){
-        ctx.strokeStyle = this.isSelected ? "#F82" : this.properties['strokeColor'];
-        ctx.fillStyle = "white";
-        ctx.globalAlpha = this.opacity;
-        ctx.lineWidth = this.properties['lineWidth'] * diagram.getZoomValue();
-
-        ctx.beginPath();
+    this.fillFreeDraw = function (){
+    	ctx.beginPath();
         ctx.moveTo(pixelsToCanvas(this.pointsArray[0].x).x, pixelsToCanvas(0, this.pointsArray[0].y).y);
         for (let i = 1; i < this.pointsArray.length; i++) {
             let segment = this.pointsArray[i];
@@ -2744,7 +2754,29 @@ function Polygon(type, kindOfSymbol) {
         ctx.lineTo(pixelsToCanvas(this.pointsArray[0].x).x, pixelsToCanvas(0, this.pointsArray[0].y).y);
 
         ctx.closePath();
-        ctx.fill();
+     	ctx.fill();
+    }
+
+    this.fillPolygon = function(){
+    	 ctx.strokeStyle = this.isSelected ? "#F82" : this.properties['strokeColor'];
+        ctx.fillStyle = "white";
+        ctx.globalAlpha = this.opacity;
+        ctx.lineWidth = this.properties['lineWidth'] * diagram.getZoomValue();
+
+    	switch(this.symbolkind){
+    		case "Line":
+    		break;
+
+    		case "FreeDraw": this.fillFreeDraw();
+    		break;
+
+    		case "Attribute": this.fillAttribute();
+    		break;
+    	}
+
+
+        
+       
     }
 
     this.drawOutlines = function() {
@@ -2787,7 +2819,7 @@ function Polygon(type, kindOfSymbol) {
         let selectedPoint = false;
         this.getUpdatedSize();
 
-        if(this.type == "Polygon")
+        if(this.type == "Polygon" && this.symbolkind != "Line")
         {
             let selected_points = [];
             for(let i = 0; i < this.pointsArray.length; i++){
@@ -2839,6 +2871,7 @@ function Polygon(type, kindOfSymbol) {
                 }
             }
         } 
+
         else if(this.type == "FreeDraw")
         {
             for(let i = 0; i < this.pointsArray.length; i++){
@@ -2996,6 +3029,12 @@ function Polygon(type, kindOfSymbol) {
     }
 
     this.drawPoints = function(){
+	 	if(this.type == "Polygon" && this.symbolkind == "Line"){
+	    	this.pointsArray[0].x = diagram.getObjectByID(this.startPolygonID).centerPoint.x;
+	    	this.pointsArray[0].y = diagram.getObjectByID(this.startPolygonID).centerPoint.y;
+	    	this.pointsArray[1].x = diagram.getObjectByID(this.endPolygonID).centerPoint.x;
+	    	this.pointsArray[1].y = diagram.getObjectByID(this.endPolygonID).centerPoint.y;
+        }
         for(let i = 0; i < this.pointsArray.length; i++){
             this.pointsArray[i].drawPoint();
         }
@@ -3006,7 +3045,124 @@ function Polygon(type, kindOfSymbol) {
     		this.pointsArray[i].setParentID(this.id);
     	}
     }
+
+    this.corners = function(){
+    	if(this.symbolkind == "Line"){
+    		return { tl: this.pointsArray[0], br: this.pointsArray[1] }
+    	} else {
+    		return { tl: this.pointsArray[0], br: this.pointsArray[2] }
+    	}
+    }
+
+    this.sortAllConnectors = function () {
+        var c = this.corners();
+        var x1 = c.tl.x;
+        var y1 = c.tl.y;
+        var x2 = c.br.x;
+        var y2 = c.br.y;
+        this.sortConnector(this.connectorRight, 1, y1, y2, x2);
+        this.sortConnector(this.connectorLeft, 1, y1, y2, x1);
+        this.sortConnector(this.connectorTop, 2, x1, x2, y1);
+        this.sortConnector(this.connectorBottom, 2, x1, x2, y2);
+    }
+
+    this.sortConnector = function (connector, direction, start, end, otherside) {
+        if(this.symbolkind != "Relation") {
+            var delta = (end - start) / (connector.length + 1);
+        } else {
+            var delta = (end - start) / 2;
+        }
+
+        if (direction == 1) {
+            // Vertical connector
+            connector.sort(function(a, b) {
+                var y1 = points[a.to].y;
+                var y2 = points[b.to].y;
+                return y1 - y2;
+            });
+            if(this.symbolkind != "Relation") {
+                var ycc = start;
+            } else {
+                var ycc = start + delta;
+            }
+
+            for (var i = 0; i < connector.length; i++) {
+                if(this.symbolkind != symbolKind.erRelation) {
+                    ycc += delta;
+                }
+                points[connector[i].from].y = ycc;
+                points[connector[i].from].x = otherside;
+            }
+        } else {
+            connector.sort(function(a, b) {
+                var x1 = points[a.to].x;
+                var x2 = points[b.to].x;
+                return x1 - x2;
+            });
+            if(this.symbolkind != "Relation") {
+                var ycc = start;
+            } else {
+                var ycc = start + delta;
+            }
+            for (var i = 0; i < connector.length; i++) {
+                if(this.symbolkind != "Relation") {
+                    ycc += delta;
+                }
+
+                points[connector[i].from].y = otherside ;
+                points[connector[i].from].x = ycc;
+            }
+        }
+    }
+
+    this.fillAttribute = function(x1, y1, x2, y2) {
+        // Drawing a multivalue attribute
+        if (this.properties['key_type'] == 'Multivalue') {
+            drawOval(x1 - 7 * diagram.getZoomValue(), y1 - 7 * diagram.getZoomValue(), x2 + 7 * diagram.getZoomValue(), y2 + 7 * diagram.getZoomValue());
+            ctx.stroke();
+            drawOval(x1, y1, x2, y2);
+        // Drawing a normal attribute
+        } else {
+            drawOval(x1, y1, x2, y2);
+            ctx.fill();
+        }
+        ctx.clip();
+
+        //drawing an derived attribute
+        if (this.properties['key_type'] == 'Drive') {
+            ctx.setLineDash([5, 4]);
+        }
+        else if (this.properties['key_type'] == 'Primary key' || this.properties['key_type'] == 'Partial key') {
+            ctx.stroke();
+            this.properties['key_type'] == 'Partial key' ? ctx.setLineDash([5, 4]) : ctx.setLineDash([]);
+            var linelength = ctx.measureText(this.name).width;
+            ctx.beginPath(1);
+            ctx.moveTo(x1 + ((x2 - x1) * 0.5) - (linelength * 0.5), (y1 + ((y2 - y1) * 0.5)) + 10);
+            ctx.lineTo(x1 + ((x2 - x1) * 0.5) + (linelength * 0.5), (y1 + ((y2 - y1) * 0.5)) + 10);
+
+        }
+        ctx.stroke();
+        ctx.setLineDash([]);
+        if(ctx.measureText(this.name).width > (x2-x1) - 4) {
+            ctx.textAlign = "start";
+            ctx.fillText(this.name, x1 + 4 , (y1 + ((y2 - y1) * 0.5)));
+        } else {
+            ctx.fillText(this.name, x1 + ((x2 - x1) * 0.5), (y1 + ((y2 - y1) * 0.5)));
+        }
+    }
 };
+
+function drawOval (x1, y1, x2, y2) {
+    var middleX = x1 + ((x2 - x1) * 0.5);
+    var middleY = y1 + ((y2 - y1) * 0.5);
+    ctx.beginPath();
+    ctx.moveTo(x1, middleY);
+    ctx.quadraticCurveTo(x1, y1, middleX, y1);
+    ctx.quadraticCurveTo(x2, y1, x2, middleY);
+    ctx.quadraticCurveTo(x2, y2, middleX, y2);
+    ctx.quadraticCurveTo(x1, y2, x1, middleY);
+}
+
 
 
 //------------------------------------
@@ -3029,7 +3185,7 @@ function createPolygon() {
 function polygonDraw(){
 	// Lines should always start and end on a polygon
 	hoveredObject = diagram.checkForHover();
-	if(submode == "Line" && !hoveredObject){
+	if(submode == "Line" && (!hoveredObject || hoveredObject.symbolkind == "Line")){
 		return false;
 	}
 
@@ -3134,7 +3290,28 @@ function endPolygonDraw() {
     currentlyDrawnObject = [];
     diagram.push(polygon);
 
+    if(submode == "Line"){
+    	moveObjectToBack(polygon);
+    }
+
     SaveState();
+}
+
+function moveObjectToBack(object){
+	let currentlySelected = [];
+	for(let i = 0; i < selected_objects.length; i++){
+		currentlySelected.push(selected_objects[i]);
+	}
+	deselectObjects();
+	object.select();
+	moveToBack();
+	deselectObjects();
+	for(let i = 0; i < currentlySelected.length; i++){
+		selected_objects.push(currentlySelected[i]);
+	}
+	for(let i = 0; i < selected_objects; i++){
+		selected_objects[i].select();
+	}
 }
 
 function assertMinSize(x1, y1, x2, y2){
@@ -3166,8 +3343,10 @@ function createInitialSquare(x1, y1, x2, y2){
 }
 
 function createLine(x1, y1, x2, y2, polygon){
-	polygon.startPolygon = startPolygon;
-	polygon.endPolygon = endPolygon;
+	polygon.startPolygonID = startPolygon.getID();
+	polygon.endPolygonID = endPolygon.getID();
+	startPolygon.lines.push(polygon);
+	endPolygon.lines.push(polygon);
 }
 
 function createAttribute(x1, y1, x2, y2){

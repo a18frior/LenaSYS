@@ -948,7 +948,7 @@ diagram.getEntityObjects = function() {
 diagram.getLineObjects = function() {
     var lines = [];
     for (var i = 0; i < this.length; i++) {
-        if (diagram[i].symbolkind == symbolKind.line) {
+        if (diagram[i].symbolkind == "Line") {
             lines.push(diagram[i]);
         }
     }
@@ -995,7 +995,7 @@ diagram.updateLineRelations = function() {
 
 diagram.sortConnectors = function() {
     for (var i = 0; i < diagram.length; i++) {
-        if (diagram[i].symbolkind == symbolKind.erEntity || diagram[i].symbolkind == symbolKind.erRelation || diagram[i].symbolkind == symbolKind.uml) {
+        if (diagram[i].type == "Polygon") {
             diagram[i].sortAllConnectors();
         }
     }
@@ -1259,7 +1259,7 @@ function updateGraphics() {
     if(developerModeActive) {
         drawOrigo();
     }
-   // diagram.sortConnectors();
+    diagram.sortConnectors();
     // diagram.updateQuadrants();
     diagram.draw();
     drawVirtualA4();
@@ -2696,17 +2696,13 @@ function mousedownevt(ev) {
         canvasLeftClick = true;
 
         if((uimode == "FreeDraw" || uimode == "Polygon") && (!diagram.checkForHover() || !isFirstPoint) && submode != "Line"){
-            console.log("not line")
             deselectObjects();
             createPolygon();
         } else {
             if(diagram.checkForHover()){
-                console.log("hover")
                 if((uimode == "FreeDraw" || uimode == "Polygon") && submode != "Line"){
-                    console.log("hover, not line")
                     unmarkAllToolboxOptions();
                 } else if(uimode == "Polygon" && submode == "Line"){
-                    console.log("hover, line")
                     deselectObjects();
                     createPolygon();
                 }                

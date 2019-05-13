@@ -65,12 +65,6 @@
                               <h4 class="label tlabel" id="labelTools">Tools</h4>
                               <div class="toolbar-drawer" id="drawerTools">
                                   <div class="tooltipdialog">
-                                      <button id='polygonbutton' onclick='setMode("Polygon", "None");' class='buttonsStyle unpressed' data="Create Polygon">
-                                          <img class="toolboxButtons" src="../Shared/icons/diagram_draw_square.svg">
-                                      </button>
-                                      <button id='freedrawbutton' onclick='setMode("FreeDraw", "None");' class='buttonsStyle unpressed' data="Create Free Draw">
-                                          <img class="toolboxButtons" src="../Shared/icons/diagram_draw_free.svg">
-                                      </button>
                                       <button id='linebutton' onclick='setMode("Polygon", "Line");' class='buttonsStyle unpressed' data="Create Line">
                                           <img class="toolboxButtons" src="../Shared/icons/diagram_create_line.svg">
                                       </button>
@@ -105,11 +99,8 @@
                           <div class="labelToolContainer">
                             <h4 class="label tlabel" id="labelDraw">Draw</h4>
                             <div class="toolbar-drawer" id="drawerDraw">
-                                <button id='squarebutton' onclick="setMode('Square');" style="display: inline; border-radius: 5px; cursor: pointer;" class='buttonsStyle unpressed' data="Draw Square">
-                                    <img class="toolboxButtons" src="../Shared/icons/diagram_draw_square.svg">
-                                </button>
-                                <button id='drawfreebutton' onclick="setMode('Free');" style="display: inline; border-radius: 5px; cursor: pointer;" class='buttonsStyle unpressed' data="Draw Free">
-                                    <img class="toolboxButtons" src="../Shared/icons/diagram_draw_free.svg">
+                                <button id='freedrawbutton' onclick='setMode("FreeDraw", "None");' class='buttonsStyle unpressed' data="Create Free Draw">
+                                          <img class="toolboxButtons" src="../Shared/icons/diagram_draw_free.svg">
                                 </button>
                             </div>
                           </div>
