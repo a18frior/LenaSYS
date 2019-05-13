@@ -2710,7 +2710,8 @@ function Polygon(type, kindOfSymbol) {
         'shadowBlur': '10',                             // Shadowblur for all objects.
         'shadowOffsetX': '3',                           // The horizontal distance of the shadow for the object.
         'shadowOffsetY': '6',                           // The vertical distance of the shadow for the object.
-        'key_type': 'normal'                            // Defult key type for a class.
+        'key_type': 'normal',							// Defult key type for a class.
+        'fillColor': 'white'                            // Defult key type for a class.
     };
 
 
@@ -2745,6 +2746,7 @@ function Polygon(type, kindOfSymbol) {
     }
 
     this.fillFreeDraw = function (){
+    	
     	ctx.beginPath();
         ctx.moveTo(pixelsToCanvas(this.pointsArray[0].x).x, pixelsToCanvas(0, this.pointsArray[0].y).y);
         for (let i = 1; i < this.pointsArray.length; i++) {
@@ -2758,16 +2760,17 @@ function Polygon(type, kindOfSymbol) {
     }
 
     this.fillPolygon = function(){
-    	 ctx.strokeStyle = this.isSelected ? "#F82" : this.properties['strokeColor'];
-        ctx.fillStyle = "white";
+	 	ctx.strokeStyle = this.isSelected ? "#F82" : this.properties['strokeColor'];
+        ctx.fillStyle = this.properties['fillColor'];
         ctx.globalAlpha = this.opacity;
         ctx.lineWidth = this.properties['lineWidth'] * diagram.getZoomValue();
 
+
+        if(this.type == "FreeDraw") {
+        	this.fillFreeDraw();
+        }
     	switch(this.symbolkind){
     		case "Line":
-    		break;
-
-    		case "FreeDraw": this.fillFreeDraw();
     		break;
 
     		case "Attribute": this.fillAttribute();
@@ -3115,17 +3118,21 @@ function Polygon(type, kindOfSymbol) {
         }
     }
 
-    this.fillAttribute = function(x1, y1, x2, y2) {
+    this.fillAttribute = function() {
+    	let x1 = this.topleft.x;
+    	let y1 = this.topleft.y;
+    	let x2 = this.bottomright.x;
+    	let y2 = this.bottomright.y;
+
         // Drawing a multivalue attribute
         if (this.properties['key_type'] == 'Multivalue') {
-            drawOval(x1 - 7 * diagram.getZoomValue(), y1 - 7 * diagram.getZoomValue(), x2 + 7 * diagram.getZoomValue(), y2 + 7 * diagram.getZoomValue());
-            ctx.stroke();
-            drawOval(x1, y1, x2, y2);
+            drawOval(pixelsToCanvas(x1).x - 7 * diagram.getZoomValue(), pixelsToCanvas(0, y1).y - 7 * diagram.getZoomValue(), 
+            		 pixelsToCanvas(x2).x + 7 * diagram.getZoomValue(), pixelsToCanvas(0, y2).y + 7 * diagram.getZoomValue());
         // Drawing a normal attribute
         } else {
-            drawOval(x1, y1, x2, y2);
-            ctx.fill();
+            drawOval(pixelsToCanvas(x1).x, pixelsToCanvas(0, y1).y, pixelsToCanvas(x2).x, pixelsToCanvas(0, y2).y);
         }
+        /*
         ctx.clip();
 
         //drawing an derived attribute
@@ -3149,18 +3156,22 @@ function Polygon(type, kindOfSymbol) {
         } else {
             ctx.fillText(this.name, x1 + ((x2 - x1) * 0.5), (y1 + ((y2 - y1) * 0.5)));
         }
+        */
     }
 };
 
 function drawOval (x1, y1, x2, y2) {
-    var middleX = x1 + ((x2 - x1) * 0.5);
-    var middleY = y1 + ((y2 - y1) * 0.5);
+    let middleX = x1 + ((x2 - x1) * 0.5);
+    let middleY = y1 + ((y2 - y1) * 0.5);
     ctx.beginPath();
     ctx.moveTo(x1, middleY);
     ctx.quadraticCurveTo(x1, y1, middleX, y1);
     ctx.quadraticCurveTo(x2, y1, x2, middleY);
     ctx.quadraticCurveTo(x2, y2, middleX, y2);
     ctx.quadraticCurveTo(x1, y2, x1, middleY);
+    ctx.closePath();
+    ctx.stroke();
+    ctx.fill();
 }
 
 
