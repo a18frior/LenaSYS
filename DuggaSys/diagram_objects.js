@@ -2967,7 +2967,7 @@ function Polygon(type, kindOfSymbol) {
         let tempArray = [];
         for(let i = 0; i < this.pointsArray.length; i++){
             point = Object.assign(new Point, this.pointsArray[i]);
-            point.setParent(this.id);
+            point.setParentID(this.id);
             points.addPoint(point);
             tempArray.push(point);
         }
@@ -3081,6 +3081,22 @@ function endPolygonDraw() {
     let y1 = currentlyDrawnObject[0].y;
     let y2 = currentlyDrawnObject[1].y;
 
+    if(Math.abs(x1-x2) < 50) {
+    	if(x1 > x2){
+    		x2 = x1 - 50;
+    	} else {
+    		x2 = x1 + 50;
+    	}
+    }
+
+ 	if(Math.abs(y1-y2) < 50) {
+    	if(y1 > y2){
+    		y2 = y1 - 50;
+    	} else {
+    		y2 = y1 + 50;
+    	}
+    }
+
     // Make sure that points are in the correct order
     currentlyDrawnObject.pop();                     
     currentlyDrawnObject.push(new Point(x2, y1));
@@ -3139,6 +3155,10 @@ function drawLine(p1, p2, strokeColor) {
 
 
 
+//---------------------------------------------
+// Class for points attached to a polygon
+//---------------------------------------------
+
 function Point(x, y){
     this.x = x;
     this.y = y;
@@ -3181,7 +3201,7 @@ function Point(x, y){
         this.isSelected = false;
     }
 
-    this.setParentID = function (id) {
+    this.setParentID = function(id) {
         this.parentID = id;
     }
 
