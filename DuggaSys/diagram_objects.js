@@ -2711,7 +2711,8 @@ function Polygon(type, kindOfSymbol) {
 
 
     this.setID = function(id){
-        this.id = id;
+    	polygonID ++;
+        this.id = polygonID;
     }
 
     this.getID = function(){
@@ -2987,6 +2988,12 @@ function Polygon(type, kindOfSymbol) {
             this.pointsArray[i].drawPoint();
         }
     }
+
+    this.setAsParent = function(){
+    	for(let i = 0; i < this.pointsArray.length; i++){
+    		this.pointsArray[i].setParentID(this.id);
+    	}
+    }
 };
 
 
@@ -3057,6 +3064,8 @@ function freeDraw(){
 function endFreeDraw(){
     let polygon = new Polygon("FreeDraw", "FreeDraw");
     polygon.addPoints(currentlyDrawnObject);
+    polygon.setID();
+    polygon.setAsParent();
 
     isFirstPoint = true;
     currentlyDrawnObject = [];
@@ -3079,6 +3088,8 @@ function endPolygonDraw() {
     currentlyDrawnObject.push(new Point(x1, y2));
 
     polygon.addPoints(currentlyDrawnObject);
+    polygon.setID();
+    polygon.setAsParent();
 
     isFirstPoint = true;
     currentlyDrawnObject = [];
@@ -3170,7 +3181,7 @@ function Point(x, y){
         this.isSelected = false;
     }
 
-    this.setParent = function (id) {
+    this.setParentID = function (id) {
         this.parentID = id;
     }
 

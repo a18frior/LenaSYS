@@ -57,6 +57,7 @@ const mouseState = {
     boxSelectOrCreateMode: 4        // Box select or Create mode
 };
 
+var polygonID = -1;
 var gridSize = 16;                  // Distance between lines in grid
 var crossSize = 4.0;                // Size of point cross
 var tolerance = 8;                  // Size of tolerance area around the point
@@ -1227,7 +1228,6 @@ function importFile() {
 // canvasSize: Function that is used for the resize
 //             Making the page more responsive
 //---------------------------------------------------
-
 function canvasSize() {
     boundingRect = myCanvas.getBoundingClientRect();
     widthWindow = (window.innerWidth - 100);
@@ -1243,13 +1243,12 @@ function canvasSize() {
 window.addEventListener('resize', canvasSize);
 
 function mod(n, m) {
-  return  Math.round(Math.round(Math.round(n % m) + m) % m);
+    return  Math.round(Math.round(Math.round(n % m) + m) % m);
 }
 
 //----------------------------------------------------------
 // updateGraphics: used to redraw each object on the screen
 //----------------------------------------------------------
-
 function updateGraphics() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     drawGrid();
@@ -2696,6 +2695,10 @@ function mousedownevt(ev) {
             deselectObjects();
             createPolygon();
         } else {
+            if((uimode == "FreeDraw" || uimode == "CreatePolygon") && diagram.checkForHover()){
+                unmarkAllToolboxOptions();
+            }
+
             let last = diagram.checkForClick();
             if(!ctrlIsClicked && selected_objects.indexOf(last) == -1){
                 deselectObjects();
@@ -3541,6 +3544,27 @@ function changeObjectAppearance(object_type) {
         diagram[lastSelectedObject].properties['strokeColor'] = document.getElementById('LineColor').value;
     }
     updateGraphics();
+}
+
+function unmarkToolboxOption(option){
+    if ($("#" + option).hasClass("pressed")){
+        $("#" + option + ".buttonsStyle").removeClass("pressed").addClass("unpressed");
+    }
+    uimode = "Normal";
+}
+
+function unmarkAllToolboxOptions(){
+    unmarkToolboxOption("polygonbutton");
+    unmarkToolboxOption("freedrawbutton");
+    unmarkToolboxOption("linebutton");
+    unmarkToolboxOption("attributebutton");
+    unmarkToolboxOption("entitybutton");
+    unmarkToolboxOption("relationbutton");
+    unmarkToolboxOption("squarebutton");
+    unmarkToolboxOption("drawfreebutton");
+    unmarkToolboxOption("classbutton");
+    unmarkToolboxOption("drawtextbutton");
+    unmarkToolboxOption("umllinebutton");
 }
 
 function createCardinality() {
