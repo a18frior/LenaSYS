@@ -84,7 +84,7 @@ var selected_objects = [];          // Is used to store multiple selected object
 var lineStartObj = -1;
 var movobj = -1;                    // Moving object ID
 var uimode = "Normal";              // User interface mode e.g. normal or create class currently
-var submode = "Line";               // Line, Attribute, Entity, Relation, Class or Text
+var submode = "None";               // Line, Attribute, Entity, Relation, Class or Text
 var figureType = null;              // Specification of uimode, when Create Figure is set to the active mode this is set to one of the forms a figure can be drawn in.
 var widthWindow;                    // The width on the users screen is saved is in this var.
 var heightWindow;                   // The height on the users screen is saved is in this var.
@@ -137,6 +137,8 @@ var diagramCode = "";                   // Is used to stringfy the diagram-array
 var appearanceMenuOpen = false;         // True if appearance menu is open
 var classAppearanceOpen = false;
 
+var startPolygon;
+var endPolygon;
 var symbolStartKind;                    // Is used to store which kind of object you start on
 var symbolEndKind;                      // Is used to store which kind of object you end on
 
@@ -1380,11 +1382,10 @@ function eraseSelectedObject() {
     updateGraphics();
 }
 
-function setMode(mode, submode = "none") { //"CreateClass" yet to be implemented in .php
+function setMode(mode, sub = "None") { //"CreateClass" yet to be implemented in .php
     canvas.style.cursor = "default";
     uimode = mode;
-    submode = submode;
-    console.log(uimode, submode)
+    submode = sub;
 }
 
 $(document).ready(function() {
@@ -2694,12 +2695,21 @@ function mousedownevt(ev) {
     if (ev.button == leftMouseClick) {
         canvasLeftClick = true;
 
-        if((uimode == "FreeDraw" || uimode == "Polygon") && (!diagram.checkForHover() || !isFirstPoint)){
+        if((uimode == "FreeDraw" || uimode == "Polygon") && (!diagram.checkForHover() || !isFirstPoint) && submode != "Line"){
+            console.log("not line")
             deselectObjects();
             createPolygon();
         } else {
-            if((uimode == "FreeDraw" || uimode == "Polygon") && diagram.checkForHover()){
-                unmarkAllToolboxOptions();
+            if(diagram.checkForHover()){
+                console.log("hover")
+                if((uimode == "FreeDraw" || uimode == "Polygon") && submode != "Line"){
+                    console.log("hover, not line")
+                    unmarkAllToolboxOptions();
+                } else if(uimode == "Polygon" && submode == "Line"){
+                    console.log("hover, line")
+                    deselectObjects();
+                    createPolygon();
+                }                
             }
 
             let last = diagram.checkForClick();
@@ -2709,7 +2719,7 @@ function mousedownevt(ev) {
             if(last != false){
                 last.select();
             } else {
-                uimode = "Normal";
+                unmarkAllToolboxOptions();
             }
 
         }
@@ -2791,7 +2801,8 @@ function mousedownevt(ev) {
 function mouseupevt(ev) {
     // Left mouse click logic
     if(ev.button == leftMouseClick){
-        if((uimode == "Polygon" || uimode == "FreeDraw") && !diagram.checkForHover()){
+        hoveredObject = diagram.checkForHover();
+        if((uimode == "Polygon" || uimode == "FreeDraw") && (!hoveredObject || submode == "Line")){
             if(dragDistanceReached && !isFirstPoint){
                 createPolygon();
             }

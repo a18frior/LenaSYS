@@ -3027,6 +3027,12 @@ function createPolygon() {
 //-------------------------------------
 
 function polygonDraw(){
+	// Lines should always start and end on a polygon
+	hoveredObject = diagram.checkForHover();
+	if(submode == "Line" && !hoveredObject){
+		return false;
+	}
+
     p1 = null;
     if (isFirstPoint) {
         //pointsAtSamePosition = false;
@@ -3034,6 +3040,10 @@ function polygonDraw(){
         currentlyDrawnObject.push(p2);
         startPosition = p2;
         isFirstPoint = false;
+
+        if(submode == "Line"){
+        	startPolygon = hoveredObject;
+        }
     } else {
         // Read and set the values for p1 and p2
         p1 = p2;
@@ -3042,6 +3052,10 @@ function polygonDraw(){
         } else {
             p2 = points.addPoint(new Point(currentMouseCoordinateX, currentMouseCoordinateY));
             currentlyDrawnObject.push(p2);
+        }
+
+        if(submode == "Line"){
+        	endPolygon = hoveredObject;
         }
         endPolygonDraw();
     }
@@ -3094,7 +3108,10 @@ function endPolygonDraw() {
     let y2 = currentlyDrawnObject[1].y;
 
     if(submode == "Line"){
-    	createLine(x1, y1, x2, y2);
+    	if(!hoveredObject){
+    		return false;
+    	}
+    	createLine(x1, y1, x2, y2, polygon);
     } else if(submode == "Attribute"){
     	createAttribute(x1, y1, x2, y2);
     } else if(submode == "Entity"){
@@ -3148,8 +3165,9 @@ function createInitialSquare(x1, y1, x2, y2){
     currentlyDrawnObject.push(new Point(x1, y2));	
 }
 
-function createLine(x1, y1, x2, y2){
-
+function createLine(x1, y1, x2, y2, polygon){
+	polygon.startPolygon = startPolygon;
+	polygon.endPolygon = endPolygon;
 }
 
 function createAttribute(x1, y1, x2, y2){

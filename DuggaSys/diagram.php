@@ -65,10 +65,10 @@
                               <h4 class="label tlabel" id="labelTools">Tools</h4>
                               <div class="toolbar-drawer" id="drawerTools">
                                   <div class="tooltipdialog">
-                                      <button id='polygonbutton' onclick='setMode("Polygon");' class='buttonsStyle unpressed' data="Create Polygon">
+                                      <button id='polygonbutton' onclick='setMode("Polygon", "None");' class='buttonsStyle unpressed' data="Create Polygon">
                                           <img class="toolboxButtons" src="../Shared/icons/diagram_draw_square.svg">
                                       </button>
-                                      <button id='freedrawbutton' onclick='setMode("FreeDraw");' class='buttonsStyle unpressed' data="Create Free Draw">
+                                      <button id='freedrawbutton' onclick='setMode("FreeDraw", "None");' class='buttonsStyle unpressed' data="Create Free Draw">
                                           <img class="toolboxButtons" src="../Shared/icons/diagram_draw_free.svg">
                                       </button>
                                       <button id='linebutton' onclick='setMode("Polygon", "Line");' class='buttonsStyle unpressed' data="Create Line">
