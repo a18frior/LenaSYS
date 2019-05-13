@@ -2674,8 +2674,10 @@ function Polygon(type, kindOfSymbol) {
     this.bottomRight;               // Bottom Right Point
     this.middleDivider;             // Middle divider Point
     this.centerPoint;               // centerPoint
-    this.minWidth = 0;
-    this.minHeight = 0;
+    this.width = 0;
+    this.height = 0;
+    this.minWidth = 50;
+    this.minHeight = 50;
     this.locked = false;
     this.isHovered = false;
     this.isSelected = false;
@@ -2782,6 +2784,7 @@ function Polygon(type, kindOfSymbol) {
 
     this.move = function(x, y){
         let selectedPoint = false;
+        this.getUpdatedSize();
 
         if(this.type == "Polygon")
         {
@@ -2811,6 +2814,14 @@ function Polygon(type, kindOfSymbol) {
                     }
                 }
 
+                // Check minimum size
+                if(this.width + x < this.minWidth) {
+                    x = (this.width - this.minWidth) * -1;
+                } 
+                if(this.height + y < this.minHeight){
+                    y = (this.height - this.minHeight) * -1;
+                }
+
                 // Move unselected points' x
                 for(let i = 0; i < sameX.length; i++){
                     sameX[i].move(x, 0);
@@ -2818,8 +2829,7 @@ function Polygon(type, kindOfSymbol) {
 
                 // Move unselected points' y
                 for(let i = 0; i < sameY.length; i++){
-                    let index = this.pointsArray.indexOf(sameY[i]);
-                    this.pointsArray[index].move(0, y);
+                    sameY[i].move(0, y);
                 }
 
                 // Move selected points
@@ -2844,6 +2854,14 @@ function Polygon(type, kindOfSymbol) {
                 this.pointsArray[i].move(x, y);   
             }
         }
+
+        this.getUpdatedSize();
+    }
+
+    this.getUpdatedSize = function(){
+        this.width = Math.abs(this.pointsArray[0].x - this.pointsArray[2].x);
+        this.height = Math.abs(this.pointsArray[0].y - this.pointsArray[2].y);
+        return { width: this.width, height: this.height };
     }
 
     this.adjust = function() {
@@ -2910,7 +2928,7 @@ function Polygon(type, kindOfSymbol) {
 
     this.checkForClick = function(){
         let clickedPoint = false;
-        
+
         // Returns true if one of the points is hovered
         for(let i = 0; i < this.pointsArray.length; i++) {
             let p = this.pointsArray[i];  
@@ -2969,243 +2987,8 @@ function Polygon(type, kindOfSymbol) {
             this.pointsArray[i].drawPoint();
         }
     }
+};
 
-    //--------------------------------------------------------------------
-    // getquadrant: Returns the quadrant for a x,y coordinate in relation to bounding box and box center
-    //              Quadrant Layout:
-    //                    0|1     Top = 0     Right = 1
-    //                   -----    Bottom = 2  Left = 3
-    //                    3|2
-    //--------------------------------------------------------------------
-    this.getquadrant = function (xk, yk) {
-        // Read cardinal points
-        var c = this.corners();
-        var x1 = c.tl.x;
-        var y1 = c.tl.y;
-        var x2 = c.br.x;
-        var y2 = c.br.y;
-        var vx = points[this.centerPoint].x;
-        var vy = points[this.centerPoint].y;
-        // Compute deltas and k
-        var dx = x1 - vx;
-        var dy = y1 - vy;
-        var k = dy / dx;
-        if (xk > vx) {
-            if (yk > vy) {
-                // Bottom right quadrant
-                var byk = vy + (k * (xk - vx));
-                if (yk > byk) {
-                    return 2;
-                }
-                return 1;
-            } else {
-                // Top right quadrant
-                var byk = vy - (k * (xk - vx));
-                if (yk > byk) {
-                    return 1;
-                }
-                return 0;
-            }
-        } else {
-            if (yk > vy) {
-                // Bottom left quadrant
-                var byk = vy - (k * (xk - vx));
-                if (yk > byk) {
-                    return 2;
-                }
-                return 3;
-            } else {
-                // Top left quadrant
-                var byk = (k * (xk - vx)) + vy;
-                if (yk > byk) {
-                    return 3;
-                }
-                return 0;
-            }
-        }
-        return -1;
-    }
-
-    //--------------------------------------------------------------------
-    // quadrants: Iterates over all relation ends and checks if any need to change quadrants
-    //--------------------------------------------------------------------
-    this.quadrants = function () {
-        // Fix right connector box (1)
-        var changed = false;
-        var i = 0;
-        while (i < this.connectorRight.length) {
-            var xk = points[this.connectorRight[i].to].x;
-            var yk = points[this.connectorRight[i].to].y;
-            var bb = this.getquadrant(xk, yk);
-            if (bb == 3) {
-                changed = true;
-                conn = this.connectorRight.splice(i, 1);
-                this.connectorLeft.push(conn[0]);
-            } else if (bb == 0) {
-                changed = true;
-                conn = this.connectorRight.splice(i, 1);
-                this.connectorTop.push(conn[0]);
-            } else if (bb == 2) {
-                changed = true;
-                conn = this.connectorRight.splice(i, 1);
-                this.connectorBottom.push(conn[0]);
-            } else {
-                i++;
-            }
-        }
-        // Fix left connector box (3)
-        var i = 0;
-        while (i < this.connectorLeft.length) {
-            var xk = points[this.connectorLeft[i].to].x;
-            var yk = points[this.connectorLeft[i].to].y;
-            var bb = this.getquadrant(xk, yk);
-            if (bb == 1) {
-                changed = true;
-                conn = this.connectorLeft.splice(i, 1);
-                this.connectorRight.push(conn[0]);
-            } else if (bb == 0) {
-                changed = true;
-                conn = this.connectorLeft.splice(i, 1);
-                this.connectorTop.push(conn[0]);
-            } else if (bb == 2) {
-                changed = true;
-                conn = this.connectorLeft.splice(i, 1);
-                this.connectorBottom.push(conn[0]);
-            } else {
-                i++;
-            }
-        }
-        // Fix top connector box (0)
-        var i = 0;
-        while (i < this.connectorTop.length) {
-            var xk = points[this.connectorTop[i].to].x;
-            var yk = points[this.connectorTop[i].to].y;
-            var bb = this.getquadrant(xk, yk);
-            if (bb == 1) {
-                changed = true;
-                conn = this.connectorTop.splice(i, 1);
-                this.connectorRight.push(conn[0]);
-            } else if (bb == 3) {
-                changed = true;
-                conn = this.connectorTop.splice(i, 1);
-                this.connectorLeft.push(conn[0]);
-            } else if (bb == 2) {
-                changed = true;
-                conn = this.connectorTop.splice(i, 1);
-                this.connectorBottom.push(conn[0]);
-            } else {
-                i++;
-            }
-        }
-        // Fix bottom connector box (2)
-        var i = 0;
-        while (i < this.connectorBottom.length) {
-            var xk = points[this.connectorBottom[i].to].x;
-            var yk = points[this.connectorBottom[i].to].y;
-            var bb = this.getquadrant(xk, yk);
-            if (bb == 1) {
-                changed = true;
-                conn = this.connectorBottom.splice(i, 1);
-                this.connectorRight.push(conn[0]);
-            } else if (bb == 3) {
-                changed = true;
-                conn = this.connectorBottom.splice(i, 1);
-                this.connectorLeft.push(conn[0]);
-            } else if (bb == 0) {
-                changed = true;
-                conn = this.connectorBottom.splice(i, 1);
-                this.connectorTop.push(conn[0]);
-            } else {
-                i++;
-            }
-        }
-        return changed;
-    }
-
-    //-------------------------------------------------------------------------------
-    // corners: init four points, the four corners based on the two cornerpoints in the symbol.
-    //-------------------------------------------------------------------------------
-    this.corners = function() {
-        var p1 = points[this.topLeft];
-        var p2 = points[this.bottomRight];
-        if(p1.x < p2.x) {
-            if(p1.y < p2.y) {
-                // We are in the topleft
-                tl = {x:p1.x, y:p1.y};
-                br = {x:p2.x, y:p2.y};
-                tr = {x:br.x, y:tl.y};
-                bl = {x:tl.x, y:br.y};
-            }else {
-                // We are in the bottomleft
-                tr = {x:p2.x, y:p2.y};
-                bl = {x:p1.x, y:p1.y};
-                tl = {x:bl.x, y:tr.y};
-                br = {x:tr.x, y:bl.y};
-            }
-        } else {
-            if(p1.y < p2.y) {
-                // We are in the topright
-                tr = {x:p1.x, y:p1.y};
-                bl = {x:p2.x, y:p2.y};
-                tl = {x:bl.x, y:tr.y};
-                br = {x:tr.x, y:bl.y};
-            }else {
-                // We are in the bottomright
-                br = {x:p1.x, y:p1.y};
-                tl = {x:p2.x, y:p2.y};
-                bl = {x:tl.x, y:br.y};
-                tr = {x:br.x, y:tl.y};
-            }
-        }
-        return {
-            tl: tl,
-            tr: tr,
-            br: br,
-            bl: bl
-        };
-    }
-
-    //-------------------------------------------------------------------------------
-    // getCorners: init four points, the four corners based on the two cornerpoints in the symbol.
-    //-------------------------------------------------------------------------------
-    function getCorners(p1, p2) {
-     if(p1.x < p2.x) {
-            if(p1.y < p2.y) {
-                //we are in the topleft
-                tl = {x:p1.x, y:p1.y};
-                br = {x:p2.x, y:p2.y};
-                tr = {x:br.x, y:tl.y};
-                bl = {x:tl.x, y:br.y};
-            }else {
-                //we are in the bottomleft
-                tr = {x:p2.x, y:p2.y};
-                bl = {x:p1.x, y:p1.y};
-                tl = {x:bl.x, y:tr.y};
-                br = {x:tr.x, y:bl.y};
-            }
-        }else {
-            if(p1.y < p2.y) {
-                //we are in the topright
-                tr = {x:p1.x, y:p1.y};
-                bl = {x:p2.x, y:p2.y};
-                tl = {x:bl.x, y:tr.y};
-                br = {x:tr.x, y:bl.y};
-            }else {
-                //we are in the bottomright
-                br = {x:p1.x, y:p1.y};
-                tl = {x:p2.x, y:p2.y};
-                bl = {x:tl.x, y:br.y};
-                tr = {x:br.x, y:tl.y};
-            }
-        }
-        return {
-            tl: tl,
-            tr: tr,
-            br: br,
-            bl: bl
-        };
-    }
-}
 
 //------------------------------------
 // Called onmousedown and onmouseup
