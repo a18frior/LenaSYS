@@ -1384,8 +1384,11 @@ function updateGraphics() {
     diagram.updateQuadrants();
     drawGrid();
     drawOrigoLine();
+    //TODO delete drawCenterOfScreen() only on the next row
+    drawCenterOfScreen();
     if(developerModeActive) {
         drawOrigo();
+        drawCenterOfScreen();
     }
     diagram.sortConnectors();
     diagram.updateQuadrants();
@@ -1632,6 +1635,23 @@ function drawOrigo() {
     ctx.restore();
 }
 
+function drawCenterOfScreen() {
+    const crosshairLength = 20;
+    let centerX = canvasToPixels(origoOffsetX + (canvas.width * zoomValue) / 2).x;
+    let centerY = canvasToPixels(0, origoOffsetY + (canvas.height * zoomValue) / 2).y;
+
+    ctx.lineWidth = 2;
+    ctx.strokeStyle = "#ff1cf9";
+
+    ctx.beginPath();
+    ctx.moveTo(centerX - crosshairLength, centerY);
+    ctx.lineTo(centerX + crosshairLength, centerY);
+    ctx.moveTo(centerX, centerY - crosshairLength);
+    ctx.lineTo(centerX, centerY + crosshairLength);
+    ctx.closePath();
+    ctx.stroke();
+}
+
 function drawOrigoLine() {
     ctx.lineWidth = 1 * zoomValue;
     ctx.strokeStyle = "#0fbcf9";
@@ -1705,6 +1725,7 @@ function developerMode(event) {
         crossFillStyle = "#d51";
         crossStrokeStyle2 = "#d51";
         drawOrigo();
+        drawCenterOfScreen();
         toolbarState = 3;                                                               // Change the toolbar to DEV.
         switchToolbarDev();                                                             // ---||---
         document.getElementById('toolbarTypeText').innerHTML = 'Mode: DEV';             // Change the text to DEV.
@@ -2547,11 +2568,23 @@ function zoomInMode() {
     updateGraphics();
 }
 
-function changeZoom(zoomValue){
-  var value = parseFloat(document.getElementById("ZoomSelect").value);
-  value = value + parseFloat(zoomValue);
-  document.getElementById("ZoomSelect").value = value;
-  zoomInMode();
+function changeZoom(zoomValue, requestFrom){
+    // Variables for focus on mouse pointer
+    let currentMouseX = pixelsToCanvas(currentMouseCoordinateX).x;
+    let currentMouseY = pixelsToCanvas(0, currentMouseCoordinateY).y;
+    var value = parseFloat(document.getElementById("ZoomSelect").value);
+    // Variables for focus on center of screen
+    value = value + parseFloat(zoomValue);
+    document.getElementById("ZoomSelect").value = value;
+    zoomInMode();
+    if(requestFrom == "scroll") {
+      origoOffsetX += currentMouseX - pixelsToCanvas(currentMouseCoordinateX).x;
+      origoOffsetY += currentMouseY - pixelsToCanvas(0, currentMouseCoordinateY).y;
+    }
+    else {
+
+    }
+    updateGraphics();
 }
 
 //-----------------------
@@ -2559,20 +2592,15 @@ function changeZoom(zoomValue){
 //-----------------------
 
 function scrollZoom(event) {
-  let currentMouseX = pixelsToCanvas(currentMouseCoordinateX).x;
-  let currentMouseY = pixelsToCanvas(0, currentMouseCoordinateY).y;
-    if(event.deltaY > 124){
-        changeZoom(-0.1);
+    if(event.deltaY > 124) {
+        changeZoom(-0.1, "scroll");
     } else if (event.deltaY < -124) {
-        changeZoom(0.1);
-    } else if(event.deltaY > 5){
-        changeZoom(-0.01);
+        changeZoom(0.1, "scroll");
+    } else if(event.deltaY > 5) {
+        changeZoom(-0.01, "scroll");
     } else if (event.deltaY < -5) {
-        changeZoom(0.01);
+        changeZoom(0.01, "scroll");
     }
-    origoOffsetX += currentMouseX - pixelsToCanvas(currentMouseCoordinateX).x;
-    origoOffsetY += currentMouseY - pixelsToCanvas(0, currentMouseCoordinateY).y;
-    updateGraphics();
 }
 
 //----------------------------------------------------------------------
@@ -2669,7 +2697,7 @@ function mousemoveevt(ev, t) {
                     if(sel.attachedSymbol.symbolkind == symbolKind.line || sel.attachedSymbol.symbolkind == symbolKind.umlLine) {
                         //The point belongs to a umlLine or Line
                         canvas.style.cursor = "pointer";
-                    } else {                    
+                    } else {
                         canvas.style.cursor = "url('../Shared/icons/hand_move.cur'), auto";
                     }
                 }
