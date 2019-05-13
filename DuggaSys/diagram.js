@@ -1384,11 +1384,11 @@ function updateGraphics() {
     diagram.updateQuadrants();
     drawGrid();
     drawOrigoLine();
-    //TODO delete drawCenterOfScreen() only on the next row
-    drawCenterOfScreen();
+    //TODO delete drawCenterOfCanvas() only on the next row
+    drawCenterOfCanvas();
     if(developerModeActive) {
         drawOrigo();
-        drawCenterOfScreen();
+        drawCenterOfCanvas();
     }
     diagram.sortConnectors();
     diagram.updateQuadrants();
@@ -1635,7 +1635,7 @@ function drawOrigo() {
     ctx.restore();
 }
 
-function drawCenterOfScreen() {
+function drawCenterOfCanvas() {
     const crosshairLength = 20;
     let centerX = canvasToPixels(origoOffsetX + (canvas.width * zoomValue) / 2).x;
     let centerY = canvasToPixels(0, origoOffsetY + (canvas.height * zoomValue) / 2).y;
@@ -1725,7 +1725,7 @@ function developerMode(event) {
         crossFillStyle = "#d51";
         crossStrokeStyle2 = "#d51";
         drawOrigo();
-        drawCenterOfScreen();
+        drawCenterOfCanvas();
         toolbarState = 3;                                                               // Change the toolbar to DEV.
         switchToolbarDev();                                                             // ---||---
         document.getElementById('toolbarTypeText').innerHTML = 'Mode: DEV';             // Change the text to DEV.
@@ -2568,13 +2568,12 @@ function zoomInMode() {
     updateGraphics();
 }
 
-function changeZoom(zoomValue, requestFrom){
+function changeZoom(zoomValueDelta, requestFrom){
     // Variables for focus on mouse pointer
     let currentMouseX = pixelsToCanvas(currentMouseCoordinateX).x;
     let currentMouseY = pixelsToCanvas(0, currentMouseCoordinateY).y;
     var value = parseFloat(document.getElementById("ZoomSelect").value);
-    // Variables for focus on center of screen
-    value = value + parseFloat(zoomValue);
+    value = value + parseFloat(zoomValueDelta);
     document.getElementById("ZoomSelect").value = value;
     zoomInMode();
     if(requestFrom == "scroll") {
