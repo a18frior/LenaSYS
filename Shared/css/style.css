@@ -2351,7 +2351,7 @@ span.arrow {
 }
 
 .tableCellHighlightning {
-	box-shadow: inset 0px 0px 0px 3px rgba(97,72,117,1) !important;
+	box-shadow: inset 0px 0px 0px 3px rgb(219, 31, 18) !important;
 }
 
 .tableRowHighlightning {
