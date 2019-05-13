@@ -84,6 +84,7 @@ var selected_objects = [];          // Is used to store multiple selected object
 var lineStartObj = -1;
 var movobj = -1;                    // Moving object ID
 var uimode = "Normal";              // User interface mode e.g. normal or create class currently
+var submode = "Line";               // Line, Attribute, Entity, Relation, Class or Text
 var figureType = null;              // Specification of uimode, when Create Figure is set to the active mode this is set to one of the forms a figure can be drawn in.
 var widthWindow;                    // The width on the users screen is saved is in this var.
 var heightWindow;                   // The height on the users screen is saved is in this var.
@@ -1379,9 +1380,11 @@ function eraseSelectedObject() {
     updateGraphics();
 }
 
-function setMode(mode) { //"CreateClass" yet to be implemented in .php
+function setMode(mode, submode = "none") { //"CreateClass" yet to be implemented in .php
     canvas.style.cursor = "default";
     uimode = mode;
+    submode = submode;
+    console.log(uimode, submode)
 }
 
 $(document).ready(function() {
@@ -2416,7 +2419,7 @@ function mousemoveevt(ev, t) {
     hoveredObject = diagram.checkForHover();
 
     if (uimode == "createPolygon") {
-        if (uimode == "CreatePolygon") {
+        if (uimode == "Polygon") {
             if(!(isFirstPoint)) {
                 
             }
@@ -2691,11 +2694,11 @@ function mousedownevt(ev) {
     if (ev.button == leftMouseClick) {
         canvasLeftClick = true;
 
-        if((uimode == "FreeDraw" || uimode == "CreatePolygon") && (!diagram.checkForHover() || !isFirstPoint)){
+        if((uimode == "FreeDraw" || uimode == "Polygon") && (!diagram.checkForHover() || !isFirstPoint)){
             deselectObjects();
             createPolygon();
         } else {
-            if((uimode == "FreeDraw" || uimode == "CreatePolygon") && diagram.checkForHover()){
+            if((uimode == "FreeDraw" || uimode == "Polygon") && diagram.checkForHover()){
                 unmarkAllToolboxOptions();
             }
 
@@ -2788,7 +2791,7 @@ function mousedownevt(ev) {
 function mouseupevt(ev) {
     // Left mouse click logic
     if(ev.button == leftMouseClick){
-        if((uimode == "CreatePolygon" || uimode == "FreeDraw") && !diagram.checkForHover()){
+        if((uimode == "Polygon" || uimode == "FreeDraw") && !diagram.checkForHover()){
             if(dragDistanceReached && !isFirstPoint){
                 createPolygon();
             }

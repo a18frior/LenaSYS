@@ -65,13 +65,13 @@
                               <h4 class="label tlabel" id="labelTools">Tools</h4>
                               <div class="toolbar-drawer" id="drawerTools">
                                   <div class="tooltipdialog">
-                                      <button id='polygonbutton' onclick='setMode("CreatePolygon");' class='buttonsStyle unpressed' data="Create Polygon">
+                                      <button id='polygonbutton' onclick='setMode("Polygon");' class='buttonsStyle unpressed' data="Create Polygon">
                                           <img class="toolboxButtons" src="../Shared/icons/diagram_draw_square.svg">
                                       </button>
                                       <button id='freedrawbutton' onclick='setMode("FreeDraw");' class='buttonsStyle unpressed' data="Create Free Draw">
                                           <img class="toolboxButtons" src="../Shared/icons/diagram_draw_free.svg">
                                       </button>
-                                      <button id='linebutton' onclick='setMode("CreateLine");' class='buttonsStyle unpressed' data="Create Line">
+                                      <button id='linebutton' onclick='setMode("Polygon", "Line");' class='buttonsStyle unpressed' data="Create Line">
                                           <img class="toolboxButtons" src="../Shared/icons/diagram_create_line.svg">
                                       </button>
                                       <button id='umllinebutton' onclick='setMode("CreateUMLLine");' class='buttonsStyle unpressed' data="Create UML Line">
@@ -84,19 +84,19 @@
                               <h4 class="label tlabel" id="labelCreate">Create</h4>
                               <div class="toolbar-drawer" id="drawerCreate">
                                   <div class="tooltipdialog">
-                                      <button id='attributebutton' onclick='setMode("CreateERAttr");' style="display: inline; border-radius: 5px; cursor: pointer;" class='buttonsStyle unpressed' data="Create Attribute">
+                                      <button id='attributebutton' onclick='setMode("Polygon", "Attribute");' style="display: inline; border-radius: 5px; cursor: pointer;" class='buttonsStyle unpressed' data="Create Attribute">
                                           <img class="toolboxButtons" src="../Shared/icons/diagram_create_attribute.svg">
                                       </button>
-                                      <button id='entitybutton' onclick='setMode("CreateEREntity");' style="display: inline; border-radius: 5px; cursor: pointer;" class='buttonsStyle unpressed' data="Create Entity">
+                                      <button id='entitybutton' onclick='setMode("Polygon", "Entity");' style="display: inline; border-radius: 5px; cursor: pointer;" class='buttonsStyle unpressed' data="Create Entity">
                                           <img class="toolboxButtons" src="../Shared/icons/diagram_create_entity.svg">
                                       </button>
-                                      <button id='relationbutton' onclick='setMode("CreateERRelation");' style="display: inline; border-radius: 5px; cursor: pointer;" class='buttonsStyle unpressed' data="Create Relation">
+                                      <button id='relationbutton' onclick='setMode("Polygon", "Relation");' style="display: inline; border-radius: 5px; cursor: pointer;" class='buttonsStyle unpressed' data="Create Relation">
                                           <img class="toolboxButtons" src="../Shared/icons/diagram_create_relation.svg">
                                       </button>
-                                      <button id='classbutton' onclick='setMode("CreateClass");' style="display: inline; border-radius: 5px; cursor: pointer;" class='buttonsStyle unpressed' data="Create Class">
+                                      <button id='classbutton' onclick='setMode("Polygon", "Class;' style="display: inline; border-radius: 5px; cursor: pointer;" class='buttonsStyle unpressed' data="Create Class">
                                           <img class="toolboxButtons" src="../Shared/icons/diagram_create_class.svg">
                                     </button>
-                                      <button id='drawtextbutton' onclick="setMode('Text');" style="display: inline; border-radius: 5px; cursor: pointer;" class='buttonsStyle unpressed' data="Draw Text">
+                                      <button id='drawtextbutton' onclick='setMode("Polygon", "Text");' style="display: inline; border-radius: 5px; cursor: pointer;" class='buttonsStyle unpressed' data="Draw Text">
                                           <img id='textButton' src="../Shared/icons/textbox.svg" style="filter: invert(100%);">
                                       </button>
                                   </div>

@@ -2666,7 +2666,7 @@ function Polygon(type, kindOfSymbol) {
     this.type = type;               // If free draw or polygon
     this.name = "Polygon";          // New Polygon default name in new class
     this.id = -1;
-    this.symbolkind = kindOfSymbol; // Symbol kind (1 UML diagram symbol 2 ER Attribute 3 ER Entity 4 Lines 5 ER Relation)
+    this.symbolkind = kindOfSymbol; // Line, Attribute, Entity, Relation, Class, Text
     this.pointsArray = [];
     this.operations = [];           // Operations array
     this.attributes = [];           // Attributes array
@@ -2860,8 +2860,13 @@ function Polygon(type, kindOfSymbol) {
     }
 
     this.getUpdatedSize = function(){
-        this.width = Math.abs(this.pointsArray[0].x - this.pointsArray[2].x);
-        this.height = Math.abs(this.pointsArray[0].y - this.pointsArray[2].y);
+    	if(this.symbolkind != "Line"){
+	        this.width = Math.abs(this.pointsArray[0].x - this.pointsArray[2].x);
+	        this.height = Math.abs(this.pointsArray[0].y - this.pointsArray[2].y);
+    	} else {
+	        this.width = Math.abs(this.pointsArray[0].x - this.pointsArray[1].x);
+	        this.height = Math.abs(this.pointsArray[0].y - this.pointsArray[1].y);
+    	}
         return { width: this.width, height: this.height };
     }
 
@@ -2882,15 +2887,22 @@ function Polygon(type, kindOfSymbol) {
         }
 
         if(this.type == "Polygon"){
-            if (((this.pointsArray[0].x <= currentMouseCoordinateX && this.pointsArray[2].x >= currentMouseCoordinateX) || 
-                (this.pointsArray[0].x >= currentMouseCoordinateX && this.pointsArray[2].x <= currentMouseCoordinateX)) &&
-                ((this.pointsArray[0].y <= currentMouseCoordinateY && this.pointsArray[2].y >= currentMouseCoordinateY) ||
-                (this.pointsArray[0].y >= currentMouseCoordinateY && this.pointsArray[2].y <= currentMouseCoordinateY))) 
-            {
-                this.isHovered = true;
-                return true;
-            }
-            return false;
+        	if(this.symbolkind != "Line"){
+	            if (((this.pointsArray[0].x <= currentMouseCoordinateX && this.pointsArray[2].x >= currentMouseCoordinateX) || 
+	                (this.pointsArray[0].x >= currentMouseCoordinateX && this.pointsArray[2].x <= currentMouseCoordinateX)) &&
+	                ((this.pointsArray[0].y <= currentMouseCoordinateY && this.pointsArray[2].y >= currentMouseCoordinateY) ||
+	                (this.pointsArray[0].y >= currentMouseCoordinateY && this.pointsArray[2].y <= currentMouseCoordinateY))) 
+	            {
+	                this.isHovered = true;
+	                return true;
+	            }
+            	return false;
+        	} else {
+        		if(pointToLineDistance(this.pointsArray[0], this.pointsArray[1]) < 10){
+        			return true;
+        		}
+        		return false;
+        	}
         }
 
         else if(this.type == "FreeDraw"){
@@ -3005,7 +3017,7 @@ function createPolygon() {
     if(uimode == "FreeDraw"){
         freeDraw();
     }
-    else if(uimode == "CreatePolygon"){
+    else if(uimode == "Polygon"){
         polygonDraw();
     }
 }
@@ -3062,7 +3074,7 @@ function freeDraw(){
 //------------------------------------------------------
 
 function endFreeDraw(){
-    let polygon = new Polygon("FreeDraw", "FreeDraw");
+    let polygon = new Polygon(uimode, "none");
     polygon.addPoints(currentlyDrawnObject);
     polygon.setID();
     polygon.setAsParent();
@@ -3075,13 +3087,41 @@ function endFreeDraw(){
 }
 
 function endPolygonDraw() {
-    let polygon = new Polygon("Polygon", 1);
+    let polygon = new Polygon("Polygon", submode);
     let x1 = currentlyDrawnObject[0].x;
     let x2 = currentlyDrawnObject[1].x;
     let y1 = currentlyDrawnObject[0].y;
     let y2 = currentlyDrawnObject[1].y;
 
-    if(Math.abs(x1-x2) < 50) {
+    if(submode == "Line"){
+    	createLine(x1, y1, x2, y2);
+    } else if(submode == "Attribute"){
+    	createAttribute(x1, y1, x2, y2);
+    } else if(submode == "Entity"){
+    	createEntity(x1, y1, x2, y2);
+    } else if(submode == "Relation"){
+    	createRelation(x1, y1, x2, y2);
+    } else if(submode == "Class"){
+    	createClass(x1, y1, x2, y2);
+    } else if(submode == "Text"){
+    	createText(x1, y1, x2, y2);
+    } else {
+    	console.log("Unknown subclass");
+    }
+
+    polygon.addPoints(currentlyDrawnObject);
+    polygon.setID();
+    polygon.setAsParent();
+
+    isFirstPoint = true;
+    currentlyDrawnObject = [];
+    diagram.push(polygon);
+
+    SaveState();
+}
+
+function assertMinSize(x1, y1, x2, y2){
+	if(Math.abs(x1-x2) < 50) {
     	if(x1 > x2){
     		x2 = x1 - 50;
     	} else {
@@ -3097,21 +3137,39 @@ function endPolygonDraw() {
     	}
     }
 
+    return {x2: x2, y2: y2}
+}
+
+function createInitialSquare(x1, y1, x2, y2){
     // Make sure that points are in the correct order
     currentlyDrawnObject.pop();                     
     currentlyDrawnObject.push(new Point(x2, y1));
     currentlyDrawnObject.push(new Point(x2, y2));
-    currentlyDrawnObject.push(new Point(x1, y2));
+    currentlyDrawnObject.push(new Point(x1, y2));	
+}
 
-    polygon.addPoints(currentlyDrawnObject);
-    polygon.setID();
-    polygon.setAsParent();
+function createLine(x1, y1, x2, y2){
 
-    isFirstPoint = true;
-    currentlyDrawnObject = [];
-    diagram.push(polygon);
+}
 
-    SaveState();
+function createAttribute(x1, y1, x2, y2){
+	createInitialSquare(x1, y1, x2, y2);
+}
+
+function createEntity(x1, y1, x2, y2){
+	createInitialSquare(x1, y1, x2, y2);
+}
+
+function createRelation(x1, y1, x2, y2){
+	createInitialSquare(x1, y1, x2, y2);
+}
+
+function createClass(x1, y1, x2, y2){
+	createInitialSquare(x1, y1, x2, y2);
+}
+
+function createText(x1, y1, x2, y2){
+	createInitialSquare(x1, y1, x2, y2);
 }
 
 function drawDashedLine(p1, p2){
@@ -3149,7 +3207,14 @@ function drawLine(p1, p2, strokeColor) {
     ctx.stroke();
 }
 
-
+function pointToLineDistance(P1, P2) {
+    var numerator, denominator;
+    x = currentMouseCoordinateX;
+    y = currentMouseCoordinateY;
+    numerator = Math.abs((P2.y-P1.y)*x - (P2.x - P1.x)*y + P2.x * P1.y - P2.y*P1.x);
+    denominator = Math.sqrt((P2.y - P1.y)*(P2.y - P1.y) + (P2.x - P1.x)*(P2.x - P1.x));
+    return numerator/denominator;
+}
 
 
 
