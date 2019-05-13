@@ -1069,7 +1069,8 @@ input {
 }
 
 .loginBox .inputwrapper input[type="checkbox"] {
-  margin-right: 85px;
+  margin-right: 171px;
+  width:24px;
   float:right;
   height: 24px;
 }
