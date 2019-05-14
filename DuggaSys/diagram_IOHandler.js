@@ -38,18 +38,12 @@ function loadDiagram() {
             b = JSON.parse(JSON.stringify(localDiagram));
             polygonID = b.id; 
             for (var i = 0; i < b.diagram.length; i++) {
-                if (b.diagramNames[i] == "Symbol") {
-                    b.diagram[i] = Object.assign(new Symbol, b.diagram[i]);
-                } else if (b.diagramNames[i] == "Path") {
-                    b.diagram[i] = Object.assign(new Path, b.diagram[i]);
-                } else if (b.diagramNames[i] == "Polygon") {
-                    b.diagram[i] = Object.assign(new Polygon, b.diagram[i]);
-                }
+                b.diagram[i] = Object.assign(new Polygon, b.diagram[i]);
             }
             diagram.length = b.diagram.length;
             for (var i = 0; i < b.diagram.length; i++) {
                 diagram[i] = b.diagram[i];
-                diagram[i].createPoints();
+                diagram[i].initiate();
             }
         }
     }

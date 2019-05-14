@@ -2665,7 +2665,7 @@
 function Polygon(type, kindOfSymbol) {
     this.type = type;               // If free draw or polygon
     this.name = "Polygon";          // New Polygon default name in new class
-    this.id = -1;
+    this.id = -1;					// Gets value from polygonID in diagram.js
     this.symbolkind = kindOfSymbol; // Line, Attribute, Entity, Relation, Class, Text
     this.pointsArray = [];
     this.operations = [];           // Operations array
@@ -2675,7 +2675,7 @@ function Polygon(type, kindOfSymbol) {
     this.topleft;
     this.bottomRight;               // Bottom Right Point
     this.middleDivider;             // Middle divider Point
-    this.centerPoint;               // centerPoint
+    this.centerPoint;               // CenterPoint
     this.width = 0;
     this.height = 0;
     this.minWidth = 50;
@@ -2714,6 +2714,10 @@ function Polygon(type, kindOfSymbol) {
         'fillColor': 'white'                            // Defult key type for a class.
     };
 
+    this.initiate = function(){
+    	this.updateProperties();
+
+    }
 
     this.setID = function(id){
     	polygonID ++;
@@ -2994,7 +2998,7 @@ function Polygon(type, kindOfSymbol) {
         let point;
         let tempArray = [];
         for(let i = 0; i < this.pointsArray.length; i++){
-            point = Object.assign(new Point, this.pointsArray[i]);
+            point = new Point(this.pointsArray[i].x, this.pointsArray[i].y);
             point.setParentID(this.id);
             points.addPoint(point);
             tempArray.push(point);
@@ -3438,6 +3442,7 @@ function Point(x, y){
     this.parentID = -1;
 
     this.drawPoint = function(){
+    	console.log(this.getParent())
         if(this.getParent().isSelected){
             ctx.beginPath();
             ctx.arc(pixelsToCanvas(this.x).x, pixelsToCanvas(0, this.y).y, 5 * diagram.getZoomValue(), 0, 2*Math.PI, false);
