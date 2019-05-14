@@ -3124,33 +3124,6 @@ function doubleclick(ev) {
     }
 }
 
-function createText(posX, posY) {
-    var text = new Symbol(6);
-    text.name = "New Text" + diagram.length;
-    text.textLines.push({text:text.name});
-
-    var length  = ctx.measureText(text.name).width + 20;
-    var fontsize = text.getFontsize();
-    var height = fontsize + 20;
-
-    text.fontColor = "#000000";
-    text.font = "Arial";
-    ctx.font = "bold " + fontsize + "px " + text.font;
-
-    p1 = points.addPoint(posX - (length/2), posY - (height/2), false);
-    p2 = points.addPoint(posX + (length/2), posY + (height/2), false);
-    p3 = points.addPoint(posX, posY, false);
-
-    text.topLeft = p1;
-    text.bottomRight = p2;
-    text.centerPoint = p3;
-
-    diagram.push(text);
-    lastSelectedObject = diagram.length -1;
-    diagram[lastSelectedObject].select();
-    updateGraphics();
-}
-
 //----------------------------------------------------------------------
 // resize: This is used when making the objects bigger or smaller
 //----------------------------------------------------------------------

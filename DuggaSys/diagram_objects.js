@@ -2672,6 +2672,7 @@ function Polygon(type, kindOfSymbol) {
     this.attributes = [];           // Attributes array
     this.lines = [];
     this.textLines = [];            // Free text array
+    this.textAlign = "center";
     this.topleft;
     this.bottomRight;               // Bottom Right Point
     this.middleDivider;             // Middle divider Point
@@ -3195,9 +3196,40 @@ function Polygon(type, kindOfSymbol) {
     	let y1 = this.topleft.y;
     	let x2 = this.bottomright.x;
     	let y2 = this.bottomright.y;
-    	
-    	drawSquare(x1, y1, x2, y2);
+        var midx = x1 + ((x2-x1)/2);
+        var midy = y1 + ((y2-y1)/2);
 
+		ctx.save();
+    	ctx.beginPath();
+    	if (this.isSelected || this.isHovered) {
+            ctx.lineWidth = this.properties['lineWidth'] * diagram.getZoomValue();
+            ctx.strokeColor = "F82";
+            //linedash only when hovered and not isSelected
+            if (this.isHovered && !this.isSelected) {
+                ctx.setLineDash([5, 4]);
+            }
+            ctx.rect(x1, y1, x2-x1, y2-y1);
+            ctx.stroke();
+        }
+
+        ctx.font = this.properties['textSize'] + "px " + this.properties['font'];
+		ctx.fillStyle = this.properties['fontColor'];
+
+        for (var i = 0; i < this.textLines.length; i++) {
+            ctx.fillText(this.textLines[i].text, this.getTextX(x1, midx, x2, this.textLines[i].text), y1 + (this.properties['textSize'] * 1.7) / 2 + (this.properties['textSize'] * i));
+        }
+        
+        ctx.restore();
+    }
+
+    this.getTextX = function(x1, midX, x2, text) {
+        let textX = 0;
+        let length = ctx.measureText(text).width;
+        console.log(length);
+        if (this.textAlign == "start") textX = x1 + 10;
+        else if (this.textAlign == "end") textX = x2 - length - 10;
+        else textX = midX - length / 2;
+        return textX;
     }
 };
 
@@ -3358,11 +3390,12 @@ function endPolygonDraw() {
     } else if(submode == "Class"){
     	createClass(x1, y1, x2, y2);
     } else if(submode == "Text"){
-    	createText(x1, y1, x2, y2);
+    	createText(x1, y1, x2, y2, polygon);
     } else {
     	console.log("Unknown subclass");
     }
 
+    console.log(polygon.textLines);
     polygon.addPoints(currentlyDrawnObject);
     polygon.setAsParent();
 
@@ -3445,9 +3478,42 @@ function createClass(x1, y1, x2, y2){
 	createInitialSquare(x1, y1, x2, y2);
 }
 
-function createText(x1, y1, x2, y2){
+function createText(x1, y1, x2, y2, polygon){
 	createInitialSquare(x1, y1, x2, y2);
+    polygon.name = "New Text" + diagram.length;
+    polygon.fontColor = "#000000";
+    polygon.font = "Arial";
+    polygon.font = "bold " + 20 + "px " + polygon.font;
+    polygon.textLines.push({ text: polygon.name });
 }
+
+function oldcreateText(posX, posY) {
+    var text = new Symbol(6);
+    text.name = "New Text" + diagram.length;
+    text.textLines.push({text:text.name});
+
+    var length  = ctx.measureText(text.name).width + 20;
+    var fontsize = text.getFontsize();
+    var height = fontsize + 20;
+
+    text.fontColor = "#000000";
+    text.font = "Arial";
+    ctx.font = "bold " + fontsize + "px " + text.font;
+
+    p1 = points.addPoint(posX - (length/2), posY - (height/2), false);
+    p2 = points.addPoint(posX + (length/2), posY + (height/2), false);
+    p3 = points.addPoint(posX, posY, false);
+
+    text.topLeft = p1;
+    text.bottomRight = p2;
+    text.centerPoint = p3;
+
+    diagram.push(text);
+    lastSelectedObject = diagram.length -1;
+    diagram[lastSelectedObject].select();
+    updateGraphics();
+}
+
 
 function pointToLineDistance(P1, P2) {
     var numerator, denominator;
