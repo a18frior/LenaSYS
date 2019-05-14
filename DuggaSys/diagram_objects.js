@@ -2724,10 +2724,9 @@ function Polygon(type, kindOfSymbol) {
         return this.id;
     }
 
-    this.drawPolygon = function() {
+    this.draw = function() {
     	this.updateProperties();
-        this.fillPolygon();
-        this.drawOutlines();
+        this.drawPolygon();
         this.drawPoints();
     }
 
@@ -2745,8 +2744,7 @@ function Polygon(type, kindOfSymbol) {
         return this.pointsArray;
     }
 
-    this.fillFreeDraw = function (){
-    	
+    this.drawFreeDraw = function (){
     	ctx.beginPath();
         ctx.moveTo(pixelsToCanvas(this.pointsArray[0].x).x, pixelsToCanvas(0, this.pointsArray[0].y).y);
         for (let i = 1; i < this.pointsArray.length; i++) {
@@ -2754,53 +2752,35 @@ function Polygon(type, kindOfSymbol) {
             ctx.lineTo(pixelsToCanvas(this.pointsArray[i].x).x, pixelsToCanvas(0, this.pointsArray[i].y).y);
         }
         ctx.lineTo(pixelsToCanvas(this.pointsArray[0].x).x, pixelsToCanvas(0, this.pointsArray[0].y).y);
-
         ctx.closePath();
      	ctx.fill();
+     	ctx.stroke();
     }
 
-    this.fillPolygon = function(){
-	 	ctx.strokeStyle = this.isSelected ? "#F82" : this.properties['strokeColor'];
-        ctx.fillStyle = this.properties['fillColor'];
+    this.drawPolygon = function(){
         ctx.globalAlpha = this.opacity;
         ctx.lineWidth = this.properties['lineWidth'] * diagram.getZoomValue();
-
+        ctx.strokeColor = this.isSelected ? "#F82" : this.properties['strokeColor'];
+        ctx.fillColor = this.properties['fillColor'];
+        ctx.strokeStyle = this.isSelected ? "#F82" : this.properties['strokeColor'];
+        ctx.fillStyle = this.properties['fillColor'];
 
         if(this.type == "FreeDraw") {
-        	this.fillFreeDraw();
+        	this.drawFreeDraw();
         }
     	switch(this.symbolkind){
-    		case "Line":
-    		break;
+    		case "Line": this.drawLine()
+    			break;
 
-    		case "Attribute": this.fillAttribute();
-    		break;
+    		case "Entity": this.drawEntity();
+    			break;
+
+    		case "Attribute": this.drawAttribute();
+    			break;
+
+    		case "Relation": this.drawRelation();
+    			break;
     	}
-
-
-        
-       
-    }
-
-    this.drawOutlines = function() {
-        if(this.isHovered || this.isSelected){
-            this.properties['strokeColor'] = "orange";
-        } else {
-            this.properties['strokeColor'] = "black";            
-        }
-
-        for(let i = 0; i < this.pointsArray.length -1; i++){
-            let p1 = this.pointsArray[i];
-            let p2 = this.pointsArray[i+1];
-            drawLine({x: pixelsToCanvas(p1.x).x, y: pixelsToCanvas(0, p1.y).y},
-                     {x: pixelsToCanvas(p2.x).x, y: pixelsToCanvas(0, p2.y).y});
-        }
-
-        let firstPoint = this.pointsArray[0];
-        let lastPoint = this.pointsArray[this.pointsArray.length - 1];
-
-        drawLine({x: pixelsToCanvas(firstPoint.x).x, y: pixelsToCanvas(0, firstPoint.y).y},
-                 {x: pixelsToCanvas(lastPoint.x).x, y: pixelsToCanvas(0, lastPoint.y).y}, this.properties['strokeColor']);
     }
 
     this.select = function(){
@@ -3118,7 +3098,25 @@ function Polygon(type, kindOfSymbol) {
         }
     }
 
-    this.fillAttribute = function() {
+    this.drawLine = function(){
+    	let x1 = this.topleft.x;
+    	let y1 = this.topleft.y;
+    	let x2 = this.bottomright.x;
+    	let y2 = this.bottomright.y;
+
+    	drawLine(x1, y1, x2, y2);
+    }
+
+    this.drawEntity = function(){
+    	let x1 = this.topleft.x;
+    	let y1 = this.topleft.y;
+    	let x2 = this.bottomright.x;
+    	let y2 = this.bottomright.y;
+    	
+    	drawSquare(x1, y1, x2, y2);
+    }
+
+    this.drawAttribute = function() {
     	let x1 = this.topleft.x;
     	let y1 = this.topleft.y;
     	let x2 = this.bottomright.x;
@@ -3132,33 +3130,39 @@ function Polygon(type, kindOfSymbol) {
         } else {
             drawOval(pixelsToCanvas(x1).x, pixelsToCanvas(0, y1).y, pixelsToCanvas(x2).x, pixelsToCanvas(0, y2).y);
         }
-        /*
-        ctx.clip();
+    }
 
-        //drawing an derived attribute
-        if (this.properties['key_type'] == 'Drive') {
-            ctx.setLineDash([5, 4]);
-        }
-        else if (this.properties['key_type'] == 'Primary key' || this.properties['key_type'] == 'Partial key') {
-            ctx.stroke();
-            this.properties['key_type'] == 'Partial key' ? ctx.setLineDash([5, 4]) : ctx.setLineDash([]);
-            var linelength = ctx.measureText(this.name).width;
-            ctx.beginPath(1);
-            ctx.moveTo(x1 + ((x2 - x1) * 0.5) - (linelength * 0.5), (y1 + ((y2 - y1) * 0.5)) + 10);
-            ctx.lineTo(x1 + ((x2 - x1) * 0.5) + (linelength * 0.5), (y1 + ((y2 - y1) * 0.5)) + 10);
+    this.drawRelation = function(){
+    	let x1 = (this.topleft.x + this.bottomright.x) / 2;
+    	let y1 = this.topleft.y;
+    	let x2 = this.bottomright.x;
+    	let y2 = (this.topleft.y + this.bottomright.y) / 2;
+    	let x3 = (this.topleft.x + this.bottomright.x) / 2;
+    	let y3 = this.bottomright.y;
+    	let x4 = this.topleft.x;
+    	let y4 = (this.topleft.y + this.bottomright.y) / 2;
 
-        }
-        ctx.stroke();
-        ctx.setLineDash([]);
-        if(ctx.measureText(this.name).width > (x2-x1) - 4) {
-            ctx.textAlign = "start";
-            ctx.fillText(this.name, x1 + 4 , (y1 + ((y2 - y1) * 0.5)));
-        } else {
-            ctx.fillText(this.name, x1 + ((x2 - x1) * 0.5), (y1 + ((y2 - y1) * 0.5)));
-        }
-        */
+    	drawDiamond(x1, y1, x2, y2, x3, y3, x4, y4);
     }
 };
+
+function drawSquare (x1, y1, x2, y2){
+    ctx.beginPath();
+    ctx.moveTo(x1, y1);
+    ctx.lineTo(x2, y1);
+    ctx.lineTo(x2, y2);
+    ctx.lineTo(x1, y2);
+    ctx.lineTo(x1, y1);
+    ctx.fill();
+    ctx.stroke();
+}
+
+function drawLine (x1, y1, x2, y2) {
+    ctx.beginPath();
+    ctx.moveTo(x1, y1);
+    ctx.lineTo(x2, y2);
+    ctx.stroke();
+}
 
 function drawOval (x1, y1, x2, y2) {
     let middleX = x1 + ((x2 - x1) * 0.5);
@@ -3170,11 +3174,20 @@ function drawOval (x1, y1, x2, y2) {
     ctx.quadraticCurveTo(x2, y2, middleX, y2);
     ctx.quadraticCurveTo(x1, y2, x1, middleY);
     ctx.closePath();
-    ctx.stroke();
     ctx.fill();
+    ctx.stroke();
 }
 
-
+function drawDiamond (x1, y1, x2, y2, x3, y3, x4, y4){
+	ctx.beginPath();
+    ctx.moveTo(x1, y1);
+    ctx.lineTo(x2, y2);
+    ctx.lineTo(x3, y3);
+    ctx.lineTo(x4, y4);
+    ctx.lineTo(x1, y1);
+    ctx.fill();
+    ctx.stroke();
+}
 
 //------------------------------------
 // Called onmousedown and onmouseup
@@ -3405,14 +3418,6 @@ function drawOutline(){
         drawDashedLine({x: pixelsToCanvas(lastPoint.x).x, y: pixelsToCanvas(0, lastPoint.y).y},
                        {x: pixelsToCanvas(currentMouseCoordinateX).x, y: pixelsToCanvas(0, currentMouseCoordinateY).y});
     }
-}
-
-function drawLine(p1, p2, strokeColor) {
-    ctx.beginPath();
-    ctx.moveTo(p1.x, p1.y);
-    ctx.lineTo(p2.x, p2.y);
-    ctx.strokeStyle = strokeColor;
-    ctx.stroke();
 }
 
 function pointToLineDistance(P1, P2) {
