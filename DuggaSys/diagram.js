@@ -1637,9 +1637,9 @@ function drawOrigo() {
 
 function drawCenterOfCanvas() {
     const crosshairLength = 20;
-    let centerX = canvasToPixels(origoOffsetX + (canvas.width * zoomValue) / 2).x;
-    let centerY = canvasToPixels(0, origoOffsetY + (canvas.height * zoomValue) / 2).y;
-
+    let centerX = canvas.width / 2;
+    let centerY = canvas.height / 2;
+    // console.log(centerX);
     ctx.lineWidth = 2;
     ctx.strokeStyle = "#ff1cf9";
 
@@ -2562,20 +2562,13 @@ function switchToolbar(direction) {
 // zoomInMode: Function for the zoom in and zoom out in the canvas element
 //----------------------------------------------------------------------
 
-function zoomInMode() {
-    zoomValue = document.getElementById("ZoomSelect").value;
-    reWrite();
-    updateGraphics();
-}
-
-function changeZoom(zoomValueDelta, requestFrom){
+function zoomInMode(requestFrom) {
     // Variables for focus on mouse pointer
     let currentMouseX = pixelsToCanvas(currentMouseCoordinateX).x;
     let currentMouseY = pixelsToCanvas(0, currentMouseCoordinateY).y;
-    var value = parseFloat(document.getElementById("ZoomSelect").value);
-    value = value + parseFloat(zoomValueDelta);
-    document.getElementById("ZoomSelect").value = value;
-    zoomInMode();
+    // Variables for focus on center of camera
+
+    zoomValue = document.getElementById("ZoomSelect").value;
     if(requestFrom == "scroll") {
       origoOffsetX += currentMouseX - pixelsToCanvas(currentMouseCoordinateX).x;
       origoOffsetY += currentMouseY - pixelsToCanvas(0, currentMouseCoordinateY).y;
@@ -2583,7 +2576,15 @@ function changeZoom(zoomValueDelta, requestFrom){
     else {
 
     }
+    reWrite();
     updateGraphics();
+}
+
+function changeZoom(zoomValueDelta, requestFrom){
+    var value = parseFloat(document.getElementById("ZoomSelect").value);
+    value = value + parseFloat(zoomValueDelta);
+    document.getElementById("ZoomSelect").value = value;
+    zoomInMode(requestFrom);
 }
 
 //-----------------------
