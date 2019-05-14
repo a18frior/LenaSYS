@@ -3098,7 +3098,7 @@ function mouseupevt(ev) {
                 if(diagram[lineStartObj] == diagram[markedObject]) okToMakeLine = false;
 
                 // Can't draw line between two ER attributes if one of them is not composite
-                if(symbolStartKind == symbolKind.erAttribute && symbolEndKind == symbolKind.erAttribute) {
+                if(symbolStartKind == symbolKind.erAttribute && symbolEndKind == symbolKind.erAttribute && diagram[lineStartObj] != diagram[markedObject]) {
                     if(diagram[markedObject].properties.key_type === "Composite" || diagram[lineStartObj].properties.key_type === "Composite") {
                        okToMakeLine = true;
                     } else {
@@ -3347,7 +3347,7 @@ function countNumberOfSymbolKind(kind) {
 function doubleclick(ev) {
     if (lastSelectedObject != -1 && diagram[lastSelectedObject].targeted == true) {
         openAppearanceDialogMenu();
-    } else {
+    } else if (uimode != "CreateLine"){
         createText(currentMouseCoordinateX, currentMouseCoordinateY);
     }
 }
