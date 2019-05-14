@@ -1639,7 +1639,6 @@ function drawCenterOfCanvas() {
     const crosshairLength = 20;
     let centerX = canvas.width / 2;
     let centerY = canvas.height / 2;
-    // console.log(centerX);
     ctx.lineWidth = 2;
     ctx.strokeStyle = "#ff1cf9";
 
@@ -2567,6 +2566,10 @@ function zoomInMode(requestFrom) {
     let currentMouseX = pixelsToCanvas(currentMouseCoordinateX).x;
     let currentMouseY = pixelsToCanvas(0, currentMouseCoordinateY).y;
     // Variables for focus on center of camera
+    let centerX = (canvas.width * zoomValue) / 2;
+    let centerY = (canvas.height * zoomValue) / 2;
+    console.log("Before:");
+    console.log("Center X: " + centerX + " Y: " + centerY);
 
     zoomValue = document.getElementById("ZoomSelect").value;
     if(requestFrom == "scroll") {
@@ -2574,7 +2577,10 @@ function zoomInMode(requestFrom) {
       origoOffsetY += currentMouseY - pixelsToCanvas(0, currentMouseCoordinateY).y;
     }
     else {
-
+      origoOffsetX += centerX - (canvas.width * zoomValue) / 2;
+      origoOffsetY += centerY - (canvas.height * zoomValue) / 2;
+      console.log(" ");
+      console.log("Camera X: " + centerX + " Y: " + centerY);
     }
     reWrite();
     updateGraphics();
