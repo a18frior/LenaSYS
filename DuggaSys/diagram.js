@@ -3347,7 +3347,7 @@ function countNumberOfSymbolKind(kind) {
 function doubleclick(ev) {
     if (lastSelectedObject != -1 && diagram[lastSelectedObject].targeted == true) {
         openAppearanceDialogMenu();
-    } else if (uimode != "CreateLine"){
+    } else {
         createText(currentMouseCoordinateX, currentMouseCoordinateY);
     }
 }
