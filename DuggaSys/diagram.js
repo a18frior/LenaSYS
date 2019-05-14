@@ -3456,6 +3456,34 @@ function setSelectedOption(type, value) {
 // Different types of dialog windows
 //--------------------------------------------------------------------
 
+function drawDashedLine(p1, p2){
+    ctx.setLineDash([3, 3]);
+    ctx.beginPath();
+    ctx.moveTo(p1.x, p1.y);
+    ctx.lineTo(p2.x, p2.y);
+    ctx.strokeStyle = "#000";
+    ctx.stroke();
+    ctx.setLineDash([]);
+}
+
+function drawOutline(){
+    if(!isFirstPoint){
+        let lastPoint = currentlyDrawnObject[0];
+        for(let i = 0; i < currentlyDrawnObject.length - 1; i++){
+            let p1 = currentlyDrawnObject[i];
+            let p2 = currentlyDrawnObject[i+1];
+            lastPoint = p2;
+
+            drawDashedLine({x: pixelsToCanvas(p1.x).x, y: pixelsToCanvas(0, p1.y).y},
+                           {x: pixelsToCanvas(p2.x).x, y: pixelsToCanvas(0, p2.y).y});
+        }
+
+        drawDashedLine({x: pixelsToCanvas(lastPoint.x).x, y: pixelsToCanvas(0, lastPoint.y).y},
+                       {x: pixelsToCanvas(currentMouseCoordinateX).x, y: pixelsToCanvas(0, currentMouseCoordinateY).y});
+    }
+}
+
+
 //----------------------------------------------------------------------
 // globalAppearanceMenu: open a menu to change appearance on all entities.
 //----------------------------------------------------------------------
