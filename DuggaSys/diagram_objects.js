@@ -2716,7 +2716,7 @@ function Polygon(type, kindOfSymbol) {
 
     this.initiate = function(){
     	this.updateProperties();
-
+    	this.createPoints();
     }
 
     this.setID = function(id){
