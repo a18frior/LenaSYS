@@ -158,6 +158,7 @@ const ctrlKey = 17;
 const shiftKey = 16;
 const windowsKey = 91;
 const cKey = 67;
+const dKey = 68;
 const vKey = 86;
 const zKey = 90;
 const yKey = 89;
@@ -389,6 +390,9 @@ function keyDownHandler(e) {
     }
     else if((key == key2 || key == num2) && shiftIsClicked){
         moveToBack();
+    }
+    else if(key == dKey || shiftIsClicked){
+        developerMode();
     }
 }
 
@@ -676,6 +680,7 @@ diagram.getObjectByID = function(id){
             return this[i];
         }
     }
+    return false;
 }
 
 diagram.closestPoint = function(mx, my) {
@@ -751,11 +756,7 @@ diagram.adjustPoints = function() {
 //--------------------------------------------------------------------
 
 diagram.deleteObject = function(object) {
-    for (var i = 0; i < this.length; i++) {
-        if (this[i] == object) {
-            this.splice(i, 1);
-        }
-    }
+    diagram.splice(diagram.indexOf(object), 1);
 }
 
 //--------------------------------------------------------------------
@@ -1300,53 +1301,26 @@ function getConnectedLines(object) {
 }
 
 function eraseObject(object) {
-    canvas.style.cursor = "default";
-    var objectsToDelete = [];
-    if (object.kind == kind.symbol) {
-        // None lines
-        if(object.symbolkind != 4) {
-            var lines = diagram.filter(symbol => symbol.symbolkind == symbolKind.line);
-            objectsToDelete = lines.filter(
-                line => line.topLeft == object.middleDivider
-                        || line.topLeft == object.centerPoint
-                        || line.bottomRight == object.middleDivider
-                        || line.bottomRight == object.centerPoint
-                        || (object.hasConnectorFromPoint(line.topLeft) && (object.symbolkind == symbolKind.erEntity || object.symbolkind == symbolKind.erRelation))
-                        || (object.hasConnectorFromPoint(line.bottomRight) && (object.symbolkind == symbolKind.erEntity || object.symbolkind == symbolKind.erRelation))
-            );
-        // lines
-        }else {
-            diagram.filter(
-                symbol => symbol.symbolkind == symbolKind.erEntity || symbol.symbolkind == symbolKind.erRelation)
-                    .filter(symbol =>   symbol.hasConnector(object.topLeft)
-                                     && symbol.hasConnector(object.bottomRight))
-                    .forEach(symbol => {
-                        symbol.removePointFromConnector(object.topLeft);
-                        symbol.removePointFromConnector(object.bottomRight);
-                    });
-
-            var attributesAndRelations = diagram.filter(symbol => symbol.symbolkind == symbolKind.erAttribute || symbol.symbolkind == symbolKind.erRelation);
-            // Check if the line has a common point with a centerpoint of attributes or relations.
-            var removeTopleft = attributesAndRelations
-                        .filter(symbol => symbol.centerPoint == object.topLeft
-                                       || symbol.middleDivider == object.topLeft
-                               ).length == 0;
-            var removeBottomright = attributesAndRelations
-                        .filter(symbol => symbol.centerPoint == object.bottomRight
-                                        || symbol.middleDivider == object.bottomRight
-                               ).length == 0;
-            if(removeTopleft) points[object.topLeft] = "";
-            if(removeBottomright) points[object.bottomRight] = "";
-        }
-        object.erase();
-        diagram.eraseLines(object, object.getLines());
-    } else if (object.kind == kind.path) {
-        object.erase();
-    }
+    erasePoints(object);
+    eraseLines(object);
     diagram.deleteObject(object);
-    objectsToDelete.forEach(eraseObject);
     updateGraphics();
     SaveState();
+}
+
+function erasePoints(object){
+    for(let i = 0; i < object.pointsArray.length; i++){
+        points.splice(points.indexOf(object.pointsArray[i]), 1);
+    }
+}
+
+function eraseLines(object){
+    for(let i = 0; i < object.lines.length; i++){
+        let line = diagram.getObjectByID(object.lines[i]);
+        if(line) {
+            eraseObject(line);
+        }
+    }
 }
 
 //-------------------------------------------------------------------------

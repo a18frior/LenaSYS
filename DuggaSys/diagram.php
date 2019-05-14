@@ -87,7 +87,7 @@
                                       <button id='relationbutton' onclick='setMode("Polygon", "Relation");' style="display: inline; border-radius: 5px; cursor: pointer;" class='buttonsStyle unpressed' data="Create Relation">
                                           <img class="toolboxButtons" src="../Shared/icons/diagram_create_relation.svg">
                                       </button>
-                                      <button id='classbutton' onclick='setMode("Polygon", "Class;' style="display: inline; border-radius: 5px; cursor: pointer;" class='buttonsStyle unpressed' data="Create Class">
+                                      <button id='classbutton' onclick='setMode("Polygon", "Class");' style="display: inline; border-radius: 5px; cursor: pointer;" class='buttonsStyle unpressed' data="Create Class">
                                           <img class="toolboxButtons" src="../Shared/icons/diagram_create_class.svg">
                                     </button>
                                       <button id='drawtextbutton' onclick='setMode("Polygon", "Text");' style="display: inline; border-radius: 5px; cursor: pointer;" class='buttonsStyle unpressed' data="Draw Text">

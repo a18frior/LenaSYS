@@ -2717,6 +2717,7 @@ function Polygon(type, kindOfSymbol) {
     this.initiate = function(){
     	this.updateProperties();
     	this.createPoints();
+    	this.setAsParent();
     }
 
     this.setID = function(id){
@@ -2741,7 +2742,7 @@ function Polygon(type, kindOfSymbol) {
     	} else {
     		this.bottomright = this.pointsArray[2];
     	}
-    	this.centerPoint = { x: (this.topleft.x + this.bottomright.x) / 2, y: (this.topleft.y + this.bottomright.y) / 2 }
+    	this.centerPoint = { x: (this.topleft.x + this.bottomright.x) / 2, y: (this.topleft.y + this.bottomright.y) / 2 };
     }
 
     this.getPoints = function() {
@@ -2776,13 +2777,19 @@ function Polygon(type, kindOfSymbol) {
     		case "Line": this.drawLine()
     			break;
 
-    		case "Entity": this.drawEntity();
-    			break;
-
     		case "Attribute": this.drawAttribute();
     			break;
 
+    		case "Entity": this.drawEntity();
+    			break;
+
     		case "Relation": this.drawRelation();
+    			break;
+
+    		case "Class": this.drawClass();
+    			break;
+
+    		case "Text": this.drawText();
     			break;
     	}
     }
@@ -3017,10 +3024,14 @@ function Polygon(type, kindOfSymbol) {
 
     this.drawPoints = function(){
 	 	if(this.type == "Polygon" && this.symbolkind == "Line"){
-	    	this.pointsArray[0].x = diagram.getObjectByID(this.startPolygonID).centerPoint.x;
-	    	this.pointsArray[0].y = diagram.getObjectByID(this.startPolygonID).centerPoint.y;
-	    	this.pointsArray[1].x = diagram.getObjectByID(this.endPolygonID).centerPoint.x;
-	    	this.pointsArray[1].y = diagram.getObjectByID(this.endPolygonID).centerPoint.y;
+	 		let start = diagram.getObjectByID(this.startPolygonID);
+	 		let end = diagram.getObjectByID(this.endPolygonID);
+	 		if(start && end){
+	 			this.pointsArray[0].x = start.centerPoint.x;
+		    	this.pointsArray[0].y = start.centerPoint.y;
+		    	this.pointsArray[1].x = end.centerPoint.x;
+		    	this.pointsArray[1].y = end.centerPoint.y;
+	 		}	    	
         }
         for(let i = 0; i < this.pointsArray.length; i++){
             this.pointsArray[i].drawPoint();
@@ -3043,15 +3054,17 @@ function Polygon(type, kindOfSymbol) {
 
     this.sortLines = function(){
     	if(this.lines.length > 0){
+    		let line;
     		for(let i = 0; i < this.lines.length; i++){
-    			console.log(this.lines[i])
-    			diagram.getObjectByID(this.lines[i]).updateLinePoint(this.centerPoint.x, this.centerPoint.y, this.getID());
+    			line = diagram.getObjectByID(this.lines[i]);
+    			if(line){
+    				line.updateLinePoint(this.centerPoint.x, this.centerPoint.y, this.getID());
+    			}
     		}
     	}
     }
 
     this.updateLinePoint = function(x, y, callerID){
-    	console.log("updateLinePoint: " + this.symbolkind)
     	if(this.startPolygonID == callerID){
     		this.pointsArray[0].setPosition(x, y);
     	} else {
@@ -3129,15 +3142,6 @@ function Polygon(type, kindOfSymbol) {
     	drawLine(x1, y1, x2, y2);
     }
 
-    this.drawEntity = function(){
-    	let x1 = this.topleft.x;
-    	let y1 = this.topleft.y;
-    	let x2 = this.bottomright.x;
-    	let y2 = this.bottomright.y;
-    	
-    	drawSquare(x1, y1, x2, y2);
-    }
-
     this.drawAttribute = function() {
     	let x1 = this.topleft.x;
     	let y1 = this.topleft.y;
@@ -3154,6 +3158,15 @@ function Polygon(type, kindOfSymbol) {
         }
     }
 
+    this.drawEntity = function(){
+    	let x1 = this.topleft.x;
+    	let y1 = this.topleft.y;
+    	let x2 = this.bottomright.x;
+    	let y2 = this.bottomright.y;
+    	
+    	drawSquare(x1, y1, x2, y2);
+    }
+
     this.drawRelation = function(){
     	let x1 = (this.topleft.x + this.bottomright.x) / 2;
     	let y1 = this.topleft.y;
@@ -3165,6 +3178,26 @@ function Polygon(type, kindOfSymbol) {
     	let y4 = (this.topleft.y + this.bottomright.y) / 2;
 
     	drawDiamond(x1, y1, x2, y2, x3, y3, x4, y4);
+    }
+
+    this.drawClass = function(){
+    	let x1 = this.topleft.x;
+    	let y1 = this.topleft.y;
+    	let x2 = this.bottomright.x;
+    	let y2 = this.bottomright.y;
+    	
+    	drawSquare(x1, y1, x2, y2);
+
+    }
+
+    this.drawText = function(){
+    	let x1 = this.topleft.x;
+    	let y1 = this.topleft.y;
+    	let x2 = this.bottomright.x;
+    	let y2 = this.bottomright.y;
+    	
+    	drawSquare(x1, y1, x2, y2);
+
     }
 };
 
@@ -3390,7 +3423,6 @@ function createInitialSquare(x1, y1, x2, y2){
 }
 
 function createLine(x1, y1, x2, y2, polygon){
-	console.log(polygon.symbolkind)
 	polygon.startPolygonID = startPolygon.getID();
 	polygon.endPolygonID = endPolygon.getID();
 	startPolygon.lines.push(polygon.getID());
@@ -3442,8 +3474,7 @@ function Point(x, y){
     this.parentID = -1;
 
     this.drawPoint = function(){
-    	console.log(this.getParent())
-        if(this.getParent().isSelected){
+        if(this.getParent() && this.getParent().isSelected){
             ctx.beginPath();
             ctx.arc(pixelsToCanvas(this.x).x, pixelsToCanvas(0, this.y).y, 5 * diagram.getZoomValue(), 0, 2*Math.PI, false);
             ctx.fillStyle = '#F82';
