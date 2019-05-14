@@ -3037,6 +3037,24 @@ function Polygon(type, kindOfSymbol) {
     	}
     }
 
+    this.sortLines = function(){
+    	if(this.lines.length > 0){
+    		for(let i = 0; i < this.lines.length; i++){
+    			console.log(this.lines[i])
+    			diagram.getObjectByID(this.lines[i]).updateLinePoint(this.centerPoint.x, this.centerPoint.y, this.getID());
+    		}
+    	}
+    }
+
+    this.updateLinePoint = function(x, y, callerID){
+    	console.log("updateLinePoint: " + this.symbolkind)
+    	if(this.startPolygonID == callerID){
+    		this.pointsArray[0].setPosition(x, y);
+    	} else {
+    		this.pointsArray[1].setPosition(x, y);
+    	}
+    }
+
     this.sortAllConnectors = function () {
         var c = this.corners();
         var x1 = c.tl.x;
@@ -3282,13 +3300,15 @@ function endFreeDraw(){
 
 function endPolygonDraw() {
     let polygon = new Polygon("Polygon", submode);
+    polygon.setID();
+
     let x1 = currentlyDrawnObject[0].x;
     let x2 = currentlyDrawnObject[1].x;
     let y1 = currentlyDrawnObject[0].y;
     let y2 = currentlyDrawnObject[1].y;
 
     if(submode == "Line"){
-    	if(!hoveredObject){
+    	if(!hoveredObject || hoveredObject.symbolkind == "Line"){
     		return false;
     	}
     	createLine(x1, y1, x2, y2, polygon);
@@ -3307,7 +3327,6 @@ function endPolygonDraw() {
     }
 
     polygon.addPoints(currentlyDrawnObject);
-    polygon.setID();
     polygon.setAsParent();
 
     isFirstPoint = true;
@@ -3367,10 +3386,11 @@ function createInitialSquare(x1, y1, x2, y2){
 }
 
 function createLine(x1, y1, x2, y2, polygon){
+	console.log(polygon.symbolkind)
 	polygon.startPolygonID = startPolygon.getID();
 	polygon.endPolygonID = endPolygon.getID();
-	startPolygon.lines.push(polygon);
-	endPolygon.lines.push(polygon);
+	startPolygon.lines.push(polygon.getID());
+	endPolygon.lines.push(polygon.getID());
 }
 
 function createAttribute(x1, y1, x2, y2){
@@ -3391,16 +3411,6 @@ function createClass(x1, y1, x2, y2){
 
 function createText(x1, y1, x2, y2){
 	createInitialSquare(x1, y1, x2, y2);
-}
-
-function drawDashedLine(p1, p2){
-    ctx.setLineDash([3, 3]);
-    ctx.beginPath();
-    ctx.moveTo(p1.x, p1.y);
-    ctx.lineTo(p2.x, p2.y);
-    ctx.strokeStyle = "#000";
-    ctx.stroke();
-    ctx.setLineDash([]);
 }
 
 function pointToLineDistance(P1, P2) {
@@ -3452,6 +3462,11 @@ function Point(x, y){
     this.move = function(x, y){
         this.x += x;
         this.y += y;
+    }
+
+	this.setPosition = function(x, y){
+        this.x = x;
+        this.y = y;
     }
 
     this.select = function(){

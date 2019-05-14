@@ -36,6 +36,7 @@ function loadDiagram() {
     if (typeof localHexHash !== "undefined" && typeof localDiagram !== "undefined") {
         if (localHexHash != hexHash) {
             b = JSON.parse(JSON.stringify(localDiagram));
+            polygonID = b.id; 
             for (var i = 0; i < b.diagram.length; i++) {
                 if (b.diagramNames[i] == "Symbol") {
                     b.diagram[i] = Object.assign(new Symbol, b.diagram[i]);
@@ -48,15 +49,8 @@ function loadDiagram() {
             diagram.length = b.diagram.length;
             for (var i = 0; i < b.diagram.length; i++) {
                 diagram[i] = b.diagram[i];
-                b.diagram[i].setID(i);
                 diagram[i].createPoints();
             }
-
-
-            // points.length = b.points.length;
-            // for (var i = 0; i < b.points.length; i++) {
-            //     points[i] = new Point(b.points[i].x, b.points[i].y);
-            // }
         }
     }
 
@@ -146,7 +140,7 @@ function Save() {
         c[i] = diagram[i].constructor.name;
         c[i] = c[i].replace(/"/g,"");
     }
-    var obj = {diagram:diagram, points:convertPointsFromObjects(points), diagramNames:c};
+    var obj = {diagram:diagram, points:convertPointsFromObjects(points), diagramNames:c, id:polygonID};
     a = JSON.stringify(obj, null, "\t");
 }
 

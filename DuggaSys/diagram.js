@@ -996,7 +996,8 @@ diagram.updateLineRelations = function() {
 diagram.sortConnectors = function() {
     for (var i = 0; i < diagram.length; i++) {
         if (diagram[i].type == "Polygon") {
-            diagram[i].sortAllConnectors();
+            // diagram[i].sortAllConnectors();
+            diagram[i].sortLines();
         }
     }
 }
