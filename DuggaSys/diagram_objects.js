@@ -2887,6 +2887,31 @@ function Polygon(type, kindOfSymbol) {
         this.getUpdatedSize();
     }
 
+    this.setMinSize = function(){
+    	switch(this.symbolkind){
+    		case "Attribute":
+    			this.minWidth = 70;
+    			this.minHeight = 50;
+    			break;
+    		case "Entity":
+    			this.minWidth = 70;
+    			this.minHeight = 50;
+    			break;
+    		case "Relation":
+    			this.minWidth = 50;
+    			this.minHeight = 30;
+    			break;
+    		case "Class":
+    			this.minWidth = 70;
+    			this.minHeight = 50;
+    			break;
+    		case "Text":
+    			this.minWidth = 20;
+    			this.minHeight = 20;
+    			break;
+    	}
+    }
+
     this.getUpdatedSize = function(){
     	if(this.symbolkind != "Line"){
 	        this.width = Math.abs(this.pointsArray[0].x - this.pointsArray[2].x);
@@ -3040,6 +3065,7 @@ function Polygon(type, kindOfSymbol) {
     }
 
     this.setAsParent = function(){
+    	console.log("Parent: " + this.pointsArray.length)
     	for(let i = 0; i < this.pointsArray.length; i++){
     		this.pointsArray[i].setParentID(this.id);
     	}
@@ -3188,7 +3214,8 @@ function Polygon(type, kindOfSymbol) {
     	let y2 = this.bottomright.y;
     	
     	drawSquare(x1, y1, x2, y2);
-
+    	drawLine(this.pointsArray[4].x, this.pointsArray[4].y, this.pointsArray[5].x, this.pointsArray[5].y);
+    	drawLine(this.pointsArray[6].x, this.pointsArray[6].y, this.pointsArray[7].x, this.pointsArray[7].y);
     }
 
     this.drawText = function(){
@@ -3370,6 +3397,12 @@ function endFreeDraw(){
 function endPolygonDraw() {
     let polygon = new Polygon("Polygon", submode);
     polygon.setID();
+    polygon.setMinSize();
+
+    let minSize = assertMinSize(currentlyDrawnObject[0].x, currentlyDrawnObject[0].y,
+							    currentlyDrawnObject[1].x, currentlyDrawnObject[1].y, polygon.minWidth, polygon.minHeight);
+    currentlyDrawnObject[1].x = minSize.x;
+    currentlyDrawnObject[1].y = minSize.y;
 
     let x1 = currentlyDrawnObject[0].x;
     let x2 = currentlyDrawnObject[1].x;
@@ -3378,6 +3411,7 @@ function endPolygonDraw() {
 
     if(submode == "Line"){
     	if(!hoveredObject || hoveredObject.symbolkind == "Line"){
+    		cancelPolygonDraw();
     		return false;
     	}
     	createLine(x1, y1, x2, y2, polygon);
@@ -3395,7 +3429,7 @@ function endPolygonDraw() {
     	console.log("Unknown subclass");
     }
 
-    console.log(polygon.textLines);
+    console.log(currentlyDrawnObject.length)
     polygon.addPoints(currentlyDrawnObject);
     polygon.setAsParent();
 
@@ -3407,6 +3441,12 @@ function endPolygonDraw() {
     	moveObjectToBack(polygon);
     }
 
+    SaveState();
+}
+
+function cancelPolygonDraw() {
+    isFirstPoint = true;
+    currentlyDrawnObject = [];
     SaveState();
 }
 
@@ -3427,24 +3467,24 @@ function moveObjectToBack(object){
 	}
 }
 
-function assertMinSize(x1, y1, x2, y2){
-	if(Math.abs(x1-x2) < 50) {
+function assertMinSize(x1, y1, x2, y2, minWidth, minHeight){
+	if(Math.abs(x1-x2) < minWidth) {
     	if(x1 > x2){
-    		x2 = x1 - 50;
+    		x2 = x1 - minWidth;
     	} else {
-    		x2 = x1 + 50;
+    		x2 = x1 + minWidth;
     	}
     }
 
- 	if(Math.abs(y1-y2) < 50) {
+ 	if(Math.abs(y1-y2) < minHeight) {
     	if(y1 > y2){
-    		y2 = y1 - 50;
+    		y2 = y1 - minHeight;
     	} else {
-    		y2 = y1 + 50;
+    		y2 = y1 + minHeight;
     	}
     }
 
-    return {x2: x2, y2: y2}
+    return { x: x2, y: y2 }
 }
 
 function createInitialSquare(x1, y1, x2, y2){
@@ -3475,7 +3515,15 @@ function createRelation(x1, y1, x2, y2){
 }
 
 function createClass(x1, y1, x2, y2){
-	createInitialSquare(x1, y1, x2, y2);
+	createInitialSquare(x1, y1, x2, y2);  
+    // currentlyDrawnObject.push(new Point(x1, (y1 + y2) / 3));
+    // currentlyDrawnObject.push(new Point(x2, (y1 + y2) / 3));
+    // currentlyDrawnObject.push(new Point(x1, (y1 + y2) / 3) * 2);	
+    // currentlyDrawnObject.push(new Point(x2, (y1 + y2) / 3) * 2);	
+    // currentlyDrawnObject.push(new Point(x1, y1);
+    // currentlyDrawnObject.push(new Point(x1, y1);
+    // currentlyDrawnObject.push(new Point(x1, y1);
+    // currentlyDrawnObject.push(new Point(x1, y1);
 }
 
 function createText(x1, y1, x2, y2, polygon){

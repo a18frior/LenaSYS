@@ -2445,10 +2445,12 @@ function mousemoveevt(ev, t) {
     // Left mouse click logic
     if(canvasLeftClick){
         if(uimode == "Normal" && selected_objects.length > 0){
+            console.log("Move")
             for(let i = 0; i < selected_objects.length; i++){
-                selected_objects[i].move((currentMouseCoordinateX - startMouseCoordinateX), 
-                                         (currentMouseCoordinateY - startMouseCoordinateY));
-                                         
+                if(selected_objects[i].symbolkind != "Line"){
+                    selected_objects[i].move((currentMouseCoordinateX - startMouseCoordinateX), 
+                                             (currentMouseCoordinateY - startMouseCoordinateY));
+                }                                         
             }
         }
     }
@@ -2458,6 +2460,8 @@ function mousemoveevt(ev, t) {
 
     }
 
+    currentMouseCoordinateX = canvasToPixels(ev.clientX - boundingRect.left).x;
+    currentMouseCoordinateY = canvasToPixels(0, ev.clientY - boundingRect.top).y;
     startMouseCoordinateX = currentMouseCoordinateX;
     startMouseCoordinateY = currentMouseCoordinateY;  
 
