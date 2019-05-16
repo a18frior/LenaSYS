@@ -1251,6 +1251,18 @@ function drawCircle(cx, cy, radius) {
     ctx.restore();
 }
 
+function drawCircleOnCanvas(cx, cy, radius, color) {
+    ctx.save();
+    ctx.strokeStyle = color;
+    ctx.fillStyle = color;
+    ctx.beginPath();
+    ctx.arc(cx, cy, radius, 0, Math.PI * 2);
+    ctx.closePath();
+    ctx.stroke();
+    ctx.fill();
+    ctx.restore();
+}
+
 function showA4State(){
     // Sets icons based on the state of the A4
     setCheckbox($(".drop-down-option:contains('Toggle A4 Holes')"), toggleA4Holes=false);
@@ -1380,12 +1392,12 @@ function mod(n, m) {
 //----------------------------------------------------------
 
 function updateGraphics() {
+    console.log(canvas.height / zoomValue);
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     diagram.updateQuadrants();
     drawGrid();
     drawOrigoLine();
     //TODO delete drawCenterOfCanvas() only on the next row
-    drawCenterOfCanvas();
     if(developerModeActive) {
         drawOrigo();
         drawCenterOfCanvas();
@@ -1395,6 +1407,13 @@ function updateGraphics() {
     diagram.draw();
     points.drawPoints();
     drawVirtualA4();
+    drawCenterOfCanvas();
+    for(let i = 0; i < circleArray.length; i++){
+        drawCircleOnCanvas(circleArray[i].x, circleArray[i].y, 3, "green");
+    }
+
+    drawCircleOnCanvas(canvas.width / 2, canvas.height / 2, 2, "black");
+    // drawCircleOnCanvas(canvas.width / 2 / zoomValue, canvas.height / 2 / zoomValue, 2, "black");
 }
 
 //---------------------------------------------------------------------------------
@@ -1973,7 +1992,8 @@ function reWrite() {
          + Math.round((zoomValue * 100)) + "%" + " </p>";
         document.getElementById("valuesCanvas").innerHTML = "<p><b>Coordinates:</b> "
          + "X=" + decimalPrecision(currentMouseCoordinateX, 0).toFixed(0)
-         + " & Y=" + decimalPrecision(currentMouseCoordinateY, 0).toFixed(0) + " | Top-left Corner(" + sx + ", " + sy + " )</p>";
+         + " & Y=" + decimalPrecision(currentMouseCoordinateY, 0).toFixed(0) + 
+         " | Top-left Corner(" + origoOffsetX + ", " + origoOffsetY + " )</p>";
     } else {
         document.getElementById("zoomV").innerHTML = "<p><b>Zoom:</b> "
          + Math.round((zoomValue * 100)) + "%" + "   </p>";
@@ -2561,26 +2581,66 @@ function switchToolbar(direction) {
 // zoomInMode: Function for the zoom in and zoom out in the canvas element
 //----------------------------------------------------------------------
 
+var circleArray = [];
+var CX = 0, CY = 0, NX = 0, NY = 0, DX = 0, DY = 0;
+var firstX = 0, firstY = 0;
+
 function zoomInMode(requestFrom) {
     // Variables for focus on mouse pointer
     let currentMouseX = pixelsToCanvas(currentMouseCoordinateX).x;
     let currentMouseY = pixelsToCanvas(0, currentMouseCoordinateY).y;
     // Variables for focus on center of camera
-    let centerX = (canvas.width * zoomValue) / 2;
-    let centerY = (canvas.height * zoomValue) / 2;
-    console.log("Before:");
-    console.log("Center X: " + centerX + " Y: " + centerY);
+    let centerX = pixelsToCanvas(canvas.width / 2 - origoOffsetX).x;
+    let centerY = pixelsToCanvas(0, canvas.height / 2 - origoOffsetY).y;
+
+    CX = (canvas.width / 2 - origoOffsetX) / zoomValue;
+    CY = (canvas.height / 2 - origoOffsetY) / zoomValue;
+    if(firstX == 0){
+        firstX = CX;
+        firstY = CY;
+    }
+
+    console.log("BEFORE: " + pixelsToCanvas(centerX).x, pixelsToCanvas(0, centerY).y);
+    console.log("BEFORE: " + pixelsToCanvas(origoOffsetX).x, pixelsToCanvas(0, origoOffsetY).y);
+
+    let oldZoom = zoomValue;
 
     zoomValue = document.getElementById("ZoomSelect").value;
+
+    centerX = pixelsToCanvas(canvas.width / 2 - origoOffsetX).x;
+    centerY = pixelsToCanvas(0, canvas.height / 2 - origoOffsetY).y;
+
+    if(oldZoom > zoomValue){
+        DX = Math.round((CX * 0.9) - CX);
+        DY = Math.round((CY * 0.9) - CY);
+    } else if (zoomValue > oldZoom) {
+        DX = Math.round((CX * 1.1) - CX);
+        DY = Math.round((CY * 1.1) - CY);
+    }
+
+    NX = origoOffsetX - DX;
+    NY = origoOffsetY - DY; 
+
+    circleArray.push({ x: NX, y: NY });
+
+    console.log("AFTER: " + pixelsToCanvas(centerX).x, pixelsToCanvas(0, centerY).y);
+    console.log("AFTER: " + pixelsToCanvas(origoOffsetX).x, pixelsToCanvas(0, origoOffsetY).y);
+    console.log("DIFF: " + DX, DY);
+
     if(requestFrom == "scroll") {
       origoOffsetX += currentMouseX - pixelsToCanvas(currentMouseCoordinateX).x;
       origoOffsetY += currentMouseY - pixelsToCanvas(0, currentMouseCoordinateY).y;
     }
     else {
-      origoOffsetX += centerX - (canvas.width * zoomValue) / 2;
-      origoOffsetY += centerY - (canvas.height * zoomValue) / 2;
-      console.log(" ");
-      console.log("Camera X: " + centerX + " Y: " + centerY);
+        if(oldZoom != zoomValue){
+            origoOffsetX = NX;
+            origoOffsetY = NY;
+        }
+      // console.log(((canvas.width / (zoomValue / oldZoom)) - canvas.width) / 2);
+      // origoOffsetX += ((canvas.width / (zoomValue / oldZoom)) - canvas.width) / 2;
+      // origoOffsetY += ((canvas.height / (zoomValue / oldZoom)) - canvas.height) / 2;
+      // console.log(" ");
+      // console.log("Camera X: " + centerX + " Y: " + centerY);
     }
     reWrite();
     updateGraphics();
