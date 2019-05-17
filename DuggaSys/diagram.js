@@ -670,7 +670,6 @@ function copySymbol(symbol) {
     clone.isOval = jQuery.extend(true, {}, symbol.isOval);
     clone.isAttribute = jQuery.extend(true, {}, symbol.isAttribute);
     clone.isRelation = jQuery.extend(true, {}, symbol.isRelation);
-    clone.pointsAtSamePosition = jQuery.extend(true, {}, symbol.pointsAtSamePosition);
     clone.operations = jQuery.extend(true, {}, symbol.operations);
     clone.attributes = jQuery.extend(true, {}, symbol.operations);
     clone.cardinality = jQuery.extend(true, {}, symbol.cardinality);
