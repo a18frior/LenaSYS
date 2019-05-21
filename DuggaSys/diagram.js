@@ -923,7 +923,6 @@ diagram.deleteObject = function(object) {
     }
     if(diagram.length == 0){
         resetSerialNumbers();
-        removeLocalStorage();
     }
 }
 
