@@ -1379,7 +1379,8 @@ function ladexport() {
 // Copy Ladexport content tp clipboard
 //----------------------------------------
 function copyLadexport() {
-	alert("Copy!");
+	console.log(document.getElementById('resultlistarea').value);
+
 }
 
 function closeLadexport() {
