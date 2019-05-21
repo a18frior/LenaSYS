@@ -143,7 +143,7 @@
                             <div class="drop-down-divider">
                             </div>
                             <div class="drop-down-item">
-                                <span class="drop-down-option" onclick='clearCanvas(); removeLocalStorage();'>Clear Diagram</span>
+                                <span class="drop-down-option" onclick='clearCanvas();'>Clear Diagram</span>
                                 <i id="hotkey-clear" class="hotKeys">Ctrl + A, Delete</i>
                             </div>
                         </div>
