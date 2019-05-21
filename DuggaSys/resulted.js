@@ -1379,7 +1379,7 @@ function ladexport() {
 // Copy Ladexport content tp clipboard
 //----------------------------------------
 function copyLadexport() {
-
+	alert("Copy!");
 }
 
 function closeLadexport() {
