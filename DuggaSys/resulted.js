@@ -1379,7 +1379,11 @@ function ladexport() {
 // Copy Ladexport content tp clipboard
 //----------------------------------------
 function copyLadexport() {
-	console.log(document.getElementById('resultlistarea').value);
+	var copiedText = document.getElementById('resultlistarea').value;
+	copiedText.select();
+	document.execCommand("copy");
+	console.log(copiedText);
+	
 
 }
 
