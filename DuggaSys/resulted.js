@@ -1383,7 +1383,7 @@ function copyLadexport() {
 	copyIcon.style.backgroundColor = '#868585';
 		setInterval(function(){ 
 			copyIcon.style.backgroundColor = '#afaeae';
-		 }, 4000);
+		 }, 5000);
 
 	var copieText = document.getElementById('resultlistarea');
 	copieText.select();
