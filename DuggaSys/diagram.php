@@ -193,9 +193,11 @@
                             </div>
                             <div class="drop-down-item">
                                 <span class="drop-down-option" onclick='addGroupToSelected(event)'>Add group to selected</span>
+                                <i id="hotkey-addGroup" class="hotKeys">Alt + 1</i>
                             </div>
                             <div class="drop-down-item">
                                 <span class="drop-down-option" onclick='removeGroupFromSelected(event)'>Remove group from selected</span>
+                                <i id="hotkey-removeGroup" class="hotKeys">Alt + 2</i>
                             </div>
                             <div class="drop-down-divider">
                             </div>
@@ -437,11 +439,11 @@
                 </div>
             </div>
             <div class='mode-wrap'>
-                <div id="importButtonWrap" class="importButtonWrap">
-                    <button type="button" class="buttonStyleDialog" onclick="modeSwitchConfirmed(true);">Accept</button>
+                <div id="modeSwitchButton1" class="importButtonWrap">
+                    <button id="modeSwitchButtonAccept" type="button" class="buttonStyleDialog" onclick="modeSwitchConfirmed(true);">Accept</button>
                 </div>
-                <div id="importButtonWrap" class="importButtonWrap">
-                    <button type="button" class="buttonStyleDialog" onclick="modeSwitchConfirmed(false);">Cancel</button>
+                <div id="modeSwitchButton2" class="importButtonWrap">
+                    <button id="modeSwitchButtonCancel" type="button" class="buttonStyleDialog" onclick="modeSwitchConfirmed(false);">Cancel</button>
                 </div>
             </div>
         </div>
