@@ -1379,6 +1379,11 @@ function ladexport() {
 // Copy Ladexport content tp clipboard
 //----------------------------------------
 function copyLadexport() {
+	var copyIcon = document.getElementById("copyClipboard");
+	copyIcon.style.backgroundColor = '#868585';
+		setInterval(function(){ 
+			copyIcon.style.backgroundColor = '#afaeae';
+		 }, 4000);
 
 	var copieText = document.getElementById('resultlistarea');
 	copieText.select();
