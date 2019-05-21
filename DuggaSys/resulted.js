@@ -1358,7 +1358,10 @@ function exportColumnHeading(format, heading, colname) {
 	return str;
 }
 
-//Function for exporting grades to ladoc
+
+//----------------------------------------
+// Exporting grades to ladoc
+//----------------------------------------
 function ladexport() {
 	let expo = "";
 
@@ -1367,10 +1370,15 @@ function ladexport() {
 	expo += document.getElementById("laddate").value + "\n";
 	expo += myTable.export("csv", ";");
 
-	//alert(expo);
 	document.getElementById("resultlistheader").innerHTML = "Results for: " + document.getElementById("ladselect").value;
 	document.getElementById("resultlistarea").value = expo;
 	document.getElementById("resultlistpopover").style.display = "flex";
+
+}
+//----------------------------------------
+// Copy Ladexport content tp clipboard
+//----------------------------------------
+function copyLadexport() {
 
 }
 
@@ -1378,7 +1386,6 @@ function closeLadexport() {
 	document.getElementById("resultlistarea").value = "";
 	document.getElementById("resultlistpopover").style.display = "none";
 }
-
 function updateTable() {
 	myTable.renderTable();
 }
