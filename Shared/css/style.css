@@ -3514,11 +3514,11 @@ rect[class*="activitymarker"]:hover {
 .alertmsg#cookiemsg input {
   align-self: center;
 }
-
+*/
 .alertmsg#cookiemsg {
   bottom: 0;
 }
-*/
+
 
 .nowrap {
   white-space: nowrap;
@@ -4127,7 +4127,7 @@ only screen and (max-device-width: 530px) {
     left: 10%;*/
   }
 
-  /* #cookiemsg {
+   #cookiemsg {
     background-color: var(--color-accent);
     z-index: 1000;
     position: fixed;
@@ -4137,7 +4137,7 @@ only screen and (max-device-width: 530px) {
     padding: 0 20px 0 0px;
     display: flex;
     text-align: center;
-  } */
+  }
 
   #Sectionlist .course {
     font-size: 16px;
