@@ -1389,8 +1389,20 @@ function copyLadexport() {
 	copieText.select();
 	document.execCommand("copy");
 	
-	var expDate = new Date();
-	document.getElementById('lastExpDate').innerHTML = "Last exported: " + expDate ;
+	var today = new Date();
+	var dd = today.getDate();
+	var mm = today.getMonth() + 1; //January is 0!
+	
+	var yyyy = today.getFullYear();
+	if (dd < 10) {
+		dd = '0' + dd; // Adds a 0 to days below 10
+	} 
+	if (mm < 10) {
+		mm = '0' + mm; // Adds a 0 to days below 10
+	} 
+ today = dd + '-' + mm + '-' + yyyy;
+
+	document.getElementById('lastExpDate').innerHTML = "Last exported: " + today ;
 	
 }
 
