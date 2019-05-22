@@ -2135,7 +2135,7 @@ function reWrite() {
         document.getElementById("valuesCanvas").style.display = 'none';
 
         //If you're using smaller screens then the zoom-bar will scale.
-        var smallerScreens = window.matchMedia("(max-width: 370px)");
+        var smallerScreens = window.matchMedia("(max-width: 900px)");
         if (smallerScreens.matches) {
             document.getElementById("selectDiv").style.maxWidth = '50%';
         } else {
