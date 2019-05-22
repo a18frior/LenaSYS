@@ -4214,8 +4214,15 @@ only screen and (max-device-width: 320px) {
   padding: 2px 0px 2px 10px;
 }
 
+@media only screen and (max-width: 745px) {
+  .selectDiv, #valuesCanvas {
+    max-width: 30%;
+    min-width: 30%;
+  }
+}
+
 /* Is used to style a Select-box in diagram.php. */
-#selectDiv {
+.selectDiv {
   display: flex;
   align-items: center;
   padding-right: 10px;
@@ -4232,9 +4239,9 @@ only screen and (max-device-width: 320px) {
   box-shadow: 0px 2px 10px 1px rgba(219, 219, 219, 1);
 }
 
-#selectDiv select {
+.selectDiv select {
   height: 34px;
-  font-size: 14px;
+  font-size: 12px;
   border: 0;
   -webkit-appearance: none;
   /*Removes default chrome and safari style*/
@@ -4245,11 +4252,11 @@ only screen and (max-device-width: 320px) {
   transition: 0.2s;
 }
 
-#selectDiv select::-ms-expand {
+.selectDiv select::-ms-expand {
   display: none;
 }
 
-#selectDiv select::-moz-focus-inner {
+.selectDiv select::-moz-focus-inner {
   border: 0;
   padding: 0;
 }
@@ -4294,7 +4301,7 @@ only screen and (max-device-width: 320px) {
   position: absolute;
   z-index: 1;
   bottom: 100%;
-  left: -20px;
+  left: -10px;
 }
 
 #zoomDecrease:hover + .tooltiptextDec {
@@ -4346,9 +4353,9 @@ only screen and (max-device-width: 320px) {
 }
 
 #zoomV {
-  margin-left: 10px;
-  width: 80px;
-  font-size: 14px;
+  margin-left: 12px;
+  width: 66.5px;
+  font-size: 12px;
   right: 1%;
 }
 
@@ -4406,7 +4413,7 @@ only screen and (max-device-width: 320px) {
   border-radius: 6px;
   background: white;
   border: 2px solid #d4d4d4;
-  font-size: 14px;
+  font-size: 12px;
   bottom: 11px;
   left: 65px;
   position: absolute;

@@ -373,7 +373,7 @@
                 -->
                 <div id='valuesCanvas'>
                 </div>
-                <div id="selectDiv">
+                <div class="selectDiv">
                     <span class="tooltipDecrease">
                         <button name="Zoom" id="zoomDecrease" class="zoomButtonStyle" type="button" onclick="changeZoom(-0.1, event);">-</button>
                         <span class="tooltiptextDec">Zoom Out</span>
