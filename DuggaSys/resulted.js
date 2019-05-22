@@ -1388,8 +1388,10 @@ function copyLadexport() {
 	var copieText = document.getElementById('resultlistarea');
 	copieText.select();
 	document.execCommand("copy");
-	console.log(copieText.value);
-
+	
+	var expDate = new Date();
+	document.getElementById('lastExpDate').innerHTML("hej");
+	
 }
 
 function closeLadexport() {
