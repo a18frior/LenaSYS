@@ -1390,7 +1390,7 @@ function copyLadexport() {
 	document.execCommand("copy");
 	
 	var expDate = new Date();
-	document.getElementById('lastExpDate').innerHTML = "tja";
+	document.getElementById('lastExpDate').innerHTML = "Last exported: " + expDate ;
 	
 }
 
