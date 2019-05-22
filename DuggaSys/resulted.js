@@ -1380,7 +1380,7 @@ function ladexport() {
 //----------------------------------------
 function copyLadexport() {
 	var copyIcon = document.getElementById("copyClipboard");
-	copyIcon.style.backgroundColor = '#868585';
+	copyIcon.style.backgroundColor = '#629c62';
 		setInterval(function(){ 
 			copyIcon.style.backgroundColor = '#afaeae';
 		 }, 5000);
@@ -1390,7 +1390,7 @@ function copyLadexport() {
 	document.execCommand("copy");
 	
 	var expDate = new Date();
-	document.getElementById('lastExpDate').innerHTML = "hej";
+	document.getElementById('lastExpDate').innerHTML = "tja";
 	
 }
 
