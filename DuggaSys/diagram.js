@@ -2104,12 +2104,13 @@ function reWrite() {
         + " & Y=" + decimalPrecision(currentMouseCoordinateY, 0).toFixed(0) + " | Top-left Corner(" + Math.round(origoOffsetX / zoomValue) + ", " + Math.round(origoOffsetY / zoomValue) + " ) </p>";
         document.getElementById("valuesCanvas").style.display = 'block';
 
+        //If you're using smaller screens in dev-mode then the coord-bar & zoom-bar will scale.
         var smallerScreensDev = window.matchMedia("(max-width: 745px)");
         if (smallerScreensDev.matches) {
-          document.getElementById("selectDiv").style.maxWidth = '30%';
-          document.getElementById("valuesCanvas").style.maxWidth = '30%';
+            document.getElementById("selectDiv").style.maxWidth = '30%';
+            document.getElementById("valuesCanvas").style.maxWidth = '30%';
         } else {
-          document.getElementById("selectDiv").style.minWidth = '20%';
+            document.getElementById("selectDiv").style.minWidth = '10%';
         }
 
         if (hoveredObject && hoveredObject.symbolkind != symbolKind.umlLine && hoveredObject.symbolkind != symbolKind.line && hoveredObject.figureType != "Free" && refreshedPage == true) {
@@ -2133,11 +2134,12 @@ function reWrite() {
         + Math.round((zoomValue * 100)) + "%" + "   </p>";
         document.getElementById("valuesCanvas").style.display = 'none';
 
-        var smallerScreensNotDev = window.matchMedia("(max-width: 370px)");
-        if (smallerScreensNotDev.matches) {
-          document.getElementById("selectDiv").style.maxWidth = '50%';
+        //If you're using smaller screens then the zoom-bar will scale.
+        var smallerScreens = window.matchMedia("(max-width: 370px)");
+        if (smallerScreens.matches) {
+            document.getElementById("selectDiv").style.maxWidth = '50%';
         } else {
-          document.getElementById("selectDiv").style.minWidth = '20%';
+            document.getElementById("selectDiv").style.minWidth = '10%';
         }
     }
 }
