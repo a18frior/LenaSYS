@@ -4214,15 +4214,8 @@ only screen and (max-device-width: 320px) {
   padding: 2px 0px 2px 10px;
 }
 
-@media only screen and (max-width: 745px) {
-  .selectDiv, #valuesCanvas {
-    max-width: 30%;
-    min-width: 30%;
-  }
-}
-
 /* Is used to style a Select-box in diagram.php. */
-.selectDiv {
+#selectDiv {
   display: flex;
   align-items: center;
   padding-right: 10px;
@@ -4239,7 +4232,7 @@ only screen and (max-device-width: 320px) {
   box-shadow: 0px 2px 10px 1px rgba(219, 219, 219, 1);
 }
 
-.selectDiv select {
+#selectDiv select {
   height: 34px;
   font-size: 12px;
   border: 0;
@@ -4252,11 +4245,11 @@ only screen and (max-device-width: 320px) {
   transition: 0.2s;
 }
 
-.selectDiv select::-ms-expand {
+#selectDiv select::-ms-expand {
   display: none;
 }
 
-.selectDiv select::-moz-focus-inner {
+#selectDiv select::-moz-focus-inner {
   border: 0;
   padding: 0;
 }
