@@ -3075,7 +3075,7 @@ span.arrow {
   background: var(--color-background);
   box-shadow: 2px 2px 8px #888;
   margin-top: 10px;
-  
+
 }
 
 #sortOptions {
@@ -3481,7 +3481,7 @@ rect[class*="activitymarker"]:hover {
   padding: 0 20px 0 0px;
   display: flex;
   text-align: center;
-  
+
 }
 
 .alertmsg p {
@@ -4127,7 +4127,7 @@ only screen and (max-device-width: 530px) {
     left: 10%;*/
   }
 
-  #cookiemsg {
+  /* #cookiemsg {
     background-color: var(--color-accent);
     z-index: 1000;
     position: fixed;
@@ -4137,7 +4137,7 @@ only screen and (max-device-width: 530px) {
     padding: 0 20px 0 0px;
     display: flex;
     text-align: center;
-  }
+  } */
 
   #Sectionlist .course {
     font-size: 16px;
