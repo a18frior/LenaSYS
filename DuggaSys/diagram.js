@@ -40,7 +40,7 @@ AJAXService("get", {}, "DIAGRAM");
 
 var diagram = [];
 
-var settings = { 
+var settings = {
     serialNumbers: {
         Attribute: 0,
         Entity: 0,
@@ -112,7 +112,7 @@ var A4Orientation = "portrait";     // If virtual A4 is portrait or landscape
 var crossStrokeStyle1 = "#f64";     // set the color for the crosses.
 var crossFillStyle = "#d51";
 var crossStrokeStyle2 = "#d51";
-var modeSwitchDialogActive = false; // if the mode switch dialog is currently active 
+var modeSwitchDialogActive = false; // if the mode switch dialog is currently active
 var distanceMovedX = 0;             // the distance moved since last use of resetViewToOrigin()
 var distanceMovedY = 0;
 var minEntityX = 100;               //the minimum size for an Entity are set by the values seen below.
@@ -474,7 +474,7 @@ function keyDownHandler(e) {
         ctrlIsClicked = true;
     } else if (key == enterKey) {
         if (modeSwitchDialogActive) {
-            // if the cancel button is focused then trigger that 
+            // if the cancel button is focused then trigger that
             if (document.activeElement.id == "modeSwitchButtonCancel") {
                 modeSwitchConfirmed(false);
             } else {
@@ -1224,8 +1224,8 @@ function initializeCanvas() {
     document.getElementById("canvasDiv").innerHTML = "<canvas id='myCanvas' style='border:1px solid #000000;' width='"
                 + (widthWindow * zoomValue) + "' height='" + (heightWindow * zoomValue)
                 + "' onmousemove='mousemoveevt(event,this);' onmousedown='mousedownevt(event);' onmouseup='mouseupevt(event);'></canvas>";
-    document.getElementById("valuesCanvas").innerHTML = "<p><b>Zoom:</b> " + Math.round((zoomValue * 100))
-                + "%   |   <b>Coordinates:</b> X=" + Math.round(origoOffsetX / zoomValue) + " & Y=" + Math.round(origoOffsetY / zoomValue) + "</p>";
+    document.getElementById("zoomV").innerHTML = "<p><b>Zoom:</b> " + Math.round((zoomValue * 100)) + "%" + " </p>";
+    document.getElementById("valuesCanvas").style.display = 'none';
     canvas = document.getElementById("myCanvas");
     if (canvas.getContext) {
         ctx = canvas.getContext("2d");
@@ -2102,7 +2102,7 @@ function reWrite() {
         document.getElementById("valuesCanvas").innerHTML = "<p><b>Coordinates:</b> "
         + "X=" + decimalPrecision(currentMouseCoordinateX, 0).toFixed(0)
         + " & Y=" + decimalPrecision(currentMouseCoordinateY, 0).toFixed(0) + " | Top-left Corner(" + Math.round(origoOffsetX / zoomValue) + ", " + Math.round(origoOffsetY / zoomValue) + " ) </p>";
-
+        document.getElementById("valuesCanvas").style.display = 'block';
         if (hoveredObject && hoveredObject.symbolkind != symbolKind.umlLine && hoveredObject.symbolkind != symbolKind.line && hoveredObject.figureType != "Free" && refreshedPage == true) {
             document.getElementById("zoomV").innerHTML = "<p><b>Zoom:</b> "
             + Math.round((zoomValue * 100)) + "%" + " </p>";
@@ -2122,9 +2122,7 @@ function reWrite() {
     } else {
         document.getElementById("zoomV").innerHTML = "<p><b>Zoom:</b> "
         + Math.round((zoomValue * 100)) + "%" + "   </p>";
-        document.getElementById("valuesCanvas").innerHTML = "<p><b>Coordinates:</b> "
-        + "X=" + decimalPrecision(currentMouseCoordinateX, 0).toFixed(0)
-        + " & Y=" + decimalPrecision(currentMouseCoordinateY, 0).toFixed(0) + "</p>";
+        document.getElementById("valuesCanvas").style.display = 'none';
     }
 }
 
