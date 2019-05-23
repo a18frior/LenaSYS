@@ -3392,11 +3392,11 @@ rect[class*="activitymarker"]:hover {
 .alertmsg#cookiemsg input {
   align-self: center;
 }
-
+*/
 .alertmsg#cookiemsg {
   bottom: 0;
 }
-*/
+
 
 .nowrap {
   white-space: nowrap;
