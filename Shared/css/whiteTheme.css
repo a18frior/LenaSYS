@@ -37,11 +37,11 @@
 
 .codedropStyle {
     background-color: #614875;
-    border-color: rgb(0,0,0) transparent;	
+    border-color: rgb(0,0,0) transparent;
 }
 
 .docudropStyle {
-    background-color: #614875; 
+    background-color: #614875;
     background: rgb(0, 0, 0) transparent;
 }
 
@@ -77,10 +77,10 @@
 	padding: 5px 0px 0px 0px !important;
 	background-color: #614875;
 	text-align: right;
-	
+
 	/* Width of .no and .impo */
 	width: 32px !important;
-	
+
 }
 
 .codeborder .no {
@@ -226,7 +226,7 @@
   */
   background-color: #F2F2F2;
   color: #000;
-  border-bottom: 2px solid #9971AF; 
+  border-bottom: 2px solid #9971AF;
 }
 
 .impword2 {
@@ -236,7 +236,7 @@
     */
     background-color: #F2F2F2;
     color: #000;
-    border-bottom: 2px solid #9971AF; 
+    border-bottom: 2px solid #9971AF;
 }
 
 
@@ -247,8 +247,8 @@
   */
   background-color: #F2F2F2;
   color: #000;
-  border-bottom: 2px solid #9971AF; 
-  
+  border-bottom: 2px solid #9971AF;
+
   font-family: Hack,'Ubuntu Mono', "Andale Mono", AndaleMono, monospace;
 }
 
@@ -259,17 +259,17 @@
   */
   background-color: #F2F2F2;
   color: #000;
-  border-bottom: 2px solid #9971AF; 
+  border-bottom: 2px solid #9971AF;
 }
 
 .descbox code .impword {
   background-color: #FFFFFF;
   color: #000;
-  border-bottom: 2px solid #9971AF; 
+  border-bottom: 2px solid #9971AF;
 }
- 
+
 .descbox .imphi {
-  /*  
+  /*
   background-color: #fff;
   color: #000;
   */
@@ -279,7 +279,7 @@
 }
 
 .normtext .imphi {
-  /*  
+  /*
   background-color: #fff;
   color: #000;
   */
@@ -289,7 +289,7 @@
 }
 
 .impo .imphi {
-  /*  
+  /*
   background-color: #fff;
   color: #000;
   */
@@ -349,11 +349,11 @@
     right: 0px;
     bottom: 0px;
     left: 0px;
-    overflow: auto;
+    overflow: scroll;
 /*    font-family: Arial,Sans-Serif;*/
     font-size: 14px;
     outline: 0 none;
-    background-color: #F2F2F2; 
+    background-color: #F2F2F2;
 }
 
 

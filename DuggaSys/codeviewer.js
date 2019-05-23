@@ -142,7 +142,7 @@ function returned(data)
   if(retData['numbox']>retData['box'].length){
       alert("Number of boxes is inconsistent\n"+retData['numbox']+"\n"+retData['box'].length);
   }
-
+  var boxtypeCounter = 0;
   for(var i=0;i<retData['numbox'];i++){
 		var contentid="box"+retData['box'][i][0];
 		var boxid=retData['box'][i][0];
@@ -152,12 +152,14 @@ function returned(data)
 		var boxfilename=retData['box'][i][5];
 		var boxmenuheight = 0;
 
+
 		// don't create templatebox if it already exists
 		if($("#" + contentid).length == 0){
 			addTemplatebox(contentid);
 		}
 
 		if(boxtype === "CODE"){
+      boxtypeCounter = boxtypeCounter+1;
 			// Print out code example in a code box
 			$("#"+contentid).removeAttr("contenteditable");
 			$("#"+contentid).removeClass("descbox").addClass("codebox");
@@ -264,6 +266,27 @@ function returned(data)
 			}
 		}
 	}
+  console.log(document.getElementById("box1"));
+  console.log(boxtypeCounter);
+  if(boxtypeCounter>0){
+    for(var i=0; i<boxtypeCounter; i++){
+      document.getElementById("box"+i).onscroll = function() {
+        test(this)
+      };
+    }
+  }
+
+  // for(var i=0; i<retData['numbox']; i++){
+  //   var contentid="box"+retData['box'][i][0];
+  //   $("#"+contentid).on('scroll',function () {test(this);});
+  // }
+
+// set font size
+// console.log(contentid);
+// document.getElementById(contentid).onscroll = function() {
+//   test(this)
+// };
+// $("#box"+retData['box'][i][0]).on('scroll',function () {test(this);});
 
 	//hides maximize button if not supported
 	hideMaximizeAndResetButton();
@@ -524,7 +547,7 @@ function changeDirectory(kind)
 	if (kind.id) {
 		kindNum = kind.id.split('_')[1];
 	}
-	
+
 	if (kindNum) {
 		var chosen=$("#filename_"+kindNum).val();
 		var wordlist = $('#wordlist_'+kindNum);
@@ -667,7 +690,7 @@ function updateContent()
 }
 
 /*-----------------------------------------------------------------------
-  -              updateTitle: Updates the title being edited            -     
+  -              updateTitle: Updates the title being edited            -
   -----------------------------------------------------------------------*/
 function updateTitle(e) {
 	if (e.key === 'Enter') {
@@ -738,7 +761,7 @@ function createboxmenu(contentid, boxid, type)
 			}else if(type=="CODE"){
 				str+="<td class='butto2 editcontentbtn showdesktop codedropbutton' id='settings' title='Edit box settings' onclick='displayEditContent("+boxid+");' ><img src='../Shared/icons/general_settings_button.svg' /></td>";
 				str+='<td class="butto2 boxtitlewrap" title="Change box title"><span id="boxtitle2" class="boxtitleEditable" contenteditable="true" onblur="updateContent();">'+retData['box'][boxid-1][4]+'</span></td>';
-				
+
 			}else if(type=="IFRAME"){
 				str+="<td class='butto2 editcontentbtn showdesktop codedropbutton' id='settings' title='Edit box settings' onclick='displayEditContent("+boxid+");' ><img src='../Shared/icons/general_settings_button.svg' /></td>";
 				str+='<td class="butto2 boxtitlewrap" title="Change box title"><span id="boxtitle2" class="boxtitleEditable">'+retData['box'][boxid-1][4]+'</span></td>';
@@ -3252,5 +3275,5 @@ function copyCodeToClipboard(boxid) {
 		setTimeout(function(){
 			$("#notification" + boxid).fadeOut("fast");
 		}, 500);
-	});	
+	});
 }
