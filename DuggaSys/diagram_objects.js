@@ -954,17 +954,8 @@ function Symbol(kindOfSymbol) {
 
         // Anchors and draggable point
         if (this.symbolkind == symbolKind.umlLine && this.draggablePoints.length > 1) {
-            // Breakpoints
             var x3 = pixelsToCanvas(points[this.draggablePoints[0]].x).x;
             var y3 = pixelsToCanvas(0, points[this.draggablePoints[0]].y).y;
-            var x4 = pixelsToCanvas(points[this.anchors[0]].x).x;
-            var y4 = pixelsToCanvas(0, points[this.anchors[0]].y).y;
-            var x5 = pixelsToCanvas(points[this.anchors[1]].x).x;
-            var y5 = pixelsToCanvas(0, points[this.anchors[1]].y).y;
-            var x6 = pixelsToCanvas(points[this.anchors[2]].x).x;
-            var y6 = pixelsToCanvas(0, points[this.anchors[2]].y).y;
-            var x7 = pixelsToCanvas(points[this.anchors[3]].x).x;
-            var y7 = pixelsToCanvas(0, points[this.anchors[3]].y).y;
         }
 
         if (this.isLocked) {
@@ -1022,41 +1013,11 @@ function Symbol(kindOfSymbol) {
             ctx.arc(x2,y2,5 * diagram.getZoomValue(),0,2*Math.PI,false);
             ctx.fillStyle = '#F82';
             ctx.fill();
-
-            ctx.beginPath();
-            ctx.arc(x3,y3,5 * diagram.getZoomValue(),0,2*Math.PI,false);
-            ctx.fillStyle = '#F82';
-            ctx.fill();
-
-            ctx.beginPath();
-            ctx.arc(x4,y4,5 * diagram.getZoomValue(),0,2*Math.PI,false);
-            ctx.fillStyle = '#F82';
-            ctx.fill();
   
             if (this.symbolkind == symbolKind.umlLine && this.draggablePoints.length > 0) {
                 ctx.beginPath();
                 ctx.arc(x3,y3,5 * diagram.getZoomValue(),0,2*Math.PI,false);
                 ctx.fillStyle = '#ccc';
-                ctx.fill();
-
-                ctx.beginPath();
-                ctx.arc(x4,y4,5 * diagram.getZoomValue(),0,2*Math.PI,false);
-                ctx.fillStyle = '#F82';
-                ctx.fill();
-
-                ctx.beginPath();
-                ctx.arc(x5,y5,5 * diagram.getZoomValue(),0,2*Math.PI,false);
-                ctx.fillStyle = '#F82';
-                ctx.fill();
-
-                ctx.beginPath();
-                ctx.arc(x6,y6,5 * diagram.getZoomValue(),0,2*Math.PI,false);
-                ctx.fillStyle = '#F82';
-                ctx.fill();
-
-                ctx.beginPath();
-                ctx.arc(x7,y7,5 * diagram.getZoomValue(),0,2*Math.PI,false);
-                ctx.fillStyle = '#F82';
                 ctx.fill();
             }
 
