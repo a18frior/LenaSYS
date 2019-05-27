@@ -1483,10 +1483,10 @@ function Symbol(kindOfSymbol) {
         }
 
         // Variables for UML line breakpoints
-        var breakpointStartX = x3;     // X Coordinate for start breakpoint
-        var breakpointStartY = y3;     // Y Coordinate for start breakpoint
-        var breakpointEndX = x4;       // X Coordinate for end breakpoint
-        var breakpointEndY = y4;       // Y Coordinate for end breakpoint
+        var breakpointStartX = 0;     // X Coordinate for start breakpoint
+        var breakpointStartY = 0;     // Y Coordinate for start breakpoint
+        var breakpointEndX = 0;       // X Coordinate for end breakpoint
+        var breakpointEndY = 0;       // Y Coordinate for end breakpoint
         var middleBreakPointX = 0;    // X Coordinate for mid point between line start and end
         var middleBreakPointY = 0;    // Y Coordinate for mid point between line start and end
         var startLineDirection = "";  // Which side of the class the line starts from
