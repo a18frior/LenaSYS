@@ -1702,7 +1702,7 @@ function Symbol(kindOfSymbol) {
             ctx.lineTo(x2, y2);
             ctx.stroke();
         }
-        // this.drawUmlRelationLines(x1,y1,x2,y2, startLineDirection, endLineDirection);
+        this.drawUmlRelationLines(x1,y1,x2,y2, startLineDirection, endLineDirection);
     }
 
     // Add anchor points to UML line
