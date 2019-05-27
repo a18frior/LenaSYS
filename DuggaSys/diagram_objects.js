@@ -1543,30 +1543,30 @@ function Symbol(kindOfSymbol) {
         }
 
         if (startLineDirection == "left") {
-            breakpointStartX = x1 - 35;
+            breakpointStartX = x1 - 35 * diagram.getZoomValue();
             breakpointStartY = y1;
         } else if (startLineDirection == "right") {
-            breakpointStartX = x1 + 35;
+            breakpointStartX = x1 + 35 * diagram.getZoomValue();
             breakpointStartY = y1;
         } else if (startLineDirection == "up") {
-            breakpointStartY = y1 - 35;
+            breakpointStartY = y1 - 35 * diagram.getZoomValue();
             breakpointStartX = x1;
         } else if (startLineDirection == "down") {
-            breakpointStartY = y1 + 35;
+            breakpointStartY = y1 + 35 * diagram.getZoomValue();
             breakpointStartX = x1;
         }
 
         if (endLineDirection == "left") {
-            breakpointEndX = x2 - 35;
+            breakpointEndX = x2 - 35 * diagram.getZoomValue();
             breakpointEndY = y2;
         } else if (endLineDirection == "right") {
-            breakpointEndX = x2 + 35;
+            breakpointEndX = x2 + 35 * diagram.getZoomValue();
             breakpointEndY = y2;
         } else if (endLineDirection == "up") {
-            breakpointEndY = y2 - 35;
+            breakpointEndY = y2 - 35 * diagram.getZoomValue();
             breakpointEndX = x2;
         } else if (endLineDirection == "down") {
-            breakpointEndY = y2 + 35;
+            breakpointEndY = y2 + 35 * diagram.getZoomValue();
             breakpointEndX = x2;
         }
 
