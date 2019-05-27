@@ -1452,10 +1452,7 @@ function Symbol(kindOfSymbol) {
         ctx.stroke();
     }
 
-    this.drawUMLLine = function(x1, y1, x2, y2, x3 = 0, y3 = 0, x4 = 0, y4 = 0) {
-        this.clearAnchors();
-        this.clearDraggablePoints();
-
+    this.drawUMLLine = function(x1, y1, x2, y2) {
         //Checks if there is cardinality set on this object
         if(this.cardinality[0].value != "" && this.cardinality[0].value != null) {
             //Updates x and y position
@@ -1495,118 +1492,212 @@ function Symbol(kindOfSymbol) {
         var startLineDirection = "";  // Which side of the class the line starts from
         var endLineDirection = "";    // Which side of the class the line ends in
 
+        var conobj1 = this.getConnectedObjects()[0].corners();
+        var conobj2 = this.getConnectedObjects()[1].corners();
+
+        // Check if line's start point matches any class diagram
+        if (x1 == pixelsToCanvas(conobj1.tl.x).x) {
+            startLineDirection = "left";
+        } else if (x1 == pixelsToCanvas(conobj1.br.x).x) {
+            startLineDirection = "right";
+        } else if (y1 == pixelsToCanvas(0, conobj1.tl.y).y) {
+            startLineDirection = "up";
+        } else if (y1 == pixelsToCanvas(0, conobj1.br.y).y) {
+            startLineDirection = "down";
+        }
+
+        // Check if line's end point matches any class diagram
+        if (x2 == pixelsToCanvas(conobj2.tl.x).x) {
+            endLineDirection = "left";
+        } else if (x2 == pixelsToCanvas(conobj2.br.x).x) {
+            endLineDirection = "right";
+        } else if (y2 == pixelsToCanvas(0, conobj2.tl.y).y) {
+            endLineDirection = "up";
+        } else if (y2 == pixelsToCanvas(0, conobj2.br.y).y) {
+            endLineDirection = "down";
+        }
+
+        // Default if something breaks
+        if (startLineDirection === "") {
+            startLineDirection = "left";
+          }
+          if (endLineDirection === "") {
+            endLineDirection = "left";
+          }
+
         // Calculating the mid point between start and end
         if (x2 > x1) {
-            middleBreakPointX = x1 + (x2 - x1) / 2;
+            middleBreakPointX = x1 + Math.abs(x2 - x1) / 2;
         } else if (x1 > x2) {
-            middleBreakPointX = x2 + (x1 - x2) / 2;
+            middleBreakPointX = x2 + Math.abs(x1 - x2) / 2;
         } else {
             middleBreakPointX = x1;
         }
 
         if (y2 > y1) { // The code breaks if you don't use Math.abs, can be removed if fixed
-            middleBreakPointY = Math.abs(y1) + Math.abs(y2 - y1) / 2;
+            middleBreakPointY = y1 + Math.abs(y2 - y1) / 2;
         } else if (y1 > y2) {
-            middleBreakPointY = Math.abs(y2) + Math.abs(y1 - y2) / 2;
+            middleBreakPointY = y2 + Math.abs(y1 - y2) / 2;
         } else {
-            middleBreakPointY = Math.abs(y1);
+            middleBreakPointY = y1;
         }
 
-        // Start line
-        ctx.beginPath();
-        ctx.moveTo(x1, y1);
+        if (startLineDirection == "left") {
+            breakpointStartX = x1 - 35;
+            breakpointStartY = y1;
+        } else if (startLineDirection == "right") {
+            breakpointStartX = x1 + 35;
+            breakpointStartY = y1;
+        } else if (startLineDirection == "up") {
+            breakpointStartY = y1 - 35;
+            breakpointStartX = x1;
+        } else if (startLineDirection == "down") {
+            breakpointStartY = y1 + 35;
+            breakpointStartX = x1;
+        }
 
+        if (endLineDirection == "left") {
+            breakpointEndX = x2 - 35;
+            breakpointEndY = y2;
+        } else if (endLineDirection == "right") {
+            breakpointEndX = x2 + 35;
+            breakpointEndY = y2;
+        } else if (endLineDirection == "up") {
+            breakpointEndY = y2 - 35;
+            breakpointEndX = x2;
+        } else if (endLineDirection == "down") {
+            breakpointEndY = y2 + 35;
+            breakpointEndX = x2;
+        }
 
-        // Check all symbols in diagram and see if anyone matches current line's points coordinate
-        for (var i = 0; i < diagram.length; i++) {
-            if (diagram[i].symbolkind == symbolKind.uml) { // filter UML class
-                var currentSymbol = diagram[i].corners();
+        if (this.anchors.length == 0) {
+            this.addAnchor(breakpointStartX, breakpointStartY);
 
-                // Check if line's start point matches any class diagram
-                if (x1 == pixelsToCanvas(currentSymbol.tl.x).x) {
-                    startLineDirection = "left";
-                    breakpointStartX = x1 - 30;
-                    breakpointStartY = y1;
-                } else if (x1 == pixelsToCanvas(currentSymbol.br.x).x) {
-                    startLineDirection = "right";
-                    breakpointStartX = x1 + 30;
-                    breakpointStartY = y1;
-                } else if (y1 == pixelsToCanvas(0, currentSymbol.tl.y).y) {
-                    startLineDirection = "up"
-                    breakpointStartY = y1 - 30;
-                    breakpointStartX = x1;
-                } else if (y1 == pixelsToCanvas(0, currentSymbol.br.y).y) {
-                    startLineDirection = "down"
-                    breakpointStartY = y1 + 30;
-                    breakpointStartX = x1;
+            if ((startLineDirection === "up" || startLineDirection === "down") && (endLineDirection === "up" || endLineDirection === "down")) {
+                if (x1 == x2) {
+                    this.addAnchor(breakpointStartX, breakpointStartY);
+                    this.addAnchor(breakpointEndX, breakpointEndY);
+                } else {
+                    this.addAnchor(breakpointStartX, middleBreakPointY);
+                    this.addAnchor(breakpointEndX, middleBreakPointY);
+                }
+            } else if ((startLineDirection === "left" || startLineDirection === "right") && (endLineDirection === "left" || endLineDirection === "right")) {
+                if (y1 == y2) {
+                    this.addAnchor(breakpointStartX, breakpointStartY);
+                    this.addAnchor(breakpointEndX, breakpointEndY);
+                } else {
+                    this.addAnchor(middleBreakPointX, breakpointStartY);
+                    this.addAnchor(middleBreakPointX, breakpointEndY);
+                }
+            } else if ((startLineDirection === "up" || startLineDirection === "down") && (endLineDirection === "left" || endLineDirection === "right")) {
+                this.addAnchor(middleBreakPointX, middleBreakPointY);
+                this.addAnchor(breakpointEndX, breakpointEndY);
+            } else if ((startLineDirection === "right" || startLineDirection === "left") && (endLineDirection === "up" || endLineDirection === "down")) {
+                this.addAnchor(breakpointStartX, breakpointStartY);
+                this.addAnchor(middleBreakPointX, middleBreakPointY);
+            }
+            this.addAnchor(breakpointEndX, breakpointEndY);
+            this.updateDraggablePoints();
+        } else {
+            // These two anchors are fixed points
+            points[this.anchors[0]].x = breakpointStartX;
+            points[this.anchors[0]].y = breakpointStartY;
+            points[this.anchors[3]].x = breakpointEndX;
+            points[this.anchors[3]].y = breakpointEndY;
+
+            // Set coordinates for anchors based on where the draggable point is positioned
+            if ((startLineDirection === "up" || startLineDirection === "down") && (endLineDirection === "up" || endLineDirection === "down")) {
+                if (x1 == x2) {
+                    points[this.anchors[1]].x = points[this.draggablePoints[0]].x;
+                    points[this.anchors[1]].y = breakpointStartY;
+                    points[this.anchors[2]].x = points[this.draggablePoints[0]].x;
+                    points[this.anchors[2]].y = breakpointEndY;
+                } else {
+                    points[this.anchors[1]].x = breakpointStartX;
+                    points[this.anchors[1]].y = points[this.draggablePoints[0]].y;
+                    points[this.anchors[2]].x = breakpointEndX;
+                    points[this.anchors[2]].y = points[this.draggablePoints[0]].y;
+                }
+            } else if ((startLineDirection === "left" || startLineDirection === "right") && (endLineDirection === "left" || endLineDirection === "right")) {
+                if (y1 == y2) {
+                    points[this.anchors[1]].x = breakpointStartX;
+                    points[this.anchors[1]].y = points[this.draggablePoints[0]].y;
+                    points[this.anchors[2]].x = breakpointEndX;
+                    points[this.anchors[2]].y = points[this.draggablePoints[0]].y;
+                } else {
+                    points[this.anchors[1]].x = breakpointStartX;
+                    points[this.anchors[1]].y = points[this.draggablePoints[0]].y;
+                    points[this.anchors[2]].x = breakpointEndX;
+                    points[this.anchors[2]].y = points[this.draggablePoints[0]].y;
+                }
+            } else if ((startLineDirection === "up" || startLineDirection === "down") && (endLineDirection === "left" || endLineDirection === "right")) {
+                points[this.anchors[1]].x = breakpointStartX;
+                points[this.anchors[1]].y = points[this.draggablePoints[0]].y;
+                points[this.anchors[2]].x = breakpointEndX;
+                points[this.anchors[2]].y = points[this.draggablePoints[0]].y;
+            } else if ((startLineDirection === "right" || startLineDirection === "left") && (endLineDirection === "up" || endLineDirection === "down")) {
+                points[this.anchors[1]].x = breakpointStartX;
+                points[this.anchors[1]].y = points[this.draggablePoints[0]].y;
+                points[this.anchors[2]].x = breakpointEndX;
+                points[this.anchors[2]].y = points[this.draggablePoints[0]].y;
+            }
+
+            // Prevent from moving point so lines draw back into the UML class
+            if ((startLineDirection === "up" && points[this.anchors[1]].y > breakpointStartY) || (startLineDirection === "down" && points[this.anchors[1]].y < breakpointStartY)) {
+                points[this.anchors[1]].y = breakpointStartY;
+                points[this.anchors[2]].y = breakpointStartY;
+            } else if ((startLineDirection === "left" && points[this.anchors[1]].x > breakpointStartX) || (startLineDirection === "right" && points[this.anchors[1]].x < breakpointStartX)) {
+                points[this.anchors[1]].x = breakpointStartX;
+                points[this.anchors[2]].x = breakpointStartX;
+            }
+
+            if ((endLineDirection === "up" && points[this.anchors[2]].y > breakpointEndY) || (endLineDirection === "down" && points[this.anchors[2]].y < breakpointEndY)) {
+                points[this.anchors[1]].y = breakpointEndY;
+                points[this.anchors[2]].y = breakpointEndY;
+            } else if ((endLineDirection === "left" && points[this.anchors[2]].x > breakpointEndX) || (endLineDirection === "down" && points[this.anchors[2]].x < breakpointEndX)) {
+                points[this.anchors[1]].x = breakpointEndX;
+                points[this.anchors[2]].x = breakpointEndX;
+            }
+
+            // Only move draggable points on one axis based on line direction
+            if (points[this.anchors[1]].x == points[this.anchors[2]].x) {
+                // You can only move the point left and right
+                if (points[this.anchors[2]].y > points[this.anchors[1]].y) { // If second anchor is lower (on canvas) than first anchor
+                    points[this.draggablePoints[0]].y = points[this.anchors[1]].y + Math.abs(points[this.anchors[1]].y - points[this.anchors[2]].y) / 2;
+                } else if (points[this.anchors[1]].y > points[this.anchors[2]].y) { // If first anchor is lower (on canvas) than second anchor
+                    points[this.draggablePoints[0]].y = points[this.anchors[2]].y + Math.abs(points[this.anchors[1]].y - points[this.anchors[2]].y) / 2;
+                } else {
+                    points[this.draggablePoints[0]].y = points[this.anchors[1]].y;
                 }
 
-                // Check if line's end point matches any class diagram
-                if (x2 == pixelsToCanvas(currentSymbol.tl.x).x) {
-                    endLineDirection = "left";
-                    breakpointEndX = x2 - 30;
-                    breakpointEndY = y2;
-                } else if (x2 == pixelsToCanvas(currentSymbol.br.x).x) {
-                    endLineDirection = "right";
-                    breakpointEndX = x2 + 30;
-                    breakpointEndY = y2;
-                } else if (y2 == pixelsToCanvas(0, currentSymbol.tl.y).y) {
-                    endLineDirection = "up"
-                    breakpointEndY = y2 - 30;
-                    breakpointEndX = x2;
-                } else if (y2 == pixelsToCanvas(0, currentSymbol.br.y).y) {
-                    endLineDirection = "down"
-                    breakpointEndY = y2 + 30;
-                    breakpointEndX = x2;
+                if (points[this.draggablePoints[0]].x < points[this.anchors[1]].x || points[this.draggablePoints[0]].x > points[this.anchors[1]].x) {
+                    points[this.draggablePoints[0]].x = points[this.anchors[1]].x;
+                }
+            } else if (points[this.anchors[1]].y == points[this.anchors[2]].y) {
+                // You can only move the point up and down
+                if (points[this.anchors[2]].x > points[this.anchors[1]].x) { // If second anchor is more to the right than first anchor
+                    points[this.draggablePoints[0]].x = points[this.anchors[1]].x + Math.abs(points[this.anchors[1]].x - points[this.anchors[2]].x) / 2;
+                } else if (points[this.anchors[1]].x > points[this.anchors[2]].x) { // If first anchor is more to the right than second anchor
+                    points[this.draggablePoints[0]].x = points[this.anchors[2]].x + Math.abs(points[this.anchors[1]].x - points[this.anchors[2]].x) / 2;
+                } else {
+                    points[this.draggablePoints[0]].x = points[this.anchors[1]].x;
                 }
 
-                // If start and end points are too close to each other, set breakpoints to same as start and end points
-                if((Math.abs(x1 - x2) < 60) || (Math.abs(y1 - y2) < 60)) {
-                    breakpointStartX = x1;
-                    breakpointStartY = y1;
-                    breakpointEndX = x2;
-                    breakpointEndY = y2;
+                if (points[this.draggablePoints[0]].y < points[this.anchors[1]].y || points[this.draggablePoints[0]].y > points[this.anchors[1]].y) {
+                    points[this.draggablePoints[0]].y = points[this.anchors[1]].y;
                 }
             }
+
+            // Start line
+            ctx.beginPath();
+            ctx.moveTo(x1, y1);
+            ctx.lineTo(points[this.anchors[0]].x, points[this.anchors[0]].y);
+            ctx.lineTo(points[this.anchors[1]].x, points[this.anchors[1]].y);
+            ctx.lineTo(points[this.anchors[2]].x, points[this.anchors[2]].y);
+            ctx.lineTo(points[this.anchors[3]].x, points[this.anchors[3]].y);
+            ctx.lineTo(x2, y2);
+            ctx.stroke();
         }
-
-        // Add start breakpoint as an anchor
-        this.addAnchor(breakpointStartX, breakpointStartY);
-
-        // Draw to start breakpoint based on direction
-        ctx.lineTo(breakpointStartX, breakpointStartY);
-
-        if((startLineDirection === "up" || startLineDirection === "down") && (endLineDirection === "up" || endLineDirection === "down")) {
-            ctx.lineTo(breakpointStartX, middleBreakPointY);
-            ctx.lineTo(middleBreakPointX, middleBreakPointY); // Mid point
-            ctx.lineTo(breakpointEndX, middleBreakPointY);
-            this.addAnchor(breakpointStartX, middleBreakPointY);
-            this.addAnchor(breakpointEndX, middleBreakPointY);
-        } else if((startLineDirection === "left" || startLineDirection === "right") && (endLineDirection === "left" || endLineDirection === "right")) {
-            ctx.lineTo(middleBreakPointX, breakpointStartY);
-            ctx.lineTo(middleBreakPointX, middleBreakPointY); // Mid point
-            ctx.lineTo(middleBreakPointX, breakpointEndY);
-            this.addAnchor(middleBreakPointX, breakpointStartY);
-            this.addAnchor(middleBreakPointX, breakpointEndY);
-        }  else if((startLineDirection === "up" || startLineDirection === "down") && (endLineDirection === "left" || endLineDirection === "right")) {
-            ctx.lineTo(breakpointStartX, breakpointEndY);
-            this.addAnchor(breakpointStartX, breakpointEndY);
-        }  else if((startLineDirection === "right" || startLineDirection === "left") && (endLineDirection === "up" || endLineDirection === "down")) {
-            ctx.lineTo(breakpointEndX, breakpointStartY);
-            this.addAnchor(breakpointEndX, breakpointStartY);
-        }
-
-        // Draw to end breakpoint based on direction
-        ctx.lineTo(breakpointEndX, breakpointEndY);
-
-        // Add end breakpoint anchor
-        this.addAnchor(breakpointEndX, breakpointEndY);
-
-        ctx.lineTo(x2, y2);
-        ctx.stroke();
-
-        this.updateDraggablePoints();
-
         this.drawUmlRelationLines(x1,y1,x2,y2, startLineDirection, endLineDirection);
     }
 
@@ -1642,7 +1733,7 @@ function Symbol(kindOfSymbol) {
 
     // Create draggable points dynamically depending on number of UML line anchors
     this.updateDraggablePoints = function() {
-        for (var i = 1; i < this.anchors.length; i++) {
+        for (var i = 2; i < this.anchors.length; i++) { // i = depending on when to start creating draggable points
             var firstAnchorPoint = this.anchors[i - 1];
             var secondAnchorPoint = this.anchors[i];
 
